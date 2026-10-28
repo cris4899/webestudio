@@ -25,7 +25,8 @@ npm run build
 - Explicaciones secuenciales, fragmentos identificados, guías de resolución y comprobaciones.
 - Las ocho relaciones del profesor; sin supuestos nuevos de examen.
 - Autoevaluación de 12 preguntas derivadas de los requisitos originales.
-- Progreso de lecciones guardado en localStorage de este navegador; casillas de práctica y resultados de repaso duran la sesión.
+- Progreso de lecciones, casillas de práctica y respuestas comprobadas de autoevaluación guardados en este navegador y restaurados al volver. Las casillas se comparten entre la lección y la vista de prácticas.
+- Selector de modo claro/oscuro con preferencia guardada; la primera visita utiliza el tema del sistema.
 - Biblioteca con páginas de los PDF (17 páginas con imágenes), texto extraído y descarga del original.
 - 85 archivos fuente consultables de los cinco RAR, sin ejecutar sus proyectos.
 - Búsqueda sin tildes en lecciones, enunciados y código original.

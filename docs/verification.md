@@ -2,6 +2,13 @@
 
 Fecha: 28 de octubre de 2026.
 
+## Ampliación: modo oscuro y progreso persistente
+
+- Cinco pruebas automáticas superadas, incluyendo datos de estudio corruptos, identificadores desconocidos, respuestas fuera de rango, opción cero y restauración de casillas.
+- Navegador local: casilla y respuesta correcta de relación 1 sobreviven a recarga. La misma casilla aparece marcada en Prácticas de clase. Tema claro y oscuro sobreviven a recarga. Revisión visual de portada oscura.
+- Se conserva la clave anterior de lecciones completadas; las nuevas preferencias y los datos de ejercicios se guardan por separado para mantener el avance previo.
+- El guardado sigue limitado al navegador y dominio; borrar sus datos elimina preferencias y progreso. Si no permite escribir en localStorage se avisa y se mantiene el estado durante la sesión.
+
 | Criterio | Evidencia |
 | --- | --- |
 | AC1 · Navegación y búsqueda | Prueba automática de búsquedas sin tildes y términos múltiples en lecciones y fuentes. Navegador: «matricula» encuentra lecciones y relación 8; historial vuelve de un RAR a la biblioteca. |

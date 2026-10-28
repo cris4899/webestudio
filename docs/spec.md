@@ -4,6 +4,8 @@ Estado: implementable. Fecha: 28 de octubre de 2026.
 
 Actualización de alcance: el usuario ha autorizado crear el repositorio público en GitHub y conectar/publicar el proyecto en Vercel. La restricción de entrega exclusivamente local queda sustituida por esa autorización; se conserva el resto de criterios y materiales.
 
+Ampliación: selector claro/oscuro con preferencia persistente, por defecto según sistema. Guardar también casillas de práctica y respuestas comprobadas de autoevaluación; restaurarlas al recargar y compartir las casillas entre lección y prácticas. Mantener el avance de lecciones existente. Validar almacenamiento corrupto y avisar si el navegador bloquea las escrituras. Todo sigue siendo local al navegador.
+
 Restricción posterior del usuario: ceñirse estrictamente a los archivos y enlaces del profesor. No inventar temario, ejercicios ni supuestos de examen. Las explicaciones son elaboración didáctica identificada; la práctica reproduce requisitos de las relaciones originales y la autoevaluación solo pregunta sobre ellos. Las discrepancias entre enunciados y código se señalan sin alterar los originales.
 
 ## Objetivo y decisiones

@@ -1,5 +1,5 @@
 import { lessons, officialNotes } from './data/course.mjs';
-import { readProgress, searchCourse } from './lib.mjs';
+import { readProgress, readStudy, searchCourse } from './lib.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const main = $('#contenido');
@@ -12,9 +12,39 @@ let storageWarning = false;
 let libraryFilter = 'all';
 const quizResults = new Map();
 const key = 'aula-interfaces.progreso.v1';
+const studyKey = 'aula-interfaces.estudio.v1';
+let study = readStudy(null, lessons);
 let noticeTimer;
 function notify(message) { $('#notice').textContent = message; clearTimeout(noticeTimer); noticeTimer = setTimeout(() => { $('#notice').textContent = ''; }, 6500); }
 try { completed = readProgress(localStorage.getItem(key), lessons); } catch { storageWarning = true; }
+try { study = readStudy(localStorage.getItem(studyKey), lessons); } catch { storageWarning = true; }
+function restoreResults() {
+  quizResults.clear();
+  for (const l of lessons) l.quizzes.forEach((q, i) => {
+    const id = `${l.id}-${i}`;
+    if (Object.hasOwn(study.answers, id)) quizResults.set(id, study.answers[id] === q.answer);
+  });
+}
+restoreResults();
+function saveStudy() {
+  try { localStorage.setItem(studyKey, JSON.stringify({ checks: [...study.checks], answers: study.answers })); }
+  catch { notify('El navegador no permite guardar el progreso. Los cambios durarán solo esta sesión.'); }
+}
+function checklist(l) { return l.checks.map((c, i) => `<label><input type="checkbox" data-check="${l.id}-${i}"${study.checks.has(`${l.id}-${i}`) ? ' checked' : ''}><span>${esc(c)}</span></label>`).join(''); }
+function updateThemeButton() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  $('#theme-toggle').setAttribute('aria-pressed', String(dark));
+  $('#theme-toggle').setAttribute('aria-label', dark ? 'Activar modo claro' : 'Activar modo oscuro');
+  $('#theme-toggle').title = dark ? 'Activar modo claro' : 'Activar modo oscuro';
+  $('#theme-toggle').textContent = dark ? '☀' : '☾';
+}
+updateThemeButton();
+$('#theme-toggle').addEventListener('click', () => {
+  document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  updateThemeButton();
+  try { localStorage.setItem('aula-interfaces.tema', document.documentElement.dataset.theme); }
+  catch { notify('El tema se aplicará solo durante esta sesión: el almacenamiento está bloqueado.'); }
+});
 function progress(unit) { const list = unit ? lessons.filter(l => l.unit === unit) : lessons; const count = list.filter(l => completed.has(l.id)).length; return { count, total: list.length, percent: Math.round(count / list.length * 100) }; }
 const track = (percent, label) => `<div class="progress-track" role="progressbar" aria-label="${esc(label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><div class="progress-fill" style="width:${percent}%"></div></div>`;
 const heading = (eyebrow, title, description, badge = '') => `<div class="page-heading"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p class="subheading">${description}</p></div>${badge ? `<span class="pill">${badge}</span>` : ''}</div>`;
@@ -64,13 +94,14 @@ function quizForm(l, q, index, order) {
   const options = q.options.map((text, i) => ({ text, i }));
   const shift = (order + 1) % options.length;
   const reordered = [...options.slice(shift), ...options.slice(0, shift)];
-  return `<form class="quiz" data-quiz="${id}" data-lesson="${l.id}" data-index="${index}"><fieldset><legend>${esc(q.question)}</legend>${reordered.map(o => `<label><input type="radio" name="answer" value="${o.i}" required><span>${esc(o.text)}</span></label>`).join('')}</fieldset><button type="submit" class="button small">Comprobar respuesta</button><div class="feedback" aria-live="polite"></div></form>`;
+  const answered = Object.hasOwn(study.answers, id), correct = study.answers[id] === q.answer;
+  return `<form class="quiz" data-quiz="${id}" data-lesson="${l.id}" data-index="${index}"><fieldset><legend>${esc(q.question)}</legend>${reordered.map(o => `<label><input type="radio" name="answer" value="${o.i}" required${study.answers[id] === o.i ? ' checked' : ''}><span>${esc(o.text)}</span></label>`).join('')}</fieldset><button type="submit" class="button small">Comprobar respuesta</button><div class="feedback${answered && correct ? ' correct' : ''}" aria-live="polite">${answered ? esc((correct ? '✓ Correcto. ' : 'Vuelve a intentarlo. ') + q.explanation) : ''}</div></form>`;
 }
 function lessonPage(id) {
   const l = lessons.find(item => item.id === id); if (!l) return notFound();
   const index = lessons.indexOf(l), next = lessons[index + 1];
   return `<a class="back-link" href="#/unidad/${l.unit}">← Volver a ${l.unit === 'UD2' ? 'Unidad 2' : 'Unidades 3 y 4'}</a>` + heading(esc(l.tag.toUpperCase()), esc(l.title), esc(l.summary)) +
-    `<div class="reader-layout"><article class="reader"><div class="objectives"><h2>Al terminar podrás…</h2><ul>${l.goals.map(g => `<li>${esc(g)}</li>`).join('')}</ul></div>${l.sections.map((s, i) => `<section id="apartado-${i}"><h2>${esc(s.title)}</h2>${paragraphs(s.paragraphs)}${s.code ? codeBlock(s.code, s.filename) : ''}</section>`).join('')}<aside class="callout"><h3>Donde conviene fijarse</h3><ul>${l.pitfalls.map(p => `<li>${esc(p)}</li>`).join('')}</ul></aside><section class="exercise" id="ejercicio"><span class="unit-code">DEL MATERIAL DE CLASE</span><h3>${esc(l.practice.title)}</h3><p>${esc(l.practice.prompt)}</p><ol>${l.practice.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol><details><summary>Ver guía de resolución</summary><p>${esc(l.practice.solution)}</p></details></section><section id="repaso"><h2>¿Lo has entendido?</h2><p>Comprueba los requisitos del enunciado. Estas preguntas son apoyo de estudio, no preguntas oficiales de examen.</p>${l.quizzes.map((q, i) => quizForm(l, q, i, index)).join('')}</section><section class="checklist" id="comprobacion"><h2>Antes de darlo por terminado</h2>${l.checks.map(c => `<label><input type="checkbox"><span>${esc(c)}</span></label>`).join('')}<p class="source-notice">Esta lista sirve para revisar la práctica durante la sesión. Solo el botón «Marcar como completada» guarda el avance de la lección.</p></section><div class="reader-bottom"><button class="button" data-complete="${l.id}">${completed.has(l.id) ? '✓ Completada · desmarcar' : 'Marcar como completada'}</button>${next ? `<a class="text-link" href="${lessonLink(next)}">Siguiente: ${esc(next.tag)} →</a>` : '<a class="text-link" href="#/practica">Volver a practicar →</a>'}</div></article><aside class="reader-aside"><div class="panel"><h2>EN ESTA LECCIÓN</h2>${l.sections.map((s, i) => `<a class="toc-link" href="#/leccion/${l.id}?apartado=${i}" data-scroll="apartado-${i}">${esc(s.title)}</a>`).join('')}<a class="toc-link" href="#/leccion/${l.id}?apartado=ejercicio" data-scroll="ejercicio">Ejercicio de clase</a><a class="toc-link" href="#/leccion/${l.id}?apartado=repaso" data-scroll="repaso">Autoevaluación</a></div><div class="panel"><h2>FUENTES DE LA LECCIÓN</h2>${matchedSources(l).map(m => `<a class="source-link" href="${materialLink(m)}">↗ ${esc(m.name)} <span>(${esc(m.unit)})</span></a>`).join('')}<p class="source-notice">Explicación didáctica basada en estas fuentes. Consulta las imágenes y el formato exacto en el PDF.</p></div></aside></div>`;
+    `<div class="reader-layout"><article class="reader"><div class="objectives"><h2>Al terminar podrás…</h2><ul>${l.goals.map(g => `<li>${esc(g)}</li>`).join('')}</ul></div>${l.sections.map((s, i) => `<section id="apartado-${i}"><h2>${esc(s.title)}</h2>${paragraphs(s.paragraphs)}${s.code ? codeBlock(s.code, s.filename) : ''}</section>`).join('')}<aside class="callout"><h3>Donde conviene fijarse</h3><ul>${l.pitfalls.map(p => `<li>${esc(p)}</li>`).join('')}</ul></aside><section class="exercise" id="ejercicio"><span class="unit-code">DEL MATERIAL DE CLASE</span><h3>${esc(l.practice.title)}</h3><p>${esc(l.practice.prompt)}</p><ol>${l.practice.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol><details><summary>Ver guía de resolución</summary><p>${esc(l.practice.solution)}</p></details></section><section id="repaso"><h2>¿Lo has entendido?</h2><p>Comprueba los requisitos del enunciado. Estas preguntas son apoyo de estudio, no preguntas oficiales de examen.</p>${l.quizzes.map((q, i) => quizForm(l, q, i, index)).join('')}</section><section class="checklist" id="comprobacion"><h2>Antes de darlo por terminado</h2>${checklist(l)}<p class="source-notice">Las casillas se guardan en este navegador y se comparten con la página de prácticas. El botón «Marcar como completada» guarda el avance global de la lección.</p></section><div class="reader-bottom"><button class="button" data-complete="${l.id}">${completed.has(l.id) ? '✓ Completada · desmarcar' : 'Marcar como completada'}</button>${next ? `<a class="text-link" href="${lessonLink(next)}">Siguiente: ${esc(next.tag)} →</a>` : '<a class="text-link" href="#/practica">Volver a practicar →</a>'}</div></article><aside class="reader-aside"><div class="panel"><h2>EN ESTA LECCIÓN</h2>${l.sections.map((s, i) => `<a class="toc-link" href="#/leccion/${l.id}?apartado=${i}" data-scroll="apartado-${i}">${esc(s.title)}</a>`).join('')}<a class="toc-link" href="#/leccion/${l.id}?apartado=ejercicio" data-scroll="ejercicio">Ejercicio de clase</a><a class="toc-link" href="#/leccion/${l.id}?apartado=repaso" data-scroll="repaso">Autoevaluación</a></div><div class="panel"><h2>FUENTES DE LA LECCIÓN</h2>${matchedSources(l).map(m => `<a class="source-link" href="${materialLink(m)}">↗ ${esc(m.name)} <span>(${esc(m.unit)})</span></a>`).join('')}<p class="source-notice">Explicación didáctica basada en estas fuentes. Consulta las imágenes y el formato exacto en el PDF.</p></div></aside></div>`;
 }
 
 function libraryPage() {
@@ -91,12 +122,12 @@ function learnTitle(url) { const slug = new URL(url).pathname.split('/').filter(
 
 function practicePage() {
   const practices = lessons.filter(l => l.tag.startsWith('Relación'));
-  return heading('PRÁCTICAS DE CLASE', 'Del enunciado al «funciona».', 'Trabaja los ejercicios enviados por el profesor. Cada ficha resume sus requisitos y enlaza el original. No se han añadido supuestos ni ejercicios nuevos.') + `<div class="exam-list">${practices.map(l => `<article class="exam-item"><span class="unit-code">${esc(l.unit)} · ${esc(l.tag.toUpperCase())}</span><h2>${esc(l.practice.title)}</h2><p>${esc(l.practice.prompt)}</p><div class="checklist">${l.checks.map(c => `<label><input type="checkbox"><span>${esc(c)}</span></label>`).join('')}</div><div class="exam-links"><a href="${lessonLink(l)}">Consultar explicación y guía →</a>${matchedSources(l).filter(m => m.kind === 'pdf').map(m => `<a href="${materialLink(m)}">Ver enunciado original ↗</a>`).join('')}</div></article>`).join('')}</div><p class="source-notice">Las casillas son una comprobación de esta sesión. Marca una lección completada desde su página para guardar el avance. No se atribuyen ponderaciones ni tiempos de examen al profesor.</p>`;
+  return heading('PRÁCTICAS DE CLASE', 'Del enunciado al «funciona».', 'Trabaja los ejercicios enviados por el profesor. Cada ficha resume sus requisitos y enlaza el original. No se han añadido supuestos ni ejercicios nuevos.') + `<div class="exam-list">${practices.map(l => `<article class="exam-item"><span class="unit-code">${esc(l.unit)} · ${esc(l.tag.toUpperCase())}</span><h2>${esc(l.practice.title)}</h2><p>${esc(l.practice.prompt)}</p><div class="checklist">${checklist(l)}</div><div class="exam-links"><a href="${lessonLink(l)}">Consultar explicación y guía →</a>${matchedSources(l).filter(m => m.kind === 'pdf').map(m => `<a href="${materialLink(m)}">Ver enunciado original ↗</a>`).join('')}</div></article>`).join('')}</div><p class="source-notice">Las casillas se guardan en este navegador. Marca una lección completada desde su página para actualizar el avance global. No se atribuyen ponderaciones ni tiempos de examen al profesor.</p>`;
 }
 function assessmentPage() {
   return heading('AUTOEVALUACIÓN', 'Comprueba qué has entendido.', 'Preguntas de repaso derivadas de los requisitos de las relaciones. Puedes reintentar cada respuesta. No son preguntas oficiales del profesor.') + `<div class="quiz-summary" id="quiz-summary" aria-live="polite">${scoreText()}</div><div class="reader">${lessons.map((l, i) => `<section><h2>${esc(l.tag)} · ${esc(l.title)}</h2>${l.quizzes.map((q, j) => quizForm(l, q, j, i)).join('')}<a class="text-link" href="${lessonLink(l)}">Repasar la explicación →</a></section>`).join('')}</div>`;
 }
-function scoreText() { const total = lessons.reduce((n, l) => n + l.quizzes.length, 0); const correct = [...quizResults.values()].filter(Boolean).length; return `${correct} correctas · ${quizResults.size} respondidas · ${total} preguntas de repaso. Resultado de esta sesión.`; }
+function scoreText() { const total = lessons.reduce((n, l) => n + l.quizzes.length, 0); const correct = [...quizResults.values()].filter(Boolean).length; return `${correct} correctas · ${quizResults.size} respondidas · ${total} preguntas de repaso. Respuestas guardadas en este navegador.`; }
 function searchPage(query) {
   const term = query.trim();
   if (!term) return heading('BUSCADOR', '¿Qué quieres repasar?', 'Escribe en el buscador un tema, una relación o una parte del código.') + '<div class="empty">Puedes buscar, por ejemplo, «Grid», «matrícula», «contraseña» o «DynamicResource».</div>';
@@ -160,6 +191,8 @@ document.addEventListener('submit', event => {
   event.preventDefault(); const selected = new FormData(form).get('answer'); if (selected === null) return;
   const l = lessons.find(item => item.id === form.dataset.lesson); const q = l.quizzes[Number(form.dataset.index)]; const correct = Number(selected) === q.answer;
   quizResults.set(form.dataset.quiz, correct);
+  study.answers[form.dataset.quiz] = Number(selected);
+  saveStudy();
   const feedback = form.querySelector('.feedback'); feedback.classList.toggle('correct', correct);
   feedback.textContent = (correct ? '✓ Correcto. ' : 'Vuelve a intentarlo. ') + q.explanation;
   if ($('#quiz-summary')) $('#quiz-summary').textContent = scoreText();
@@ -173,7 +206,20 @@ main.addEventListener('toggle', event => {
   if (source) placeholder.innerHTML = codeBlock(source.code, source.name);
 }, true);
 window.addEventListener('hashchange', () => render());
-window.addEventListener('storage', event => { if (event.key === key || event.key === null) { completed = readProgress(event.newValue, lessons); render({ focus: false }); } });
+document.addEventListener('change', event => {
+  const input = event.target.closest('[data-check]'); if (!input) return;
+  input.checked ? study.checks.add(input.dataset.check) : study.checks.delete(input.dataset.check);
+  saveStudy();
+});
+window.addEventListener('storage', event => {
+  if (event.key === key || event.key === null) completed = readProgress(event.newValue, lessons);
+  if (event.key === studyKey || event.key === null) { study = readStudy(event.newValue, lessons); restoreResults(); }
+  if (event.key === 'aula-interfaces.tema' || event.key === null) {
+    document.documentElement.dataset.theme = event.newValue === 'dark' ? 'dark' : event.newValue === 'light' ? 'light' : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    updateThemeButton();
+  }
+  if (event.key === key || event.key === studyKey || event.key === null) render({ focus: false });
+});
 
 try {
   const response = await fetch('data/materials.json'); if (!response.ok) throw new Error('Biblioteca no disponible');

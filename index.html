@@ -7,6 +7,7 @@
   <meta name="description" content="Tu espacio de estudio de Desarrollo de Interfaces: unidades 2, 3 y 4, prácticas .NET MAUI y XAML basadas en el material de clase.">
   <title>Aula de Interfaces · Tu espacio de estudio</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('aula-interfaces.tema') === 'dark' ? 'dark' : localStorage.getItem('aula-interfaces.tema') === 'light' ? 'light' : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch { document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }</script>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="app.mjs"></script>
 </head>
@@ -25,6 +26,7 @@
       <button class="icon-button mobile-toggle" id="menu-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir navegación">☰</button>
       <div class="breadcrumb">MI AULA <span>/</span> <strong id="crumb">Vista general</strong></div>
       <form class="search-form" id="search-form" role="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Buscar en apuntes y materiales" placeholder="Buscar un tema, un ejercicio…" autocomplete="off"><kbd aria-hidden="true">↵</kbd></form>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">◐</button>
       <span class="student-badge" title="Estudio personal, sin cuenta">DI</span>
     </header>
     <main id="contenido" tabindex="-1"><p class="loading">Preparando tu espacio de estudio…</p></main>

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { lessons } from '../data/course.mjs';
-import { readProgress, normalize, searchCourse } from '../lib.mjs';
+import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
@@ -41,6 +41,17 @@ test('AC4: progreso corrupto, datos ajenos y duplicados', () => {
   assert.deepEqual([...readProgress('null', lessons)], []);
   assert.deepEqual([...readProgress('{"entorno":true}', lessons)], []);
   assert.deepEqual([...readProgress('["entorno","entorno","inventado",5]', lessons)], ['entorno']);
+});
+test('AC4: casillas y respuestas persistentes se validan sin perder valores cero', () => {
+  for (const raw of ['{mal', 'null', '[]', '{}']) {
+    const saved = readStudy(raw, lessons);
+    assert.equal(saved.checks.size, 0);
+    assert.deepEqual(saved.answers, {});
+  }
+  const saved = readStudy(JSON.stringify({ checks: ['formulario-0', 'formulario-0', 'falso', 2], answers: { 'entorno-0': 0, 'formulario-0': 100, 'edad-0': '1', 'inventado-0': 0 } }), lessons);
+  assert.deepEqual([...saved.checks], ['formulario-0']);
+  assert.deepEqual(saved.answers, { 'entorno-0': 0 });
+  assert.deepEqual(readStudy(JSON.stringify({ checks: [...saved.checks], answers: saved.answers }), lessons), saved);
 });
 test('AC7: servidor de vista previa sirve originales y bloquea archivos privados', async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
