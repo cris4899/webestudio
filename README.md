@@ -48,14 +48,15 @@ Mapa del proyecto:
 | `scripts/` | Build, servidor, importación y comprobaciones |
 | `UD2/`, `UD3-4/` | Archivos originales |
 
-## Preparación de GitHub y Vercel
+## GitHub y Vercel
 
-El usuario ha reservado la creación del repositorio y proyecto para una fase posterior; no se han creado ni publicado.
+La web está publicada en [webestudio-three.vercel.app](https://webestudio-three.vercel.app) y el repositorio público está en [cris4899/webestudio](https://github.com/cris4899/webestudio).
 
-1. Crear un repositorio en GitHub y subir esta carpeta, respetando `.gitignore`. Incluir los originales, `data/` y `assets/`; excluir `.study-cache/`, `dist/` y metadatos locales.
-2. Importar el repositorio en Vercel. La configuración está en `vercel.json`: framework sin preset, build `npm run build`, salida `dist`.
-3. No se necesitan variables de entorno ni base de datos. Las rutas usan hash y funcionan sin reglas de reescritura.
-4. Verificar en el despliegue inicio, una lección, una página PDF, un RAR y una descarga. El progreso será independiente del navegador local porque el dominio es distinto.
+El proyecto `webestudio` del equipo `cristobal4899-3492s-projects` está conectado a la rama `main`. Los cambios subidos a esa rama generan nuevos despliegues automáticamente. La configuración está en `vercel.json`: framework sin preset, build `npm run build`, salida `dist`.
+
+Para actualizar: comprueba `npm test` y `npm run build`, guarda el commit y ejecuta `git push`. Respeta `.gitignore`: los originales, `data/` y `assets/` se versionan; `.study-cache/`, `dist/` y metadatos locales quedan excluidos. `.gitattributes` conserva los originales byte a byte, incluidos los saltos de línea de los listados.
+
+No se necesitan variables de entorno ni base de datos. Las rutas usan hash y funcionan sin reglas de reescritura. El progreso del dominio público es independiente del navegador local porque el origen es distinto.
 
 Los RAR suman unos 130 MB; el mayor ronda 56 MB. Se mantienen porque se pidió conservar todos los archivos. No se extraen cachés de Visual Studio ni binarios dentro de la web. Los enlaces Learn se conservan tal como fueron enviados; su contenido puede cambiar y algunos parámetros de versión pueden redirigir.
 
