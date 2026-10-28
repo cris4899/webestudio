@@ -1,0 +1,7 @@
+https://learn.microsoft.com/es-es/dotnet/maui/user-interface/controls/contentview?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/dotnet/standard/class-libraries
+https://learn.microsoft.com/es-es/dotnet/core/tutorials/create-class-library?pivots=visualstudio
+https://learn.microsoft.com/es-es/dotnet/api/microsoft.maui.controls.contentview?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0#definition
+https://learn.microsoft.com/es-es/training/modules/use-shared-resources/
+https://learn.microsoft.com/es-es/dotnet/maui/platform-integration/device/information?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0&tabs=windows
+https://learn.microsoft.com/es-es/dotnet/api/microsoft.maui.controls.image?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0

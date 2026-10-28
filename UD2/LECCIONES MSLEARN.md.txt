@@ -1,0 +1,13 @@
+https://learn.microsoft.com/es-es/dotnet/maui/what-is-maui?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/training/modules/build-mobile-and-desktop-apps/
+https://learn.microsoft.com/es-es/dotnet/api/microsoft.maui.controls.label?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/dotnet/api/microsoft.maui.controls.entry?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/dotnet/api/microsoft.maui.controls.button?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/training/modules/customize-xaml-pages-layout/
+https://learn.microsoft.com/en-us/dotnet/maui/user-interface/layouts/stacklayout?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/en-us/dotnet/maui/user-interface/layouts/grid?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/dotnet/maui/user-interface/controls/boxview?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/dotnet/maui/user-interface/controls/slider?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0
+https://learn.microsoft.com/es-es/training/modules/create-user-interface-xaml/
+https://learn.microsoft.com/es-es/training/modules/create-multi-page-apps/
+https://learn.microsoft.com/es-es/dotnet/maui/user-interface/pages/contentpage?view=net-maui-10.0&viewFallbackFrom=net-maui-8.0

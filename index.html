@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192c28">
+  <meta name="description" content="Tu espacio de estudio de Desarrollo de Interfaces: unidades 2, 3 y 4, prácticas .NET MAUI y XAML basadas en el material de clase.">
+  <title>Aula de Interfaces · Tu espacio de estudio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+    <a class="brand" href="#/"><span class="brand-icon">di<span>↗</span></span><span>Aula de<br><strong>Interfaces</strong></span></a>
+    <p class="sidebar-label">TU ESPACIO DE ESTUDIO</p>
+    <nav id="nav"></nav>
+    <div class="sidebar-course"><span class="tiny-label">ESTÁS ESTUDIANDO</span><strong>Desarrollo de Interfaces</strong><span>2º DAM · .NET MAUI / XAML</span></div>
+    <div class="sidebar-progress" id="sidebar-progress"></div>
+    <div class="sidebar-footer"><span class="status-dot"></span> A tu ritmo, paso a paso.</div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <button class="icon-button mobile-toggle" id="menu-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir navegación">☰</button>
+      <div class="breadcrumb">MI AULA <span>/</span> <strong id="crumb">Vista general</strong></div>
+      <form class="search-form" id="search-form" role="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Buscar en apuntes y materiales" placeholder="Buscar un tema, un ejercicio…" autocomplete="off"><kbd aria-hidden="true">↵</kbd></form>
+      <span class="student-badge" title="Estudio personal, sin cuenta">DI</span>
+    </header>
+    <main id="contenido" tabindex="-1"><p class="loading">Preparando tu espacio de estudio…</p></main>
+    <footer class="page-footer">Hecho para entenderlo y llevarlo a la práctica.<span>Desarrollo de Interfaces · Material de clase</span></footer>
+  </div>
+  <div class="toast" id="notice" role="status" aria-live="polite"></div>
+</body>
+</html>

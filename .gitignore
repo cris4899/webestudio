@@ -1,0 +1,6 @@
+dist/
+.study-cache/
+node_modules/
+.vercel/
+*.log
+__pycache__/
