@@ -8,11 +8,25 @@ import { workshops, workshopSteps, workshopCode } from '../data/workshops.mjs';
 import { explainPart, explainLine } from '../data/study-explanations.mjs';
 import { workshopStudy, isImportantCode } from '../data/workshop-study.mjs';
 import { readWorkshopPositions } from '../lib.mjs';
+import { referenceCategories, studyPaths, practiceGroups } from '../data/interface.mjs';
 import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
 const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
+
+test('Organización: ocho relaciones, cinco módulos y todas las fichas sin duplicados', () => {
+  const groups=practiceGroups(lessons);
+  assert.equal(groups.filter(g=>g.id.startsWith('relacion-')).length,8);
+  assert.equal(groups.filter(g=>g.id.startsWith('learn-')).length,5);
+  const ids=groups.flatMap(g=>g.lessons.map(l=>l.id));
+  assert.equal(new Set(ids).size,ids.length);
+  assert.deepEqual(ids.sort(),lessons.filter(l=>l.tag.startsWith('Relación')||l.id.startsWith('learn-')).map(l=>l.id).sort());
+  const cards=referenceCategories.flatMap(c=>c.cards);
+  assert.equal(new Set(cards).size,cards.length);
+  assert.deepEqual(cards.sort(),referenceCards.map(c=>c.id).sort());
+  assert.equal(studyPaths.length,3);
+});
 
 test('Último paso: datos corruptos, alias, posición inicial y relaciones independientes', () => {
   for(const raw of ['{mal','null','[]','3','"texto"'])assert.deepEqual(readWorkshopPositions(raw,solutions),{});
@@ -183,7 +197,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

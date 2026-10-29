@@ -25,6 +25,9 @@ Preparar un examen práctico de .NET MAUI/XAML con explicaciones muy detalladas,
 - **AC7 · Entrega.** Web estática sin dependencias de producción, comprobación con Node, compilación a dist y configuración para Vercel. Documentación de uso y publicación. Actualizar el repositorio y despliegue existentes tras verificar los cambios.
 
 ## Alcance y límites
+### Claridad de la interfaz
+La navegación distingue Estudiar, Practicar y Consultar. Las prácticas agrupan una sola ficha por relación y separan los módulos Learn; las listas de comprobación e identificadores permanecen intactos. La consulta rápida se organiza por categorías y la autoevaluación permite elegir lección y desplegar bloques. Las pantallas incluyen ubicación y acciones identificables, tipografía de lectura de 16 px, código de 13 px y botones de al menos 44 px de altura. El recorrido conserva su propio desplazamiento y sus bloques abiertos al cambiar de paso; su selección es verde en claro y violeta en oscuro, con texto de contraste.
+
 ### Talleres guiados en Visual Studio
 Se destacan validación, eventos, flujo de datos, estado y diferencias de recursos; las declaraciones sencillas mantienen explicación opcional. Se guarda el último paso válido por relación en una clave independiente del progreso y las casillas, con recuperación de alias y rechazo de datos corruptos. Cada relación dispone de comparación de variantes, con diferencias, elementos compartidos, error frecuente y código de los archivos reales del ZIP. No aumenta el número de pasos.
 

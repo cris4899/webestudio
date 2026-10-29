@@ -1,5 +1,15 @@
 # Verificación SDD
 
+## Revisión de interfaz y legibilidad · 29 de octubre de 2026
+
+- Menú dividido en Estudiar, Practicar y Consultar. Portada con tres rutas de uso y ubicación con enlaces a los apartados superiores en las páginas internas.
+- Prácticas: ocho fichas de relaciones y cinco de Learn; se agrupan los apartados de R7 y R8 sin duplicar ni cambiar los identificadores de sus casillas. Consulta rápida: las 19 fichas quedan repartidas en tres categorías sin omisiones. Descargas: relaciones y Learn por separado.
+- Autoevaluación: bloques desplegables y selección por lección. Filtrar formulario muestra cinco preguntas y conserva la respuesta guardada con valor 0; se mantiene el índice original de lección para no cambiar el orden de opciones.
+- Tipografía comprobada: texto de lectura 16 px, botones 14 px, código 13 px. Quince pruebas Node superadas y build completado.
+- Navegador: doce pantallas principales revisadas en escritorio oscuro y móvil claro de 390×844. Cada pantalla presenta un solo h1 y no desborda horizontalmente (documento de 1265 px para ventana de 1280 y 375 px para ventana de 390).
+- Recorrido: selección verde/blanco en claro (contraste 8,07:1), violeta/texto oscuro en oscuro (8,10:1). Se reutiliza su nodo al cambiar de paso; se comprobó desplazamiento idéntico de 519,33 px antes y después, con bloques abiertos conservados. El despliegue exterior del recorrido no se fuerza si el usuario lo ha cerrado.
+- Revisión visual y funcional técnica; no sustituye pruebas de usabilidad con alumnos ni una auditoría completa con lector de pantalla. Los originales, código MAUI y ZIP no cambian en este incremento.
+
 ## Lógica importante, posición y comparaciones · 29 de octubre de 2026
 
 - Se destacan reglas, eventos, estado y recursos; las explicaciones de declaraciones sencillas quedan desplegables. No se añaden pasos al recorrido de 177.

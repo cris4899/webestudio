@@ -29,3 +29,5 @@ Estado local: localStorage conserva lecciones, casillas y respuestas, además de
 Ampliación exhaustiva: desglosar los archivos en miembros C# y elementos XAML, explicar las líneas en español y conservar el archivo completo como consulta. Traducir los comentarios de las soluciones adaptadas, utilizar tipos explícitos y recompilar las aplicaciones. Sustituir acciones de texto por botones con separación de 20 px y revisar escritorio/móvil en ambos temas.
 
 Mejoras de estudio: destacar decisiones de lógica y dejar opcional la sintaxis básica; guardar la última posición válida por relación con una clave independiente; añadir comparaciones con los archivos canónicos de los paquetes y conservar los 177 pasos.
+
+Revisión transversal de interfaz: ordenar navegación por intención, agrupar relaciones y módulos, categorizar fichas, añadir ubicación y autoevaluación por lección, ampliar tipografía y revisar las pantallas en escritorio/móvil. Mantener posición y expansión del recorrido y aplicar resaltado accesible verde/violeta según el tema.
