@@ -1,4 +1,6 @@
 // Elaboración didáctica basada exclusivamente en las relaciones y fuentes indicadas.
+import { extraLessons, enrichLessons } from './guide.mjs';
+export { referenceCards } from './guide.mjs';
 const section = (title, paragraphs, code, language = 'csharp', filename = 'Fragmento de estudio') => ({ title, paragraphs, code, language, filename });
 const quiz = (question, options, answer, explanation) => ({ question, options, answer, explanation });
 export const lessons = [
@@ -196,6 +198,9 @@ export const lessons = [
     quizzes: [quiz('¿Qué valor del límite configurable incumple la condición del PDF?', ['12', '13', '18'], 0, 'El valor siempre debe ser superior a 12. El valor por defecto es 18, pero puede configurarse otro que cumpla esa condición.')]
   }
 ];
+
+lessons.push(...extraLessons);
+enrichLessons(lessons);
 
 export const officialNotes = [
   { title: 'Contenido y autoría', text: 'Los originales son el material recibido del profesor. Los apuntes, fragmentos y preguntas de esta web son una elaboración didáctica basada en esas fuentes; no son soluciones oficiales ni enunciados adicionales.' },

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/01-Notes/">
+    <Project Path="01-Notes/Notes.csproj" />
+  </Folder>
+  <Folder Name="/02-Notes/">
+    <Project Path="02-Notes/Notes.csproj" />
+  </Folder>
+</Solution>

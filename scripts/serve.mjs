@@ -7,7 +7,8 @@ export const root = fileURLToPath(new URL('../', import.meta.url));
 const types = { '.html': 'text/html; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.pdf': 'application/pdf', '.txt': 'text/plain; charset=utf-8', '.rar': 'application/vnd.rar' };
 // Solo se sirven los activos de la web y los originales inventariados.
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
-const allowed = new Set(['index.html', 'styles.css', 'app.mjs', 'lib.mjs', 'favicon.svg', 'data/course.mjs', 'data/materials.json', ...materials.map(m => m.path), ...materials.flatMap(m => m.images || [])]);
+const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
+const allowed = new Set(['index.html', 'styles.css', 'app.mjs', 'lib.mjs', 'favicon.svg', 'data/course.mjs', 'data/guide.mjs', 'data/solution-guides.mjs', 'data/materials.json', 'data/solutions.json', ...solutions.map(p=>p.download), ...materials.map(m => m.path), ...materials.flatMap(m => m.images || [])]);
 export const server = http.createServer(async (request, response) => {
   try {
     if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, { Allow: 'GET, HEAD' }); response.end(); return; }

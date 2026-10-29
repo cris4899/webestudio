@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/01-TipCalculator/">
+    <Project Path="01-TipCalculator/TipCalculator.csproj" />
+  </Folder>
+  <Folder Name="/02-TipCalculator/">
+    <Project Path="02-TipCalculator/TipCalculator.csproj" />
+  </Folder>
+  <Folder Name="/03-TipCalculator/">
+    <Project Path="03-TipCalculator/TipCalculator.csproj" />
+  </Folder>
+  <Folder Name="/04-TipCalculator/">
+    <Project Path="04-TipCalculator/TipCalculator.csproj" />
+  </Folder>
+</Solution>

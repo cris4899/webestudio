@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/BRelacion07Estudio/">
+    <Project Path="BRelacion07Estudio/BRelacion07Estudio.csproj" />
+  </Folder>
+  <Folder Name="/PruebasR07_Estudio/">
+    <Project Path="PruebasR07_Estudio/PruebasR07_Estudio.csproj" />
+  </Folder>
+</Solution>

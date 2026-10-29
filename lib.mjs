@@ -17,11 +17,13 @@ export function readProgress(raw, lessons) {
     return new Set(Array.isArray(values) ? values.filter(id => lessons.some(l => l.id === id)) : []);
   } catch { return new Set(); }
 }
-export function searchCourse(query, lessons, materials) {
+export function searchCourse(query, lessons, materials, references = [], solutions = []) {
   const terms = normalize(query).trim().split(/\s+/).filter(Boolean);
   const matches = value => { const text = normalize(value); return terms.every(term => text.includes(term)); };
   return {
     lessons: lessons.filter(l => matches(JSON.stringify(l))),
-    materials: materials.filter(m => matches(JSON.stringify(m)))
+    materials: materials.filter(m => matches(JSON.stringify(m))),
+    references: references.filter(c => matches(JSON.stringify(c))),
+    solutions: solutions.filter(p => matches(JSON.stringify({title:p.title,order:p.order,cases:p.cases,notes:p.notes})))
   };
 }

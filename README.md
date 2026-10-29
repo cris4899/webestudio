@@ -21,17 +21,21 @@ npm run build
 
 ## Qué incluye
 
-- 12 lecciones, 8 en UD2 y 4 en UD3-4.
+- 17 lecciones: 12 en UD2 y 5 en UD3-4, con las ocho relaciones y los cinco módulos Learn enviados.
 - Explicaciones secuenciales, fragmentos identificados, guías de resolución y comprobaciones.
 - Las ocho relaciones del profesor; sin supuestos nuevos de examen.
-- Autoevaluación de 12 preguntas derivadas de los requisitos originales.
+- Autoevaluación de 85 preguntas razonadas y 19 fichas de consulta rápida.
+- Guías de construcción, flujo de datos, requisitos previos y soluciones completas ocultas inicialmente para practicar antes de consultarlas.
+- 13 proyectos descargables en ZIP: uno por relación y uno por módulo Learn. Incluyen todas sus variantes, 36 proyectos MAUI con compilación Windows comprobada, instrucciones y casos de verificación.
 - Progreso de lecciones, casillas de práctica y respuestas comprobadas de autoevaluación guardados en este navegador y restaurados al volver. Las casillas se comparten entre la lección y la vista de prácticas.
 - Selector de modo claro/oscuro con preferencia guardada; la primera visita utiliza el tema del sistema.
 - Biblioteca con páginas de los PDF (17 páginas con imágenes), texto extraído y descarga del original.
 - 85 archivos fuente consultables de los cinco RAR, sin ejecutar sus proyectos.
 - Búsqueda sin tildes en lecciones, enunciados y código original.
 
-Los originales se conservan sin modificación. Los apuntes son una elaboración didáctica, no soluciones oficiales. Los proyectos recibidos pueden ser parciales y no siempre coinciden con los requisitos del PDF; las diferencias detectadas se explican en sus lecciones. Los ejemplos MAUI deben integrarse en una aplicación con namespaces, controles y referencias adecuados. Esta web no compila ni ejecuta MAUI.
+Los originales se conservan sin modificación. Los apuntes y soluciones nuevas son elaboración didáctica, no soluciones oficiales del profesor. Los proyectos recibidos pueden ser parciales y no siempre coinciden con los requisitos del PDF; las diferencias se explican en sus lecciones. Los ZIP contienen proyectos completos y autónomos: abre Soluciones.slnx y selecciona el proyecto de inicio. Los fragmentos breves de las explicaciones siguen siendo ejemplos de integración. La web no compila ni ejecuta MAUI en el navegador.
+
+Los módulos de Learn utilizan los repositorios de ejercicio que enlaza el profesor, conservan los archivos de licencia MicrosoftDocs e identifican las adaptaciones a MAUI 10. Las cifras no fijadas por el enunciado, el alfabeto de matrícula/usuario y la convención de fecha de 29 de febrero se documentan como decisiones del ejemplo.
 
 ## SDD
 
@@ -42,6 +46,9 @@ Mapa del proyecto:
 | Archivo | Función |
 | --- | --- |
 | `data/course.mjs` | Lecciones, ejercicios derivados y preguntas |
+| `data/guide.mjs` | Ampliación didáctica, módulos Learn y consulta rápida |
+| `data/solution-guides.mjs`, `data/solutions.json` | Pasos, casos y exportación exacta de los archivos de solución |
+| `solutions/`, `downloads/` | Fuentes y ZIP de los 13 paquetes |
 | `data/materials.json` | Inventario, texto de PDF y código extraído |
 | `assets/pdf/` | Páginas renderizadas de los documentos originales |
 | `app.mjs`, `lib.mjs` | Navegación, búsqueda, progreso y evaluación |
@@ -70,3 +77,21 @@ Para editar apuntes basta modificar `data/course.mjs`. Para cambiar PDF o proyec
 3. Actualiza el contenido según las nuevas fuentes y ejecuta `npm test` y `npm run build`.
 
 No hay cuentas, backend, sincronización de progreso ni dependencias de producción. Borrar datos del navegador elimina el progreso guardado.
+
+## Verificar y actualizar las soluciones
+
+Los fuentes son la referencia. `scripts/package-solutions.py` exporta esos mismos archivos para la lectura web, comprueba SHA-256 y genera los ZIP excluyendo bin, obj y cachés. No compila nada durante el build de Vercel.
+
+```powershell
+./scripts/verify-solutions.ps1
+dotnet run --project tests/logic/Logic.csproj
+python scripts/package-solutions.py
+npm test
+npm run build
+```
+
+El primer comando compila los 36 proyectos para Windows y deja el informe en `.study-cache/build-report.json`. Los ZIP incluyen sus resultados por proyecto. La prueba C# usa directamente las clases de las soluciones: modelo, validaciones, operaciones, estados, fechas y traducción Phoneword. Las pruebas Node verifican cobertura, archivos, hashes y compatibilidad exacta del progreso anterior.
+
+Los generadores `create-relations.py` y `create-learn.py` permiten reconstruir el punto de partida; no deben ejecutarse después de editar manualmente las soluciones sin incorporar antes los cambios al generador. Requieren la plantilla oficial MAUI en `.study-cache/maui-template` y los repositorios de ejercicio oficiales en `.study-cache/upstream-*`, indicados en el script. No los necesita el alumno que descarga un ZIP.
+
+Límites: compilación verificada para Windows; no se afirma ejecución Android/iOS. Phoneword requiere marcador compatible y confirmación del usuario. Astronomy mantiene la dependencia de red del ejercicio oficial. Las limitaciones heredadas de los ejemplos se señalan junto a su solución.

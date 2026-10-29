@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/01-Alineacion/">
+    <Project Path="01-Alineacion/Alignment.csproj" />
+  </Folder>
+  <Folder Name="/02-Stack/">
+    <Project Path="02-Stack/TipCalculator.csproj" />
+  </Folder>
+  <Folder Name="/03-Grid/">
+    <Project Path="03-Grid/TipCalculator.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TipCalculator.CustomTipPage"
+             Title="Custom Tip">
+    <Grid BackgroundColor="{DynamicResource bgColor}" x:Name ="LayoutRoot" Padding="10"
+          ColumnDefinitions="*,2*"
+          RowDefinitions="Auto, Auto, Auto, *">
+
+        <Label TextColor="{DynamicResource fgColor}" x:Name="billLabel"  Text="Bill"  Style="{StaticResource infoLabelStyle}" Grid.Row="0" Grid.Column="0" />
+        <Label TextColor="{DynamicResource fgColor}" x:Name="tipLabel"   Text="Tip"   Style="{StaticResource infoLabelStyle}" Grid.Row="1" Grid.Column="0" />
+        <Label TextColor="{DynamicResource fgColor}" x:Name="totalLabel" Text="Total" Style="{StaticResource infoLabelStyle}" Grid.Row="2" Grid.Column="0" />
+
+        <Entry TextColor="{DynamicResource fgColor}" x:Name="billInput"   Placeholder="Enter Amount" Keyboard="Numeric" Grid.Row="0" Grid.Column="1" />
+        <Label TextColor="{DynamicResource fgColor}" x:Name="tipOutput"   Text="0.00" Style="{StaticResource baseLabelStyle}" Grid.Row="1" Grid.Column="1" />
+        <Label TextColor="{DynamicResource fgColor}" x:Name="totalOutput" Text="0.00" Style="{StaticResource baseLabelStyle}" Grid.Row="2" Grid.Column="1" />
+
+        <Grid Grid.Row="3" Padding="10" ColumnSpacing="10" RowSpacing="10"
+              Grid.Column="0" 
+              Grid.ColumnSpan="2" VerticalOptions="End"
+              ColumnDefinitions="*,*"
+              RowDefinitions="Auto,Auto,Auto,Auto">
+  
+
+            <Label TextColor="{DynamicResource fgColor}" Text="Tip Percentage" FontSize="Medium" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" />
+            <Label TextColor="{DynamicResource fgColor}" x:Name="tipPercent" Text="15%" HorizontalOptions="End" VerticalTextAlignment="End" FontSize="Medium" Grid.Row="0" Grid.Column="1" />
+            <Slider x:Name="tipPercentSlider" Minimum="0" Maximum="100" Value="15" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" />
+
+            <Button Text="15%" BorderColor="Pink" BorderWidth="2" Grid.Row="2" Grid.Column="0" Clicked="OnNormalTip" />
+            <Button Text="20%" BorderColor="Pink" BorderWidth="2" Grid.Row="2" Grid.Column="1" Clicked="OnGenerousTip" />
+
+            <Button x:Name="roundDown" Text="Round Down" BorderColor="Pink" BorderWidth="2" Grid.Row="3" Grid.Column="0" />
+            <Button x:Name="roundUp"   Text="Round Up"   BorderColor="Pink" BorderWidth="2" Grid.Row="3" Grid.Column="1" />
+        </Grid>
+    </Grid>
+</ContentPage>

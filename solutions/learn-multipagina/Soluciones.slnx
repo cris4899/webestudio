@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/01-Astronomy/">
+    <Project Path="01-Astronomy/Astronomy.csproj" />
+  </Folder>
+  <Folder Name="/02-Astronomy/">
+    <Project Path="02-Astronomy/Astronomy.csproj" />
+  </Folder>
+  <Folder Name="/03-Astronomy/">
+    <Project Path="03-Astronomy/Astronomy.csproj" />
+  </Folder>
+</Solution>

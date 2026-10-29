@@ -1,0 +1,243 @@
+[
+  {
+    "id": "entorno",
+    "quizzes": [
+      {
+        "question": "¿Qué herramienta crea el dispositivo virtual, según el PDF?",
+        "options": [
+          "Android Device Manager",
+          "Android SDK Manager",
+          "El archivo MainPage.xaml"
+        ],
+        "answer": 0,
+        "explanation": "El SDK Manager gestiona paquetes. El Device Manager crea los dispositivos para probar las aplicaciones."
+      }
+    ],
+    "checks": [
+      "Puedo explicar SDK frente a dispositivo virtual.",
+      "Sé dónde está la interfaz y dónde están sus eventos."
+    ]
+  },
+  {
+    "id": "xaml-layouts",
+    "quizzes": [
+      {
+        "question": "¿Qué exige la primera interfaz de la calculadora en la relación 2?",
+        "options": [
+          "Usar solo StackLayout para disponer los Views",
+          "Usar obligatoriamente Grid",
+          "Crear un ContentView personalizado"
+        ],
+        "answer": 0,
+        "explanation": "La relación 2 pide primero ContentPage con solo StackLayout, luego Grid, y después ambas versiones en C#. "
+      }
+    ],
+    "checks": [
+      "Distingo Margin, Padding y Spacing.",
+      "Sé por qué Grid.Row=\"0\" es la primera fila.",
+      "Puedo rehacer una distribución sin alterar su validación."
+    ]
+  },
+  {
+    "id": "formulario",
+    "quizzes": [
+      {
+        "question": "Con nombre y apellidos válidos, ¿qué ocurre con una edad de 17?",
+        "options": [
+          "Es un dato válido, pero no tiene acceso",
+          "La edad es inválida porque es menor de 18",
+          "Tiene acceso porque supera los 5 años"
+        ],
+        "answer": 0,
+        "explanation": "La edad admitida es 5–70. El umbral de 18 decide el mensaje de acceso, no la validez del dato."
+      }
+    ],
+    "checks": [
+      "Compruebo nombre 3–20 y apellidos 4–40.",
+      "Compruebo edad 5–70 y distingo el umbral 18.",
+      "Mi interfaz no conserva un éxito anterior después de un error."
+    ]
+  },
+  {
+    "id": "calculadora",
+    "quizzes": [
+      {
+        "question": "En la calculadora de enteros recibida, ¿cuánto vale 7 / 2?",
+        "options": [
+          "3",
+          "3,5",
+          "No se permite dividir números impares"
+        ],
+        "answer": 0,
+        "explanation": "Ambos operandos son int. La división es entera y descarta la parte fraccionaria."
+      }
+    ],
+    "checks": [
+      "Tengo las cuatro páginas exigidas.",
+      "El visor es de solo lectura y los eventos compartidos.",
+      "Puedo hacer una nueva operación después de un resultado o un error."
+    ]
+  },
+  {
+    "id": "tablero",
+    "quizzes": [
+      {
+        "question": "¿Qué ocurre en la tercera pulsación sobre el mismo botón en la relación 3?",
+        "options": [
+          "Recupera el fondo original",
+          "Permanece rojo",
+          "Se elimina del tablero"
+        ],
+        "answer": 0,
+        "explanation": "El enunciado define verde en la primera pulsación, rojo en la segunda y el fondo original en la tercera."
+      }
+    ],
+    "checks": [
+      "Hay 25 botones creados por C#.",
+      "Cada clic identifica el número correcto.",
+      "El ciclo es independiente en cada botón."
+    ]
+  },
+  {
+    "id": "navegacion",
+    "quizzes": [
+      {
+        "question": "¿Qué integra la tercera aplicación de la relación 4?",
+        "options": [
+          "Los dos tableros de la relación 3",
+          "Los dos formularios de la relación 1",
+          "Las cuatro calculadoras de la relación 2"
+        ],
+        "answer": 0,
+        "explanation": "La tercera aplicación reúne Tablero Dinámico y Tablero Dinámico Color."
+      }
+    ],
+    "checks": [
+      "Se abren los ocho destinos repartidos en tres aplicaciones.",
+      "Cada destino mantiene la lógica de su relación.",
+      "Los títulos coinciden con el PDF."
+    ]
+  },
+  {
+    "id": "especializacion",
+    "quizzes": [
+      {
+        "question": "¿Qué longitud exige el PDF para la contraseña?",
+        "options": [
+          "Exactamente 10",
+          "Entre 5 y 15",
+          "Al menos 10"
+        ],
+        "answer": 0,
+        "explanation": "El PDF indica un tamaño de 10 caracteres, además de las categorías de caracteres que enumera."
+      }
+    ],
+    "checks": [
+      "Usuario cumple 5–15 y la restricción de caracteres.",
+      "Contraseña oculta, longitud 10 y cuatro categorías.",
+      "Distingo PDF y particularidades del RAR."
+    ]
+  },
+  {
+    "id": "contentview",
+    "quizzes": [
+      {
+        "question": "¿Qué clase base pide expresamente LoginView en la relación 6?",
+        "options": [
+          "ContentView",
+          "ContentPage",
+          "Shell"
+        ],
+        "answer": 0,
+        "explanation": "La relación pide componer los Views anteriores en un ContentView reutilizable."
+      }
+    ],
+    "checks": [
+      "He creado un ContentView, no una ContentPage.",
+      "La API ofrece UserName y PassWord.",
+      "La aplicación anfitriona usa el control y trata sus errores."
+    ]
+  },
+  {
+    "id": "extensiones",
+    "quizzes": [
+      {
+        "question": "¿Qué referencia x:Static?",
+        "options": [
+          "Un miembro público estático",
+          "Siempre una clave de ResourceDictionary",
+          "Una página de Shell"
+        ],
+        "answer": 0,
+        "explanation": "StaticExtension permite obtener un miembro estático; StaticResource busca un recurso por su clave."
+      }
+    ],
+    "checks": [
+      "Uso IMarkupExtension y StaticExtension.",
+      "Cada propiedad recibe el tipo correcto.",
+      "He diferenciado plataformas y tipos de View."
+    ]
+  },
+  {
+    "id": "recursos",
+    "quizzes": [
+      {
+        "question": "Si se reemplaza una clave del diccionario en ejecución, ¿qué mecanismo conserva la relación para actualizar el valor?",
+        "options": [
+          "DynamicResource",
+          "StaticResource",
+          "x:Name"
+        ],
+        "answer": 0,
+        "explanation": "DynamicResource mantiene la relación con la clave. StaticResource realiza la resolución inicial."
+      }
+    ],
+    "checks": [
+      "Tengo versión estática y dinámica.",
+      "Los recursos están en el ContentView.",
+      "El cambio desde el anfitrión llega a los hijos."
+    ]
+  },
+  {
+    "id": "matricula",
+    "quizzes": [
+      {
+        "question": "¿Qué ocurre con la etiqueta informativa cuando desaparece el error?",
+        "options": [
+          "Recupera fondo transparente",
+          "Permanece amarilla",
+          "El PDF exige eliminar el control"
+        ],
+        "answer": 0,
+        "explanation": "El documento indica fondo transparente sin error y amarillo cuando muestra un error."
+      }
+    ],
+    "checks": [
+      "Formato completo 0000-BBB sin vocales.",
+      "La propiedad permite leer y actualizar con validación.",
+      "Extensiones de 10 unidades y fondo verde.",
+      "Error amarillo y estado correcto transparente."
+    ]
+  },
+  {
+    "id": "edad",
+    "quizzes": [
+      {
+        "question": "¿Qué valor del límite configurable incumple la condición del PDF?",
+        "options": [
+          "12",
+          "13",
+          "18"
+        ],
+        "answer": 0,
+        "explanation": "El valor siempre debe ser superior a 12. El valor por defecto es 18, pero puede configurarse otro que cumpla esa condición."
+      }
+    ],
+    "checks": [
+      "Expongo nacimiento y edad.",
+      "Futuro y minoría tienen retroalimentación.",
+      "El límite inicia en 18 y rechaza valores <=12.",
+      "Recalculo fecha y límite; aspecto según PDF."
+    ]
+  }
+]

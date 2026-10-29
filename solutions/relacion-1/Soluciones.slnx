@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Relacion1E01_Estudio/">
+    <Project Path="Relacion1E01_Estudio/Relacion1E01_Estudio.csproj" />
+  </Folder>
+  <Folder Name="/Relacion1E02_Estudio/">
+    <Project Path="Relacion1E02_Estudio/Relacion1E02_Estudio.csproj" />
+  </Folder>
+</Solution>

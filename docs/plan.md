@@ -8,3 +8,14 @@
 6. Entregar localmente y dejar instrucciones de GitHub/Vercel para la siguiente fase.
 
 Arquitectura: HTML/CSS y módulos JavaScript; contenido en data/*.json; build con librería estándar de Node. Rutas hash para enlaces estables sin configuración especial del servidor. localStorage solo contiene identificadores de lecciones completadas.
+
+## Incremento guía completa (aprobado)
+
+1. Especificación y matriz de cobertura de las ocho relaciones, cinco módulos y referencias enviadas.
+2. Soluciones independientes por paquete, conservando licencias de las bases oficiales Learn y originales del profesor.
+3. Compilación de 36 proyectos Windows y pruebas C# sobre las clases entregadas.
+4. Exportación única de fuentes y 13 ZIP con hashes, pasos, instrucciones y tablas de casos.
+5. 17 lecciones, 85 preguntas, consulta rápida y navegación a soluciones sin cambiar posiciones de progreso existentes.
+6. Verificación web, documentación de límites y publicación GitHub/Vercel.
+
+Estado local: localStorage conserva lecciones, casillas y respuestas, además de la preferencia de tema. No existe sincronización entre dispositivos.

@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/BAcceso_Estudio/">
+    <Project Path="BAcceso_Estudio/BAcceso_Estudio.csproj" />
+  </Folder>
+  <Folder Name="/BLoginViews_Estudio/">
+    <Project Path="BLoginViews_Estudio/BLoginViews_Estudio.csproj" />
+  </Folder>
+  <Folder Name="/LoginAccesoV2_Estudio/">
+    <Project Path="LoginAccesoV2_Estudio/LoginAccesoV2_Estudio.csproj" />
+  </Folder>
+</Solution>

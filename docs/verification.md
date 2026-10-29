@@ -2,6 +2,16 @@
 
 Fecha: 28 de octubre de 2026.
 
+## Guía completa · 29 de octubre de 2026
+
+- 17 lecciones, 85 preguntas, 19 fichas de consulta y 13 paquetes ZIP. La matriz de cobertura está en coverage.md.
+- Los 36 proyectos MAUI de los paquetes compilan para net10.0-windows10.0.19041.0. Se conserva resultado por proyecto en el README de cada paquete y en el manifiesto web.
+- Las pruebas C# sobre los fuentes entregados comprueban límites de formulario y credenciales, operaciones y desbordamiento, estado del tablero, matrícula completa, cumpleaños/futuro/límite y Phoneword.
+- Ocho pruebas Node superadas: cobertura, búsqueda, originales, archivos/hashes, compatibilidad exacta de preguntas y casillas publicadas, progreso corrupto y servidor/descargas.
+- Se comprobó visualmente la disposición de formulario y Views de matrícula/edad en aplicaciones Windows, frente a las imágenes de los PDF. El control de entrada de la herramienta de escritorio no pudo enfocar esas ventanas; no se afirma una prueba manual de todos sus botones. Los casos de lógica se ejecutaron por separado.
+- Navegador: solución oculta al inicio, código desplegable del mismo ZIP, consulta rápida, búsqueda de ProvideValue y adaptación a 390×844 en claro y oscuro sin desbordamiento de documento. Las tablas y código tienen desplazamiento interno.
+- No se han ejecutado aplicaciones Android/iOS ni llamadas reales. La página Sunrise de Astronomy depende de su servicio original. El cálculo de propinas conserva la limitación de salida anterior al introducir texto inválido; se advierte junto al ejemplo.
+
 ## Ampliación: modo oscuro y progreso persistente
 
 - Cinco pruebas automáticas superadas, incluyendo datos de estudio corruptos, identificadores desconocidos, respuestas fuera de rango, opción cero y restauración de casillas.

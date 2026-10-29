@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/BAccesoPropias/">
+    <Project Path="BAccesoPropias/BAccesoPropias.csproj" />
+  </Folder>
+  <Folder Name="/BAccesoRecursosDinamicos/">
+    <Project Path="BAccesoRecursosDinamicos/BAccesoRecursosDinamicos.csproj" />
+  </Folder>
+  <Folder Name="/BAccesoRecursosEstaticos/">
+    <Project Path="BAccesoRecursosEstaticos/BAccesoRecursosEstaticos.csproj" />
+  </Folder>
+  <Folder Name="/BAccesoStatic/">
+    <Project Path="BAccesoStatic/BAccesoStatic.csproj" />
+  </Folder>
+  <Folder Name="/BLoginViews_Estudio/">
+    <Project Path="BLoginViews_Estudio/BLoginViews_Estudio.csproj" />
+  </Folder>
+  <Folder Name="/PruebasPropias/">
+    <Project Path="PruebasPropias/PruebasPropias.csproj" />
+  </Folder>
+  <Folder Name="/PruebasRecursosDinamicos/">
+    <Project Path="PruebasRecursosDinamicos/PruebasRecursosDinamicos.csproj" />
+  </Folder>
+  <Folder Name="/PruebasRecursosEstaticos/">
+    <Project Path="PruebasRecursosEstaticos/PruebasRecursosEstaticos.csproj" />
+  </Folder>
+  <Folder Name="/PruebasStatic/">
+    <Project Path="PruebasStatic/PruebasStatic.csproj" />
+  </Folder>
+</Solution>
