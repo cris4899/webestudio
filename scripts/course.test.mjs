@@ -18,14 +18,18 @@ test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados'
     const pkg=solutions.find(p=>p.id===w.id),steps=workshopSteps(w,pkg);
     assert.ok(lessons.some(l=>l.id===w.lesson));
     assert.equal(new Set(steps.map(s=>s.id)).size,steps.length);
+    assert.ok(steps.length>=10 && steps.length<=50,'Recorrido intermedio por relación');
+    const previousCounts={'relacion-1':77,'relacion-2':178,'relacion-3':50,'relacion-4':115,'relacion-5':60,'relacion-6':60,'relacion-7':224,'relacion-8':82};
+    assert.equal(new Set(steps.flatMap(s=>[s.id,...s.aliases])).size,previousCounts[w.id],'Todas las URL de micro pasos siguen resolviendo');
+    for(const s of steps)assert.ok(new Set(s.files.map(f=>f.path)).size<=1,'Se trabaja en un archivo por paso');
     assert.equal(steps[0].id,'preparar');
     assert.equal(steps.at(-1).id,'comprobar');
     for(const previous of w.steps)assert.ok(steps.some(s=>s.id===previous.id),'Se conserva la URL del bloque anterior');
     assert.ok(steps.some(s=>s.group==='arranque' && s.files.length),`Falta arranque en ${w.id}`);
-    assert.ok(steps.some(s=>s.id==='preparar-fragmentos'));
+    assert.ok(steps.some(s=>s.aliases?.includes('preparar-fragmentos')));
     for(const s of steps) {
       assert.ok(s.action && s.explanation && s.check);
-      assert.ok(s.files.length<=1,'Cada micro paso se centra en un solo fragmento');
+      assert.ok(s.files.length<=6,'Cada paso reúne un máximo de seis fragmentos relacionados');
       for(const f of s.files) {
         const code=workshopCode(f,pkg);
         assert.ok(code.length && f.explanation);

@@ -246,7 +246,37 @@ export function workshopSteps(workshop, pkg) {
       }
     }
   }
-  return result;
+  return groupStudySteps(result);
+}
+
+// Se avanza por tareas; el detalle de cada fragmento se conserva dentro del paso.
+function groupStudySteps(detailed) {
+  const grouped=[];
+  for(const group of [...new Set(detailed.map(s=>s.group))]) {
+    const source=detailed.filter(s=>s.group===group);
+    const intro=source.find(s=>s.id===group);
+    const fragments=source.flatMap(s=>s.files.map(f=>({...f,reason:s.explanation,title:s.title,previousId:s.id})));
+    const chunks=[];
+    let chunk=[];
+    for(const fragment of fragments) {
+      const lines=chunk.reduce((n,f)=>n+f.fragment.split('\n').length,0)+fragment.fragment.split('\n').length;
+      const fileChanges=chunk.length && chunk[0].path!==fragment.path;
+      if(chunk.length && (chunk.length>=6 || lines>40 || fileChanges)) { chunks.push(chunk);chunk=[]; }
+      chunk.push(fragment);
+    }
+    if(chunk.length)chunks.push(chunk);
+    if(!chunks.length)chunks.push([]);
+    chunks.forEach((files,index)=>grouped.push({
+      ...intro,
+      id:index===0?group:files[0].previousId,
+      title:chunks.length===1?intro.title:`${intro.title} · ${index+1}/${chunks.length}`,
+      action:index===0?intro.action:`Continúa en ${files[0].path} con los fragmentos de esta parte.`,
+      files,
+      subtasks:index===0?source.filter(s=>!s.files.length && s.id!==group).map(s=>({title:s.title,action:s.action,explanation:s.explanation})):[],
+      aliases:(index===0?source.filter(s=>!s.files.length).map(s=>s.id):[]).concat(files.map(f=>f.previousId)),
+    }));
+  }
+  return grouped;
 }
 
 export function workshopCode(block, pkg) {

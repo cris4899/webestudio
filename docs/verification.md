@@ -1,5 +1,12 @@
 # Verificación SDD
 
+## Agrupación intermedia de pasos · 29 de octubre de 2026
+
+- El recorrido pasa de 846 micro pasos a 177 pasos: R1 17, R2 33, R3 10, R4 24, R5 13, R6 14, R7 48 y R8 18.
+- Cada paso reúne hasta seis fragmentos del mismo archivo. Se conserva el código, el motivo de cada fragmento y el detalle línea a línea desplegable.
+- Los identificadores anteriores son alias del paso agrupado, incluidos preparación y casos de comprobación. Se mantienen las claves de progreso existentes.
+- No cambian las aplicaciones ni los ZIP; no se repite la compilación MAUI por este ajuste de navegación y presentación.
+
 ## Estudio exhaustivo, tipos explícitos y botones · 29 de octubre de 2026
 
 - Ocho talleres con 846 micro pasos agrupados por bloques. Los pasos anteriores siguen siendo accesibles por sus identificadores. Cada micro paso contiene como máximo un fragmento y ofrece motivo, ubicación, lectura línea a línea en español y acceso plegado al archivo completo.
