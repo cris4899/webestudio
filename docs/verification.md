@@ -95,3 +95,11 @@ Fecha: 28 de octubre de 2026.
 - Playwright con Chromium: diagnóstico completo y filtrado, corrección al terminar, reintento sin respuestas, persistencia de ayudas y valoraciones, casos, cuaderno (también preguntas anteriores), búsqueda, copia/exportación, vista previa sin escritura, reemplazo, restauración en navegador vacío y funcionamiento/exportación con almacenamiento bloqueado. Sin errores JavaScript no controlados en esos recorridos.
 - 52 vistas comprobadas: 13 rutas en 1440×1000 y 390×844, claro y oscuro. Un h1 por vista y sin desbordamiento horizontal del documento; tablas y código conservan desplazamiento interno. Se revisan capturas de portada y controles de teclado, apertura de pistas, menú móvil/Escape y persistencia del tema.
 - Estas verificaciones corresponden a la aplicación web. No constituyen compilación ni ejecución de los ejemplos MAUI; sus comprobaciones siguen siendo trabajo en Visual Studio. No se publica el sitio como parte de esta entrega.
+
+## Ampliación de los 19 bloques de consulta · 29 de octubre de 2026
+
+- Las 19 fichas incluyen explicación desarrollada, propiedades y usos, 38 ejemplos XAML/C#/proyecto con contexto de integración, pasos razonados, resultado esperado, errores y comprobación. No se modifican las preguntas, identificadores, claves de progreso ni originales.
+- Los bloques se pueden abrir desde las lecciones; los enlaces directos y la búsqueda expanden la ficha. El código conserva el ancho de lectura y el botón de copia.
+- 29 pruebas Node superadas y build completado. Se verifica cobertura de las 19 fichas, búsqueda dentro de código y coherencia de nombres entre ejemplos relacionados. El nuevo módulo está permitido por el servidor y se incluye en dist.
+- Playwright/Chromium: XML bien formado en los ejemplos XML/XAML; 76 vistas sin desbordamiento horizontal del documento (19 fichas × escritorio/móvil × claro/oscuro), apertura de ejemplos, copia exacta al portapapeles, teclado, búsqueda y cinco lecciones representativas con sus bloques desplegados. Sin errores JavaScript no controlados.
+- Los ejemplos se identifican como didácticos y parciales cuando corresponde. No se afirma compilación MAUI de estos fragmentos: deben integrarse en un proyecto con sus clases, recursos y referencias indicados.

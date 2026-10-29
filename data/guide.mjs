@@ -1,3 +1,4 @@
+import { referenceDetails } from './reference-details.mjs';
 const s = (title, ...paragraphs) => ({ title, paragraphs });
 const q = (question, options, answer, explanation) => ({ question, options, answer, explanation });
 const learnBase = 'https://learn.microsoft.com/es-es/training/modules/';
@@ -138,4 +139,4 @@ export const referenceCards = [
   ['fecha','DatePicker y años cumplidos','Descarta primero futuro; resta los años y corrige si falta el cumpleaños. El umbral comienza en 18 y solo admite configuración superior a 12.', 'edad','edad','UD3-4/Relacion08_MAUI_2627.pdf'],
   ['formato','Matrícula: entrada y API pública','Valida el patrón completo tanto desde el Entry como al asignar la propiedad. Sin error el fondo informativo es transparente; con error, amarillo.', 'matricula','matricula','UD3-4/Relacion08_MAUI_2627.pdf'],
   ['errores','Diagnóstico de errores frecuentes','Tipo no encontrado: revisa namespace y referencia. Control null: revisa InitializeComponent. Recurso sin efecto: revisa clave, ámbito y si sigue siendo dinámico. Resultado antiguo: revisa actualización tras error.', 'learn-xaml','recursos','UD2/LECCIONES MSLEARN.md.txt']
-].map(([id,title,text,lesson,practice,source])=>({id,title,text,lesson,practice,source}));
+].map(([id,title,text,lesson,practice,source])=>({id,title,text,lesson,practice,source,...referenceDetails[id]}));

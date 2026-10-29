@@ -197,7 +197,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/academy.mjs', '/training-state.mjs', '/data/training.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/rubric.mjs', '/assets/documents/RubricaPractica1.pdf', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/academy.mjs', '/training-state.mjs', '/data/training.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/reference-details.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/rubric.mjs', '/assets/documents/RubricaPractica1.pdf', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

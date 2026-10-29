@@ -154,3 +154,15 @@ python3 tests/browser/training.py
 ```
 
 Puede cambiarse el destino con `STUDY_BASE_URL`. La prueba genera copias y capturas únicamente en `/tmp` y usa contextos de navegador aislados.
+
+## Fichas ampliadas y ejemplos de controles
+
+Consulta rápida incluye 19 bloques con explicación detallada, tabla de propiedades, 38 ejemplos de código, lectura paso a paso, resultado esperado, errores frecuentes y una comprobación práctica. Los ejemplos abarcan controles, layouts, eventos, modelos, componentes, bibliotecas, navegación, recursos, estilos, plataformas, fechas y matrícula.
+
+Cada bloque declara dónde se integra y qué necesita. Los ejemplos XAML/C# relacionados mantienen nombres coherentes; los fragmentos parciales se identifican y no sustituyen la solución completa. Las lecciones incluyen los bloques relacionados de forma desplegable. Los enlaces directos y los resultados del buscador abren la ficha correspondiente; los ejemplos se pueden copiar.
+
+Las ampliaciones viven en `data/reference-details.mjs`. Se conservan los identificadores de las 19 fichas, las preguntas, las casillas anteriores y los originales. La comprobación de navegador puede ejecutarse contra un servidor actualizado:
+
+```sh
+STUDY_BASE_URL=http://127.0.0.1:4190/ python3 tests/browser/references.py
+```
