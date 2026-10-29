@@ -1,5 +1,14 @@
 # Verificación SDD
 
+## Lógica importante, posición y comparaciones · 29 de octubre de 2026
+
+- Se destacan reglas, eventos, estado y recursos; las explicaciones de declaraciones sencillas quedan desplegables. No se añaden pasos al recorrido de 177.
+- La clave `aula-interfaces.ultimo-paso.v1` guarda el identificador válido por relación. Se aceptan alias anteriores y se rechazan datos corruptos o ajenos. La posición no marca tareas ni lecciones completadas.
+- Ocho comparaciones muestran diferencias, comportamiento compartido, error frecuente y código del mismo paquete descargable. Las referencias de archivo se verifican automáticamente y el buscador incluye sus explicaciones.
+- Catorce pruebas Node superadas, incluyendo posiciones corruptas, alias, relaciones independientes y fuentes de comparaciones. Navegador local: avanzar a la segunda parte de estado de calculadora, abrir comparación, volver y recargar recupera exactamente ese paso.
+- Comparación Stack/Grid revisada con dos archivos abiertos en paralelo en escritorio oscuro; a 390×844 en tema claro usa una columna y documento de 375 px sin desbordamiento. Las tablas tienen desplazamiento interno.
+- Las aplicaciones MAUI y los ZIP no cambian; no se repite su compilación en este incremento. El guardado sigue limitado al navegador y dominio; borrar sus datos elimina la posición.
+
 ## Agrupación intermedia de pasos · 29 de octubre de 2026
 
 - El recorrido pasa de 846 micro pasos a 177 pasos: R1 17, R2 33, R3 10, R4 24, R5 13, R6 14, R7 48 y R8 18.

@@ -26,6 +26,8 @@ Preparar un examen práctico de .NET MAUI/XAML con explicaciones muy detalladas,
 
 ## Alcance y límites
 ### Talleres guiados en Visual Studio
+Se destacan validación, eventos, flujo de datos, estado y diferencias de recursos; las declaraciones sencillas mantienen explicación opcional. Se guarda el último paso válido por relación en una clave independiente del progreso y las casillas, con recuperación de alias y rechazo de datos corruptos. Cada relación dispone de comparación de variantes, con diferencias, elementos compartidos, error frecuente y código de los archivos reales del ZIP. No aumenta el número de pasos.
+
 El recorrido principal usa un punto intermedio: tareas por archivo y hasta seis fragmentos relacionados por paso, sin separar cada declaración en una pantalla. Los detalles línea a línea se mantienen desplegables. Los identificadores de los micro pasos anteriores resuelven al paso agrupado que los contiene. El progreso de estudio no cambia.
 
 La ampliación de estudio exhaustivo divide las operaciones por miembro C# o elemento XAML. Cada micro paso contiene una acción, una explicación del motivo, un fragmento pequeño situado en su archivo, comentarios didácticos en español y una comprobación. Se conservan los pasos anteriores como introducciones y sus URL. Los ejemplos y soluciones adaptadas usan tipos explícitos en C#, sin var. Los comentarios de plantillas y código adaptado se traducen; las licencias y los originales del profesor se conservan. Las acciones de prácticas y los grupos equivalentes se presentan como botones separados, con espacios suficientes en escritorio y móvil.

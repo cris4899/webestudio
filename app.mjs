@@ -1,7 +1,8 @@
 import { lessons, officialNotes, referenceCards } from './data/course.mjs';
-import { readProgress, readStudy, searchCourse } from './lib.mjs';
+import { readProgress, readStudy, searchCourse, readWorkshopPositions } from './lib.mjs';
 import { workshops, workshopSteps, workshopCode } from './data/workshops.mjs';
 import { explainLine } from './data/study-explanations.mjs';
+import { workshopStudy, isImportantCode } from './data/workshop-study.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const main = $('#contenido');
@@ -16,6 +17,8 @@ let libraryFilter = 'all';
 const quizResults = new Map();
 const key = 'aula-interfaces.progreso.v1';
 const studyKey = 'aula-interfaces.estudio.v1';
+const positionKey = 'aula-interfaces.ultimo-paso.v1';
+let lastSteps = {};
 let study = readStudy(null, lessons);
 let noticeTimer;
 function notify(message) { $('#notice').textContent = message; clearTimeout(noticeTimer); noticeTimer = setTimeout(() => { $('#notice').textContent = ''; }, 6500); }
@@ -73,13 +76,18 @@ function guideSection(l) {
   return `<section class="guide-section" id="guia"><h2>Tu recorrido de estudio</h2><h3>Antes de empezar</h3><ul>${l.guide.prerequisites.map(p=>`<li>${esc(p)}</li>`).join('')}</ul><h3>Cómo circulan los datos</h3><p class="data-flow">${esc(l.guide.flow)}</p><h3>Construcción paso a paso</h3><ol class="guide-steps">${l.guide.steps.map(([title,text])=>`<li><strong>${esc(title)}</strong><p>${esc(text)}</p></li>`).join('')}</ol><a class="text-link" href="#/solucion/${l.guide.packageId}">Proyecto, archivos y casos de comprobación </a></section>`;
 }
 function workshopLink(id) {
-  return workshops.some(w=>w.id===id) ? `<a class="button" href="#/taller/${id}">Hacer la relación paso a paso en Visual Studio</a>` : '';
+  return workshops.some(w=>w.id===id) ? `<span class="workshop-entry"><a class="button" href="#/taller/${id}">${lastSteps[id]?'Continuar la relación en Visual Studio':'Hacer la relación paso a paso en Visual Studio'}</a><a class="button secondary" href="#/comparar/${id}">Comparar variantes</a></span>` : '';
+}
+function comparisonPage(id) {
+  const info=workshopStudy[id],pkg=solutions.find(p=>p.id===id);
+  if(!info || !pkg)return notFound();
+  return heading('COMPARAR VARIANTES',esc(pkg.title),'Qué cambia, qué se conserva y qué archivo debes comparar. Las diferencias corresponden a las soluciones didácticas de los materiales recibidos.')+`<div class="workshop-actions"><a class="button" href="#/taller/${id}">Volver al taller${lastSteps[id]?' donde lo dejé':''}</a><a class="button secondary" href="#/practica">Todas las prácticas</a></div><section class="panel"><h2>La diferencia importante</h2><p>${esc(info.focus)}</p><div class="table-scroll"><table class="study-table"><thead><tr><th>Variante</th><th>Qué cambia</th><th>Qué se conserva</th></tr></thead><tbody>${info.rows.map(([name,change,same])=>`<tr><th scope="row">${esc(name)}</th><td>${esc(change)}</td><td>${esc(same)}</td></tr>`).join('')}</tbody></table></div><aside class="callout"><h3>Error que debes evitar</h3><p>${esc(info.mistake)}</p></aside></section><h2>Compara los archivos</h2><p>Abre los que quieras contrastar. Puedes mantener varios abiertos a la vez; en escritorio aparecen uno junto al otro.</p><div class="comparison-grid">${info.rows.map(([name,change,,path])=>`<article class="panel"><h3>${esc(name)}</h3><p>${esc(change)}</p><p class="file-location"><code>${esc(path)}</code></p><details data-solution-file="${id}|${pkg.files.findIndex(f=>f.path===path)}"><summary>Ver código de esta variante</summary><div class="solution-code"></div></details></article>`).join('')}</div><section class="panel"><h2>Fuente y convenciones</h2><p>${esc(pkg.notes)}</p>${pkg.sources.map(sourceReference).join('')}</section>`;
 }
 function workshopFile(block,pkg) {
   const raw=workshopCode(block,pkg), display=block.display || raw;
   const notes=display.split('\n').map((line,index)=>({line:index+1,text:explainLine(line)})).filter(n=>n.text);
   const index=pkg.files.findIndex(f=>f.path===block.path);
-  return `<section class="workshop-file"><h3>${esc(block.title || 'Archivo que debes editar')}</h3>${block.reason?`<p>${esc(block.reason)}</p>`:''}<p class="file-location"><code>${esc(block.path)}</code></p><p class="source-notice">Fragmento, no archivo completo. ${esc(block.context || 'Escríbelo dentro de la clase o contenedor indicado.')} Línea ${block.line || 1} de la referencia.</p>${codeBlock(display,block.path)}<details class="line-reading"><summary>Consultar explicación línea a línea</summary><p>La numeración corresponde al fragmento mostrado; la ubicación en el archivo aparece arriba.</p><ol>${notes.map(n=>`<li><strong>Línea ${n.line}</strong><p>${esc(n.text)}</p></li>`).join('')}</ol><section class="fragment-context"><h3>Por qué va en este archivo</h3><p>${esc(block.explanation)}</p></section></details><details class="complete-file" data-solution-file="${pkg.id}|${index}"><summary>Consultar archivo completo para situar el fragmento</summary><div class="solution-code"></div></details></section>`;
+  return `<section class="workshop-file"><h3>${esc(block.title || 'Archivo que debes editar')}</h3>${block.reason?isImportantCode(raw)?`<p class="important-reason">${esc(block.reason)}</p>`:`<details class="syntax-note"><summary>Entender esta declaración</summary><p>${esc(block.reason)}</p></details>`:''}<p class="file-location"><code>${esc(block.path)}</code></p><p class="source-notice">Fragmento, no archivo completo. ${esc(block.context || 'Escríbelo dentro de la clase o contenedor indicado.')} Línea ${block.line || 1} de la referencia.</p>${codeBlock(display,block.path)}<details class="line-reading"><summary>Consultar explicación línea a línea</summary><p>La numeración corresponde al fragmento mostrado; la ubicación en el archivo aparece arriba.</p><ol>${notes.map(n=>`<li><strong>Línea ${n.line}</strong><p>${esc(n.text)}</p></li>`).join('')}</ol><section class="fragment-context"><h3>Por qué va en este archivo</h3><p>${esc(block.explanation)}</p></section></details><details class="complete-file" data-solution-file="${pkg.id}|${index}"><summary>Consultar archivo completo para situar el fragmento</summary><div class="solution-code"></div></details></section>`;
 }
 function workshopIndex(steps,index,id) {
   const groups=[...new Set(steps.map(s=>s.group))];
@@ -93,13 +101,18 @@ function workshopPage(id, stepId) {
   const workshop = workshops.find(w=>w.id===id), pkg=solutions.find(p=>p.id===id);
   if(!workshop || !pkg) return notFound();
   const steps=workshopSteps(workshop,pkg);
-  const index=stepId ? steps.findIndex(s=>s.id===stepId || s.aliases?.includes(stepId)) : 0;
+  const resuming=!stepId && !!lastSteps[id];
+  const requested=stepId || lastSteps[id];
+  const index=requested ? steps.findIndex(s=>s.id===requested || s.aliases?.includes(requested)) : 0;
   if(index<0) return notFound();
   const current=steps[index];
+  lastSteps[id]=current.id;
+  try { localStorage.setItem(positionKey,JSON.stringify(lastSteps)); }
+  catch { if(!storageWarning)notify('El último paso se conservará solo durante esta sesión: el navegador bloquea el almacenamiento.');storageWarning=true; }
   const link=i=>`#/taller/${id}?paso=${steps[i].id}`;
   return `<a class="back-link" href="#/practica">Volver a las prácticas</a>`+heading('TALLER EN VISUAL STUDIO',esc(pkg.title),'Trabaja en Visual Studio con la web al lado. Lee el paso, escribe el código y comprueba el resultado antes de continuar.')+
-    `<p class="source-notice">Elaboración didáctica basada en el material recibido. El ZIP contiene la solución final: úsalo como base y referencia para reconstruir los archivos, no como sustituto de la práctica.</p><div class="workshop-actions"><a class="button secondary" href="${pkg.download}" download>Descargar base y solución de apoyo</a><a class="text-link" href="#/solucion/${id}">Consultar solución completa</a><a class="text-link" href="#/leccion/${workshop.lesson}">Repasar conceptos y autoevaluación</a></div>`+
-    `<div class="reader-layout workshop-layout"><article class="reader workshop-reader"><p class="unit-code">PASO ${index+1} DE ${steps.length}</p><h2>${esc(current.title)}</h2><section class="study-stage"><h3>1. Qué hacer en Visual Studio</h3><p>${esc(current.action)}</p>${current.subtasks?.length?`<details class="step-preparation"><summary>Ver las acciones de este paso</summary><ol>${current.subtasks.map(task=>`<li><strong>${esc(task.title)}</strong><p>${esc(task.action)}</p><p>${esc(task.explanation)}</p></li>`).join('')}</ol></details>`:''}</section><section class="study-stage"><h3>2. Entiende el motivo</h3>${current.explanation.split(/(?<=[.?!])\s+(?=[A-ZÁÉÍÓÚ])/).map(text=>`<p>${esc(text)}</p>`).join('')}</section><section class="study-stage"><h3>3. Código y explicación</h3>${current.files.length?current.files.map(block=>workshopFile(block,pkg)).join(''):'<p>Este paso es de preparación o comprobación: no requiere añadir código.</p>'}</section><aside class="callout"><h3>Comprueba antes de continuar</h3><p>${esc(current.check)}</p></aside>${current.id==='comprobar'?`<div class="table-scroll"><table class="study-table"><thead><tr><th>Entrada o acción</th><th>Resultado esperado</th></tr></thead><tbody>${pkg.cases.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</tbody></table></div><h3>Convenciones y límites</h3><p>${esc(pkg.notes)}</p><h3>Fuentes</h3>${pkg.sources.map(sourceReference).join('')}`:''}<nav class="workshop-pagination" aria-label="Cambiar de paso">${index?`<a class="button secondary" href="${link(index-1)}">Paso anterior</a>`:''}${index<steps.length-1?`<a class="button" href="${link(index+1)}">Siguiente paso</a>`:`<a class="button" href="#/leccion/${workshop.lesson}?apartado=comprobacion">Revisar la relación y guardar mi progreso</a>`}</nav><p class="source-notice">El paso mostrado orienta la navegación; no acredita que hayas completado la práctica. Tu progreso sigue guardándose desde las casillas y la lección.</p></article><aside class="reader-aside"><nav class="panel workshop-index" aria-label="Pasos de la relación"><h2>RECORRIDO COMPLETO</h2>${workshopIndex(steps,index,id)}</nav></aside></div>`;
+    `<p class="source-notice">Elaboración didáctica basada en el material recibido. El ZIP contiene la solución final: úsalo como base y referencia para reconstruir los archivos, no como sustituto de la práctica.</p><p class="resume-status" role="status">${resuming?`Retomas el paso ${index+1}: ${esc(current.title)}.`:'Tu posición se guarda automáticamente al visitar cada paso.'} Es independiente de las tareas completadas y se conserva en este navegador.</p><div class="workshop-actions"><a class="button secondary" href="#/comparar/${id}">Comparar variantes</a><a class="button secondary" href="#/taller/${id}?paso=preparar">Ir al primer paso</a><a class="button secondary" href="${pkg.download}" download>Descargar base y solución de apoyo</a><a class="text-link" href="#/solucion/${id}">Consultar solución completa</a><a class="text-link" href="#/leccion/${workshop.lesson}">Repasar conceptos y autoevaluación</a></div>`+
+    `<div class="reader-layout workshop-layout"><article class="reader workshop-reader"><p class="unit-code">PASO ${index+1} DE ${steps.length}</p><h2>${esc(current.title)}</h2><section class="study-stage"><h3>1. Qué hacer en Visual Studio</h3><p>${esc(current.action)}</p>${current.subtasks?.length?`<details class="step-preparation"><summary>Ver las acciones de este paso</summary><ol>${current.subtasks.map(task=>`<li><strong>${esc(task.title)}</strong><p>${esc(task.action)}</p><p>${esc(task.explanation)}</p></li>`).join('')}</ol></details>`:''}</section><section class="study-stage"><h3>2. Entiende el motivo</h3>${current.explanation.split(/(?<=[.?!])\s+(?=[A-ZÁÉÍÓÚ])/).map(text=>`<p>${esc(text)}</p>`).join('')}</section><section class="study-stage"><h3>3. Código y explicación</h3>${current.files.length && current.id===current.group && !['preparar','arranque'].includes(current.group)?`<aside class="important-code"><h3>Lo importante de esta lógica</h3><p>${esc(workshopStudy[id].focus)}</p><p><strong>Evita este error:</strong> ${esc(workshopStudy[id].mistake)}</p></aside>`:''}${current.files.length?current.files.map(block=>workshopFile(block,pkg)).join(''):'<p>Este paso es de preparación o comprobación: no requiere añadir código.</p>'}</section><aside class="callout"><h3>Comprueba antes de continuar</h3><p>${esc(current.check)}</p></aside>${current.id==='comprobar'?`<div class="table-scroll"><table class="study-table"><thead><tr><th>Entrada o acción</th><th>Resultado esperado</th></tr></thead><tbody>${pkg.cases.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</tbody></table></div><h3>Convenciones y límites</h3><p>${esc(pkg.notes)}</p><h3>Fuentes</h3>${pkg.sources.map(sourceReference).join('')}`:''}<nav class="workshop-pagination" aria-label="Cambiar de paso">${index?`<a class="button secondary" href="${link(index-1)}">Paso anterior</a>`:''}${index<steps.length-1?`<a class="button" href="${link(index+1)}">Siguiente paso</a>`:`<a class="button" href="#/leccion/${workshop.lesson}?apartado=comprobacion">Revisar la relación y guardar mi progreso</a>`}</nav><p class="source-notice">El paso mostrado orienta la navegación; no acredita que hayas completado la práctica. Tu progreso sigue guardándose desde las casillas y la lección.</p></article><aside class="reader-aside"><nav class="panel workshop-index" aria-label="Pasos de la relación"><h2>RECORRIDO COMPLETO</h2>${workshopIndex(steps,index,id)}</nav></aside></div>`;
 }
 function referencePage() {
   return heading('CONSULTA RÁPIDA','La pieza que necesitas, a mano.','Sintaxis, controles y patrones presentes en tus materiales. Cada ficha conecta la explicación con su práctica y su fuente.')+`<div class="lesson-grid">${referenceCards.map(c=>`<article class="panel reference-card" id="ficha-${c.id}"><h2>${esc(c.title)}</h2><p>${esc(c.text)}</p><div class="exam-links"><a href="#/leccion/${c.lesson}">Entender el concepto </a><a href="#/leccion/${c.practice}">Ver su aplicación </a></div>${sourceReference({path:c.source})}</article>`).join('')}</div>`;
@@ -111,7 +124,7 @@ function solutionsPage(id) {
 
 function renderNav(route) {
   const unit = route.startsWith('/leccion/') ? lessons.find(l => l.id === route.split('/')[2])?.unit : route.split('/')[2];
-  const active = target => route === target || (target === '/soluciones' && route.startsWith('/solucion/')) || (target === '/practica' && route.startsWith('/taller/')) || (target.startsWith('/unidad/') && unit === target.split('/')[2]);
+  const active = target => route === target || (target === '/soluciones' && route.startsWith('/solucion/')) || (target === '/practica' && (route.startsWith('/taller/') || route.startsWith('/comparar/'))) || (target.startsWith('/unidad/') && unit === target.split('/')[2]);
   const navLink = (target, name, symbol, count = '') => `<a class="nav-link${active(target) ? ' active' : ''}" href="#${target}"${active(target) ? ' aria-current="page"' : ''}>${symbol}<span>${name}</span>${count ? `<span class="nav-count">${count}</span>` : ''}</a>`;
   $('#nav').innerHTML = navLink('/', 'Vista general', icon('home')) + '<div class="nav-label">CONTENIDO DEL CURSO</div>' + navLink('/unidad/UD2', 'Unidad 2', '<span class="nav-dot"></span>', String(lessons.filter(l=>l.unit==='UD2').length)) + navLink('/unidad/UD3-4', 'Unidades 3 y 4', '<span class="nav-dot purple"></span>', String(lessons.filter(l=>l.unit==='UD3-4').length)) + '<div class="nav-label">APRENDE HACIENDO</div>' + navLink('/practica', 'Prácticas de clase', icon('practice')) + navLink('/autoevaluacion', 'Autoevaluación', icon('quiz')) + navLink('/consulta', 'Consulta rápida', icon('book')) + navLink('/soluciones', 'Soluciones y descargas', icon('files')) + navLink('/biblioteca', 'Biblioteca de recursos', icon('files'));
   const p = progress();
@@ -204,6 +217,7 @@ function render({ focus = true } = {}) {
     case 'material': { let path; try { path = decodeURIComponent(segment.slice(2).join('/')); } catch { path = ''; } content = materialPage(path); title = 'Material original'; break; }
     case 'practica': content = practicePage(); title = 'Prácticas de clase'; break;
     case 'taller': content = workshopPage(segment[2], params.get('paso')); title = 'Taller en Visual Studio'; break;
+    case 'comparar': content = comparisonPage(segment[2]); title = 'Comparar variantes'; break;
     case 'autoevaluacion': content = assessmentPage(); title = 'Autoevaluación'; break;
     case 'consulta': content = referencePage(); title = 'Consulta rápida'; break;
     case 'soluciones': content = solutionsPage(); title = 'Soluciones y descargas'; break;
@@ -271,7 +285,7 @@ main.addEventListener('toggle', event => {
     const placeholder = details.querySelector('.solution-code'); if (placeholder.children.length) return;
     const [id,index] = details.dataset.solutionFile.split('|');
     const file = solutions.find(p=>p.id===id)?.files[Number(index)];
-    if(file?.code!==undefined) placeholder.innerHTML=codeBlock(file.code,file.path);
+    if(file?.code!==undefined) placeholder.innerHTML=codeBlock(location.hash.startsWith('#/comparar/') && file.path.endsWith('.xaml')?file.code.replace(/></g, '>\n<'):file.code,file.path);
     return;
   }
   if (!details.matches('details[data-source]') || !details.open) return;
@@ -287,6 +301,12 @@ document.addEventListener('change', event => {
   saveStudy();
 });
 window.addEventListener('storage', event => {
+  if(event.key===positionKey) {
+    lastSteps=readWorkshopPositions(event.newValue,solutions);
+    if(!location.hash.startsWith('#/taller/'))render({focus:false});
+    return;
+  }
+  if(event.key===null)lastSteps={};
   if (event.key === key || event.key === null) completed = readProgress(event.newValue, lessons);
   if (event.key === studyKey || event.key === null) { study = readStudy(event.newValue, lessons); restoreResults(); }
   if (event.key === 'aula-interfaces.tema' || event.key === null) {
@@ -299,7 +319,9 @@ window.addEventListener('storage', event => {
 try {
   const responses = await Promise.all(['data/materials.json','data/solutions.json'].map(url=>fetch(url)));
   if(responses.some(r=>!r.ok)) throw new Error('Biblioteca no disponible');
-  [materials,solutions] = await Promise.all(responses.map(r=>r.json())); render({ focus: false });
+  [materials,solutions] = await Promise.all(responses.map(r=>r.json()));
+  try { lastSteps=readWorkshopPositions(localStorage.getItem(positionKey),solutions); } catch { storageWarning=true; }
+  render({ focus: false });
   if (storageWarning) notify('El almacenamiento local no está disponible: el progreso durará solo esta sesión.');
 } catch (error) {
   main.innerHTML = heading('NO SE PUDO CARGAR', 'La biblioteca no está disponible.', 'Abre la web desde el servidor local con npm run dev. Si ya lo estás usando, recarga la página.') + '<button class="button" id="retry">Volver a cargar</button>';

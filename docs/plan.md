@@ -27,3 +27,5 @@ Estado local: localStorage conserva lecciones, casillas y respuestas, además de
 4. Comprobar cobertura de los ocho talleres, referencias de código, rutas, búsqueda y adaptación móvil; publicar en GitHub/Vercel.
 
 Ampliación exhaustiva: desglosar los archivos en miembros C# y elementos XAML, explicar las líneas en español y conservar el archivo completo como consulta. Traducir los comentarios de las soluciones adaptadas, utilizar tipos explícitos y recompilar las aplicaciones. Sustituir acciones de texto por botones con separación de 20 px y revisar escritorio/móvil en ambos temas.
+
+Mejoras de estudio: destacar decisiones de lógica y dejar opcional la sintaxis básica; guardar la última posición válida por relación con una clave independiente; añadir comparaciones con los archivos canónicos de los paquetes y conservar los 177 pasos.

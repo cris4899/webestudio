@@ -1,4 +1,18 @@
-import { workshops } from './data/workshops.mjs';
+import { workshops, workshopSteps } from './data/workshops.mjs';
+import { workshopStudy } from './data/workshop-study.mjs';
+export function readWorkshopPositions(raw, packages) {
+  let value;
+  try { value=JSON.parse(raw); } catch { return {}; }
+  if(!value || typeof value!=='object' || Array.isArray(value))return {};
+  const positions={};
+  for(const workshop of workshops) {
+    if(typeof value[workshop.id]!=='string')continue;
+    const pkg=packages.find(p=>p.id===workshop.id);if(!pkg)continue;
+    const step=workshopSteps(workshop,pkg).find(s=>s.id===value[workshop.id] || s.aliases.includes(value[workshop.id]));
+    if(step)positions[workshop.id]=step.id;
+  }
+  return positions;
+}
 export const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 export function readStudy(raw, lessons) {
   let value;
@@ -25,6 +39,6 @@ export function searchCourse(query, lessons, materials, references = [], solutio
     lessons: lessons.filter(l => matches(JSON.stringify(l))),
     materials: materials.filter(m => matches(JSON.stringify(m))),
     references: references.filter(c => matches(JSON.stringify(c))),
-    solutions: solutions.filter(p => matches(JSON.stringify({title:p.title,order:p.order,cases:p.cases,notes:p.notes,workshop:workshops.find(w=>w.id===p.id)})))
+    solutions: solutions.filter(p => matches(JSON.stringify({title:p.title,order:p.order,cases:p.cases,notes:p.notes,workshop:workshops.find(w=>w.id===p.id),comparison:workshopStudy[p.id]})))
   };
 }

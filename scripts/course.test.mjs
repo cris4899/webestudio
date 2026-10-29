@@ -6,11 +6,35 @@ import { createHash } from 'node:crypto';
 import { lessons, referenceCards } from '../data/course.mjs';
 import { workshops, workshopSteps, workshopCode } from '../data/workshops.mjs';
 import { explainPart, explainLine } from '../data/study-explanations.mjs';
+import { workshopStudy, isImportantCode } from '../data/workshop-study.mjs';
+import { readWorkshopPositions } from '../lib.mjs';
 import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
 const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
+
+test('Último paso: datos corruptos, alias, posición inicial y relaciones independientes', () => {
+  for(const raw of ['{mal','null','[]','3','"texto"'])assert.deepEqual(readWorkshopPositions(raw,solutions),{});
+  const saved=readWorkshopPositions(JSON.stringify({'relacion-1':'reglas-archivo-1-parte-1','relacion-2':'preparar','relacion-3':'inventado','relacion-4':3,desconocido:'preparar'}),solutions);
+  assert.deepEqual(saved,{'relacion-1':'reglas','relacion-2':'preparar'});
+  assert.deepEqual(readWorkshopPositions(JSON.stringify(saved),solutions),saved);
+  assert.deepEqual(readWorkshopPositions(JSON.stringify(saved),[]),{});
+});
+
+test('Comparaciones: ocho relaciones y archivos del paquete, sin sintaxis trivial destacada', () => {
+  assert.equal(Object.keys(workshopStudy).length,8);
+  for(const [id,info] of Object.entries(workshopStudy)) {
+    const pkg=solutions.find(p=>p.id===id);
+    assert.ok(info.focus && info.mistake && info.rows.length>=2);
+    for(const [name,change,same,path] of info.rows)assert.ok(name && change && same && pkg.files.some(f=>f.path===path && f.code),path);
+  }
+  assert.equal(isImportantCode('public string Nombre { get; }'),false);
+  assert.equal(isImportantCode('private int? primero;'),true);
+  assert.equal(isImportantCode('if (!int.TryParse(texto, out int edad)) throw new ArgumentException();'),true);
+  assert.equal(isImportantCode('BackgroundColor="{DynamicResource FondoLayout}"'),true);
+  assert.ok(searchCourse('referencia local',lessons,materials,referenceCards,solutions).solutions.some(p=>p.id==='relacion-7'));
+});
 
 test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados', () => {
   assert.deepEqual(workshops.map(w=>w.id),Array.from({length:8},(_,i)=>`relacion-${i+1}`));
@@ -159,7 +183,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }
