@@ -5,8 +5,15 @@ import json
 import hashlib
 import zipfile
 import xml.etree.ElementTree as ET
+import importlib.util
 
 ROOT=Path(__file__).resolve().parent.parent
+translation_spec=importlib.util.spec_from_file_location('spanish_sources',ROOT/'scripts/spanish-sources.py')
+translation=importlib.util.module_from_spec(translation_spec)
+translation_spec.loader.exec_module(translation)
+for source in (ROOT/'solutions').rglob('*'):
+    if source.is_file() and not set(source.parts)&{'bin','obj','.vs','.git'}:
+        translation.adapt(source)
 meta=json.loads(subprocess.check_output(['node','--input-type=module','-e',"import {solutionGuides} from './data/solution-guides.mjs';console.log(JSON.stringify(solutionGuides))"],cwd=ROOT).decode('utf-8'))
 report_path=ROOT/'.study-cache/build-report.json'
 report=json.loads(report_path.read_text(encoding='utf-8-sig')) if report_path.exists() else []

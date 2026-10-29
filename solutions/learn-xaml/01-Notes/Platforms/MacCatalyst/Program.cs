@@ -2,14 +2,13 @@ using ObjCRuntime;
 using UIKit;
 
 namespace Notes;
-
 public class Program
 {
-	// This is the main entry point of the application.
-	static void Main(string[] args)
-	{
-		// if you want to use a different Application Delegate class from "AppDelegate"
-		// you can specify it here.
-		UIApplication.Main(args, null, typeof(AppDelegate));
-	}
+    // Este es el punto de entrada principal de la aplicación.
+    static void Main(string[] args)
+    {
+        // Si quieres usar una clase delegada distinta de "AppDelegate",
+        // puedes indicarla aquí.
+        UIApplication.Main(args, null, typeof(AppDelegate));
+    }
 }

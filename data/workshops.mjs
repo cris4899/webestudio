@@ -205,7 +205,7 @@ export const workshops = [
 export function workshopSteps(workshop, pkg) {
   // Los proyectos ejecutables se identifican por OutputType, no por el nombre de carpeta.
   const executable = pkg.builds.filter(b => /<OutputType>Exe<\/OutputType>/.test(pkg.files.find(f => f.path === b.project)?.code || ''));
-  return [step('preparar','Preparar Visual Studio y la copia de trabajo',
+  const overview = [step('preparar','Preparar Visual Studio y la copia de trabajo',
     'Descarga el ZIP de esta relación y descomprímelo. Guarda una copia como referencia y trabaja en otra carpeta. En Visual Studio abre Soluciones.slnx; si tu versión no reconoce ese formato, abre el .csproj de la aplicación. Necesitas una versión compatible con .NET 10 y la carga de trabajo de desarrollo MAUI.',
     'El ZIP es una base compilable y también contiene la solución final. Para practicar, reconstruye los archivos indicados en cada paso con tu propio código y compara después con el bloque de referencia. Conserva configuración, recursos y archivos de plataforma. Si prefieres crear la estructura desde cero, usa Archivo > Nuevo > Proyecto > Aplicación .NET MAUI para cada aplicación y Biblioteca de clases .NET MAUI para cada biblioteca; los .csproj de abajo indican cuáles son ejecutables y sus referencias. Mantén los nombres de proyecto del paquete y ajusta el namespace de los archivos a Estudio, tal como aparece en su XAML y C#. Añade las referencias desde Dependencias > Agregar referencia de proyecto. Para cada archivo C# usa Agregar > Clase; para una página o View con XAML usa la plantilla MAUI ContentPage o ContentView correspondiente, con su clase parcial asociada. Si el archivo ya existe, edítalo en lugar de crear otro con la misma clase. Guarda con Ctrl+S. Los fragmentos indican cuándo muestran solo una parte: no sustituyas una clase completa por un método suelto. Las decisiones didácticas están separadas de los requisitos del profesor.',
     pkg.builds.map(b => file(b.project,'TargetFrameworks declara los destinos. Las referencias ProjectReference enlazan bibliotecas de esta misma carpeta. Mantén estas rutas y el namespace Estudio de los archivos para seguir la guía sin renombrados.')),
@@ -220,13 +220,46 @@ export function workshopSteps(workshop, pkg) {
       'Ejecuta los casos de la tabla inferior en cada variante afectada. Abre el PDF desde Fuentes y compara también títulos, nombres y distribución. Corrige el archivo responsable y repite el caso que falló.',
       'La tabla comprueba comportamiento; las capturas comprueban presentación. No marques una relación como hecha únicamente porque compile o porque puedas abrir el ZIP resuelto. Las soluciones son elaboraciones didácticas basadas en el material enviado, no correcciones oficiales.', [],
       'Explica sin mirar el código qué evento inicia el flujo, dónde se valida y qué control muestra el resultado. Después usa las casillas y la autoevaluación de la lección.')];
+  const result=[];
+  for(const section of overview) {
+    if(section.id==='comprobar') {
+      pkg.cases.forEach(([input,expected],i)=>result.push({...step(`caso-${i+1}`,`Comprobar el caso ${i+1}`,`Ejecuta esta entrada o acción: ${input}`,`El resultado esperado es: ${expected} Esta comprobación procede de los requisitos y convenciones explicados en la relación, no de un supuesto de examen nuevo.`,[],`Compara el resultado real con el esperado antes de pasar al siguiente caso.`),group:'comprobar',groupTitle:section.title}));
+    }
+    result.push({...section,action:section.id==='preparar'?'Descarga y descomprime el ZIP de esta relación.':section.action.split(/(?<=\.)\s+/)[0],explanation:section.id==='preparar'?'El ZIP contiene la base compilable y la solución de referencia. Conserva el original y trabaja en una copia: así podrás reconstruir los archivos y contrastar tu resultado sin perder la referencia.':section.explanation,files:[],group:section.id,groupTitle:section.title});
+    if(section.id==='preparar') {
+      const preparation=[
+        ['copia','Crear una copia de trabajo','Duplica la carpeta descomprimida y abre la copia para practicar.','No necesitas sobrescribir los materiales del profesor. La copia conserva recursos, archivos de plataforma y referencias, mientras reconstruyes únicamente el archivo indicado en cada paso.','Localiza las dos carpetas y distingue cuál usarás para escribir.'],
+        ['abrir','Abrir la solución en Visual Studio','Usa Archivo > Abrir > Proyecto o solución y selecciona Soluciones.slnx.','Necesitas una versión compatible con .NET 10 y la carga de trabajo de MAUI. Si no reconoce .slnx, abre el .csproj de la aplicación; las bibliotecas se enlazan mediante sus referencias.','Comprueba que los proyectos aparecen en el Explorador de soluciones.'],
+        ['crear','Elegir cómo reconstruir el ejercicio','Recrea el archivo señalado dentro de la copia de trabajo.','Para una clase C# usa Agregar > Clase. Para páginas y controles XAML utiliza ContentPage o ContentView de MAUI. Si el archivo ya existe, edítalo: no crees otra clase con el mismo nombre. Conserva el namespace Estudio de los archivos.','Distingue un archivo nuevo de uno existente antes de pegar el código.'],
+        ['referencias','Revisar las dependencias locales','Abre Dependencias de cada aplicación y comprueba sus referencias de proyecto.','Si falta una biblioteca, usa Agregar referencia de proyecto y selecciona la del paquete. Un namespace XAML localiza el tipo, pero no reemplaza la referencia al ensamblado.','Las referencias deben resolverse dentro de tu carpeta, sin rutas del ordenador del profesor.'],
+        ['fragmentos','Distinguir fragmento y archivo completo','Lee la ubicación del fragmento antes de escribirlo.','Los pasos pequeños muestran una propiedad, un método o un elemento XAML, no un archivo completo. Intégralos en orden dentro de su clase o contenedor. El archivo completo queda plegado como referencia; evita duplicar clases o borrar sus llaves y etiquetas de cierre.','Explica dónde irá el fragmento antes de copiarlo. Guarda con Ctrl+S.'],
+      ];
+      for(const [id,title,action,why,check] of preparation)result.push({...step(`preparar-${id}`,title,action,why,[],check),group:'preparar',groupTitle:section.title});
+    }
+    for(const [fileIndex,block] of section.files.entries()) {
+      const selected=workshopCode(block,pkg);
+      const parts=(codeParts[`${pkg.id}/${block.path}`] || []).filter(p=>selected.includes(p.code));
+      if(!parts.length)throw new Error(`Faltan micro pasos: ${pkg.id}/${block.path}`);
+      for(const [partIndex,part] of parts.entries()) {
+        const note=explainPart(part,block);
+        result.push({...step(`${section.id}-archivo-${fileIndex+1}-parte-${partIndex+1}`,note.title,`En ${block.path}, escribe únicamente el fragmento de este paso.`,note.why,[{path:block.path,explanation:block.explanation,fragment:part.code,display:part.display,context:part.context,line:part.line}],`Comprueba qué dato o control modifica este fragmento y por qué está en este archivo. ${partIndex===parts.length-1?section.check:'Guarda antes de continuar; no ejecutes una clase que todavía estás completando.'}`),group:section.id,groupTitle:section.title});
+      }
+    }
+  }
+  return result;
 }
 
 export function workshopCode(block, pkg) {
   const source = pkg.files.find(f => f.path === block.path)?.code;
   if (source === undefined) throw new Error(`Archivo de taller inexistente: ${pkg.id}/${block.path}`);
+  if(block.fragment!==undefined) {
+    if(!source.includes(block.fragment))throw new Error(`Fragmento desactualizado: ${pkg.id}/${block.path}`);
+    return block.fragment;
+  }
   const start = block.start ? source.indexOf(block.start) : 0;
   const end = block.end ? source.indexOf(block.end, start + 1) : source.length;
   if (start < 0 || end < start) throw new Error(`Fragmento de taller inválido: ${pkg.id}/${block.path}`);
   return source.slice(start, end).trimEnd();
 }
+import codeParts from './workshop-parts.mjs';
+import { explainPart } from './study-explanations.mjs';

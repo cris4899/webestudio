@@ -133,7 +133,7 @@ def forms(folder, names=('Ejercicio01', 'Ejercicio02')):
             items.append(f'<VerticalStackLayout><Label Text="{label}" HorizontalOptions="Center" />{entry}</VerticalStackLayout>' if index == 0 else f'<Grid ColumnDefinitions="Auto,*"><Label Text="{label}" VerticalOptions="Center" />{entry.replace("<Entry", "<Entry Grid.Column=\"1\"")}</Grid>')
         body = '<VerticalStackLayout Padding="20" Spacing="12">' + ''.join(items) + '<Button Text="Acceder" Clicked="Acceder" HorizontalOptions="Center" /><Label x:Name="resultado" HorizontalTextAlignment="Center" /></VerticalStackLayout>'
         code = '''private async void Acceder(object sender, EventArgs e) {
-            try { var usuario = new Usuario(nombre.Text, apellidos.Text, edad.Text); resultado.Text = usuario.Mensaje; }
+            try { Usuario usuario = new Usuario(nombre.Text, apellidos.Text, edad.Text); resultado.Text = usuario.Mensaje; }
             catch (ArgumentException ex) { resultado.Text = ""; await DisplayAlertAsync("Error", ex.Message, "Aceptar"); }
         }'''
         page(folder, name, 'Acceso Vertical' if index == 0 else 'Acceso Mixto', body, code)
@@ -175,7 +175,7 @@ private readonly Calculadora modelo = new();
 private void Digito(object? sender, EventArgs e) { if (sender is Button b) { modelo.Digito(b.Text); visor.Text = modelo.Visor; } }
 private async void Operacion(object? sender, EventArgs e) {
     if (sender is not Button b) return;
-    try { if (b.Text == "C") modelo.Limpiar(); else modelo.Operacion(b.Text[0] switch { '×' => '*', '÷' => '/', var op => op }); visor.Text = modelo.Visor; }
+    try { if (b.Text == "C") modelo.Limpiar(); else modelo.Operacion(b.Text[0] switch { '×' => '*', '÷' => '/', char op => op }); visor.Text = modelo.Visor; }
     catch (Exception ex) when (ex is ArgumentException or ArithmeticException) { modelo.Limpiar(); visor.Text = ""; await DisplayAlertAsync("Error", ex.Message, "Aceptar"); }
 }
 '''
@@ -197,14 +197,14 @@ def calculators(folder, names=('Ejercicio01','Ejercicio02','Ejercicio03','Ejerci
                 body += '<Button Text="C" Clicked="Operacion" /></StackLayout>'
             page(folder, name, 'Calculadora Grid XAML' if isgrid else 'Calculadora Stack XAML', body, CALC_EVENTS)
         else:
-            create = 'var root = new Grid { Padding = 20, RowSpacing = 6, ColumnSpacing = 6 }; for(int i=0;i<6;i++) root.RowDefinitions.Add(new RowDefinition { Height = i==0 || i==5 ? GridLength.Auto : GridLength.Star }); for(int i=0;i<4;i++) root.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Star }); root.Add(visor,0,0); Grid.SetColumnSpan(visor,4);' if isgrid else 'var root = new StackLayout { Padding=20, Spacing=6, Orientation=StackOrientation.Vertical }; root.Children.Add(visor);'
+            create = 'Grid root = new Grid { Padding = 20, RowSpacing = 6, ColumnSpacing = 6 }; for(int i=0;i<6;i++) root.RowDefinitions.Add(new RowDefinition { Height = i==0 || i==5 ? GridLength.Auto : GridLength.Star }); for(int i=0;i<4;i++) root.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Star }); root.Add(visor,0,0); Grid.SetColumnSpan(visor,4);' if isgrid else 'StackLayout root = new StackLayout { Padding=20, Spacing=6, Orientation=StackOrientation.Vertical }; root.Children.Add(visor);'
             lines = [create]
             for r, row in enumerate(KEYS):
-                if not isgrid: lines.append(f'var fila{r}=new StackLayout {{ Orientation=StackOrientation.Horizontal, Spacing=6 }}; root.Children.Add(fila{r});')
+                if not isgrid: lines.append(f'StackLayout fila{r}=new StackLayout {{ Orientation=StackOrientation.Horizontal, Spacing=6 }}; root.Children.Add(fila{r});')
                 for c, k in enumerate(row):
-                    lines.append(f'var b{r}{c}=new Button {{ Text="{k}", WidthRequest=65 }}; b{r}{c}.Clicked += {"Digito" if k.isdigit() else "Operacion"};')
+                    lines.append(f'Button b{r}{c}=new Button {{ Text="{k}", WidthRequest=65 }}; b{r}{c}.Clicked += {"Digito" if k.isdigit() else "Operacion"};')
                     lines.append(f'root.Add(b{r}{c},{c},{r+1});' if isgrid else f'fila{r}.Children.Add(b{r}{c});')
-            lines += ['var limpiar=new Button { Text="C" }; limpiar.Clicked+=Operacion;', 'root.Add(limpiar,0,5); Grid.SetColumnSpan(limpiar,4);' if isgrid else 'root.Children.Add(limpiar);', 'Content=root;']
+            lines += ['Button limpiar=new Button { Text="C" }; limpiar.Clicked+=Operacion;', 'root.Add(limpiar,0,5); Grid.SetColumnSpan(limpiar,4);' if isgrid else 'root.Children.Add(limpiar);', 'Content=root;']
             put(folder, name+'.cs', 'namespace Estudio;\npublic class '+name+' : ContentPage { private readonly Entry visor=new() { IsReadOnly=true }; public '+name+'() { Title="Calculadora '+('Grid' if isgrid else 'Stack')+' C#";'+ '\n'.join(lines)+'}\n'+CALC_EVENTS+'}')
 
 def boards(folder, names=('Ejercicio01','Ejercicio02')):
@@ -218,9 +218,9 @@ public class MiBoton : Button {
     for i,name in enumerate(names):
         put(folder,name+'.cs',f'''namespace Estudio;
 public class {name} : ContentPage {{
-    public {name}() {{ Title="Tablero dinámico{' color' if i else ''}"; var grid=new Grid {{ Padding=10, RowSpacing=5, ColumnSpacing=5 }};
+    public {name}() {{ Title="Tablero dinámico{' color' if i else ''}"; Grid grid=new Grid {{ Padding=10, RowSpacing=5, ColumnSpacing=5 }};
         for(int i=0;i<5;i++) {{ grid.RowDefinitions.Add(new RowDefinition {{ Height=GridLength.Star }}); grid.ColumnDefinitions.Add(new ColumnDefinition {{ Width=GridLength.Star }}); }}
-        for(int fila=0;fila<5;fila++) for(int col=0;col<5;col++) {{ var b=new {'MiBoton' if i else 'Button'} {{ Text=(fila*5+col+1).ToString() }};
+        for(int fila=0;fila<5;fila++) for(int col=0;col<5;col++) {{ {'MiBoton' if i else 'Button'} b=new {'MiBoton' if i else 'Button'} {{ Text=(fila*5+col+1).ToString() }};
         {'b.Clicked+=async (_,_)=>await DisplayAlertAsync("Tablero",$"Has pulsado el botón {b.Text}","Aceptar");' if not i else ''}
         grid.Add(b,col,fila); }} Content=grid;
     }}

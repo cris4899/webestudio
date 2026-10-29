@@ -1,6 +1,8 @@
 using Microsoft.Maui.Devices;
+
 namespace Estudio;
-public static class Valores {
+public static class Valores
+{
     // Valores de diseño elegidos para demostrar la distinción de plataformas de R7.
     private static bool Android => DeviceInfo.Current.Platform == DevicePlatform.Android;
     public static double Espaciado => Android ? 12 : 10;

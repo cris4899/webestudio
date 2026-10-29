@@ -23,3 +23,17 @@ La referencia normativa son los PDF y módulos enlazados por el profesor. Las so
 | Referencias Label, Entry, Button, ContentPage, ContentView, BoxView, Slider, Image, bibliotecas y DeviceInfo | consulta rápida; xaml-layouts; contentview; extensiones | Ejemplos relacionados y originales | Enlaces precisos, tipos y flujo explicados; no se copia toda la API |
 
 Cada paquete contiene README con orden de lectura, tabla de entrada/resultado, procedencia y límites. El informe generado de compilación especificará cada proyecto y su destino; compilar Windows no equivale a ejecutar Android/iOS.
+## Desglose exhaustivo para Visual Studio
+
+Cada bloque anterior se desglosa en `data/workshops.mjs` mediante los fragmentos canónicos de `data/workshop-parts.mjs`. `data/study-explanations.mjs` aporta el motivo y la lectura de sintaxis en español. La prueba de talleres comprueba cada referencia de archivo y fragmento contra el manifiesto de los ZIP.
+
+| Relación | Micro pasos | Alcance del desglose |
+| --- | ---: | --- |
+| 1 | 77 | Reglas, modelo, dos formularios y sus aplicaciones |
+| 2 | 178 | Estado, operaciones, eventos y cuatro calculadoras |
+| 3 | 50 | Bucles, numeración, estado y dos tableros |
+| 4 | 115 | Tres aplicaciones, dependencias y ocho destinos |
+| 5 | 60 | Validación, especialización y anfitrión |
+| 6 | 60 | Composición, propiedades públicas y prueba |
+| 7 | 224 | Extensiones, x:Static, recursos y cuatro anfitriones |
+| 8 | 82 | Matrícula, fecha/umbral, aspecto e integración |

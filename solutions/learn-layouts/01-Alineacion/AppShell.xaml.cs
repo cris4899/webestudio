@@ -1,5 +1,4 @@
-﻿namespace Alignment;
-
+namespace Alignment;
 public partial class AppShell : Shell
 {
     public AppShell()

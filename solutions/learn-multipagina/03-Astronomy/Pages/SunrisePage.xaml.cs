@@ -1,8 +1,8 @@
 namespace Astronomy.Pages;
-
 public partial class SunrisePage : ContentPage
 {
     ILatLongService LatLongService { get; set; }
+
     public SunrisePage()
     {
         InitializeComponent();
@@ -13,20 +13,18 @@ public partial class SunrisePage : ContentPage
     {
         base.OnAppearing();
         activityWaiting.IsRunning = true;
-        var sunriseSunsetData = await GetSunriseSunsetData();
+        (DateTime, DateTime, TimeSpan) sunriseSunsetData = await GetSunriseSunsetData();
         InitializeUI(sunriseSunsetData.Item1, sunriseSunsetData.Item2, sunriseSunsetData.Item3);
         activityWaiting.IsRunning = false;
     }
 
     async Task<(DateTime, DateTime, TimeSpan)> GetSunriseSunsetData()
     {
-
-        var latLongData = await LatLongService.GetLatLong();
-        var sunData = await new SunriseService().GetSunriseSunsetTimes(latLongData.Latitude, latLongData.Longitude);
-
-        var riseTime = sunData.Sunrise.ToLocalTime();
-        var setTime = sunData.Sunset.ToLocalTime();
-        var span = setTime.TimeOfDay - riseTime.TimeOfDay;
+        (double Latitude, double Longitude) latLongData = await LatLongService.GetLatLong();
+        (DateTime Sunrise, DateTime Sunset) sunData = await new SunriseService().GetSunriseSunsetTimes(latLongData.Latitude, latLongData.Longitude);
+        DateTime riseTime = sunData.Sunrise.ToLocalTime();
+        DateTime setTime = sunData.Sunset.ToLocalTime();
+        TimeSpan span = setTime.TimeOfDay - riseTime.TimeOfDay;
         return (riseTime, setTime, span);
     }
 

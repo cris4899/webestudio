@@ -1,5 +1,13 @@
 # Verificación SDD
 
+## Estudio exhaustivo, tipos explícitos y botones · 29 de octubre de 2026
+
+- Ocho talleres con 846 micro pasos agrupados por bloques. Los pasos anteriores siguen siendo accesibles por sus identificadores. Cada micro paso contiene como máximo un fragmento y ofrece motivo, ubicación, lectura línea a línea en español y acceso plegado al archivo completo.
+- Se traducen los comentarios de las soluciones adaptadas, incluidos los de plataforma, proyecto y módulos Learn. Las licencias y los archivos originales del profesor permanecen intactos.
+- C# utiliza tipos explícitos en las soluciones y ejemplos de las lecciones. Se reemplaza también el patrón `var op` por `char op`; las pruebas impiden reintroducir var en los fuentes didácticos.
+- Roslyn comprueba que la normalización de espacios conserva los tokens. Los 36 proyectos vuelven a compilar para Windows; las pruebas C# de lógica y las doce pruebas Node se superan. Los 13 ZIP se regeneran y se cotejan sus hashes con los fuentes mostrados.
+- Las acciones de prácticas, talleres, descargas y grupos equivalentes se presentan como botones, con 20 px de separación entre filas y columnas y altura mínima de 44 px. No se atribuye ejecución Android/iOS a estas comprobaciones.
+
 ## Talleres Visual Studio · 29 de octubre de 2026
 
 - Ocho talleres y 68 pasos, con todas las variantes de las relaciones. Cada paso indica acción, explicación, archivos y comprobación; el código se obtiene del manifiesto verificado de los ZIP.

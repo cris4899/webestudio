@@ -1,5 +1,4 @@
-﻿namespace Astronomy;
-
+namespace Astronomy;
 public class AstronomicalBody
 {
     public string Name { get; set; }

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { lessons, referenceCards } from '../data/course.mjs';
 import { workshops, workshopSteps, workshopCode } from '../data/workshops.mjs';
+import { explainPart, explainLine } from '../data/study-explanations.mjs';
 import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
@@ -19,9 +20,12 @@ test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados'
     assert.equal(new Set(steps.map(s=>s.id)).size,steps.length);
     assert.equal(steps[0].id,'preparar');
     assert.equal(steps.at(-1).id,'comprobar');
-    assert.ok(steps.at(-2).files.length>0,`Falta arranque en ${w.id}`);
+    for(const previous of w.steps)assert.ok(steps.some(s=>s.id===previous.id),'Se conserva la URL del bloque anterior');
+    assert.ok(steps.some(s=>s.group==='arranque' && s.files.length),`Falta arranque en ${w.id}`);
+    assert.ok(steps.some(s=>s.id==='preparar-fragmentos'));
     for(const s of steps) {
       assert.ok(s.action && s.explanation && s.check);
+      assert.ok(s.files.length<=1,'Cada micro paso se centra en un solo fragmento');
       for(const f of s.files) {
         const code=workshopCode(f,pkg);
         assert.ok(code.length && f.explanation);
@@ -32,6 +36,26 @@ test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados'
   assert.ok(searchCourse('aritmética modular',lessons,materials,referenceCards,solutions).solutions.some(p=>p.id==='relacion-3'));
   assert.throws(()=>workshopCode({path:'no-existe.cs'},solutions[0]),/inexistente/);
   assert.throws(()=>workshopCode({path:solutions[0].files.find(f=>f.code)?.path,start:'ancla que no existe'},solutions[0]),/inválido/);
+});
+
+test('C# didáctico: tipos explícitos y comentarios de plantilla traducidos', () => {
+  for(const pkg of solutions)for(const f of pkg.files){
+    if(f.path.endsWith('.cs'))assert.doesNotMatch(f.code,/\bvar\b/,`${pkg.id}/${f.path}`);
+    if(f.code && /\.(cs|xaml|csproj|xml|plist|manifest)$/.test(f.path))assert.doesNotMatch(f.code,/This is the main|Display name|App Identifier|Left column =|Please consult|length in days of a complete moon cycle/,f.path);
+  }
+  for(const l of lessons)for(const s of l.sections)if(s.code)assert.doesNotMatch(s.code,/\bvar\b/,l.id);
+});
+
+test('Notas de estudio: tipos, propiedades y límites explicados en español', () => {
+  const signature=explainLine('public static string Texto(string? valor, int minimo, int maximo, string campo)');
+  assert.match(signature,/devuelve texto/);
+  assert.match(signature,/puede ser nulo/);
+  assert.match(signature,/sin crear una instancia/);
+  assert.match(explainLine('{'),/Abre un bloque/);
+  assert.match(explainLine('}'),/Cierra el bloque/);
+  assert.match(explainLine('for (int i = 0; i < 6; i++)'),/hasta 5/);
+  assert.match(explainPart({name:'Usuario',kind:'propiedad'},{}).why,/Reglas.NombreUsuario/);
+  assert.match(explainPart({name:'Edad',kind:'método'},{}).why,/descuenta uno/);
 });
 
 test('Interfaz sin emojis ni marcas Unicode decorativas añadidas', async () => {
@@ -131,7 +155,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

@@ -1,8 +1,6 @@
 namespace Astronomy.Pages;
-
 public partial class AstronomicalBodyPage : ContentPage
 {
-
     public AstronomicalBodyPage(string astroName)
     {
         InitializeComponent();
@@ -12,9 +10,7 @@ public partial class AstronomicalBodyPage : ContentPage
     void UpdateAstroBodyUI(string astroName)
     {
         AstronomicalBody body = FindAstroData(astroName);
-
         Title = body.Name;
-
         lblIcon.Text = body.EmojiIcon;
         lblName.Text = body.Name;
         lblMass.Text = body.Mass;
@@ -30,7 +26,6 @@ public partial class AstronomicalBodyPage : ContentPage
             "earth" => SolarSystemData.Earth,
             "moon" => SolarSystemData.Moon,
             "sun" => SolarSystemData.Sun,
-            _ => throw new ArgumentException()
-        };
+            _ => throw new ArgumentException()};
     }
 }

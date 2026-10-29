@@ -1,5 +1,4 @@
-﻿namespace Astronomy;
-
+namespace Astronomy;
 public static class SolarSystemData
 {
     public static AstronomicalBody Sun = new AstronomicalBody()
@@ -10,7 +9,6 @@ public static class SolarSystemData
         Age = "4.57 billion years",
         EmojiIcon = "☀️",
     };
-
     public static AstronomicalBody Earth = new AstronomicalBody()
     {
         Name = "Earth",
@@ -19,7 +17,6 @@ public static class SolarSystemData
         Age = "4.54 billion years",
         EmojiIcon = "🌎",
     };
-
     public static AstronomicalBody Moon = new AstronomicalBody()
     {
         Name = "Moon",
@@ -28,7 +25,6 @@ public static class SolarSystemData
         Age = "4.53 billion years",
         EmojiIcon = "🌕",
     };
-
     public static AstronomicalBody HalleysComet = new AstronomicalBody()
     {
         Name = "Halley's Comet",

@@ -90,11 +90,26 @@ npm test
 npm run build
 ```
 
-El primer comando compila los 36 proyectos para Windows y deja el informe en `.study-cache/build-report.json`. Los ZIP incluyen sus resultados por proyecto. La prueba C# usa directamente las clases de las soluciones: modelo, validaciones, operaciones, estados, fechas y traducción Phoneword. Las pruebas Node verifican cobertura, archivos, hashes y compatibilidad exacta del progreso anterior.
+El comando de verificación compila los 36 proyectos para Windows y deja el informe en `.study-cache/build-report.json`. Los ZIP incluyen sus resultados por proyecto. La prueba C# usa directamente las clases de las soluciones: modelo, validaciones, operaciones, estados, fechas y traducción Phoneword. Las pruebas Node verifican cobertura, archivos, hashes y compatibilidad exacta del progreso anterior.
 
 Los generadores `create-relations.py` y `create-learn.py` permiten reconstruir el punto de partida; no deben ejecutarse después de editar manualmente las soluciones sin incorporar antes los cambios al generador. Requieren la plantilla oficial MAUI en `.study-cache/maui-template` y los repositorios de ejercicio oficiales en `.study-cache/upstream-*`, indicados en el script. No los necesita el alumno que descarga un ZIP.
 
 Límites: compilación verificada para Windows; no se afirma ejecución Android/iOS. Phoneword requiere marcador compatible y confirmación del usuario. Astronomy mantiene la dependencia de red del ejercicio oficial. Las limitaciones heredadas de los ejemplos se señalan junto a su solución.
 ## Resolver las relaciones desde Visual Studio
 
-En Prácticas de clase, selecciona «Hacer la relación paso a paso en Visual Studio». Las ocho relaciones incluyen 68 pasos con acciones, archivos concretos, código explicado y comprobaciones. Descarga el ZIP como base y referencia; reconstruye los archivos en una copia de trabajo. La web guía la práctica y Visual Studio compila y ejecuta MAUI. El paso actual queda en la URL; las casillas y el progreso anteriores conservan su funcionamiento. El código XAML del taller añade saltos entre etiquetas para facilitar la lectura, sin cambiar los valores. Los originales permanecen intactos.
+En Prácticas de clase, selecciona «Hacer la relación paso a paso en Visual Studio». Las ocho relaciones incluyen 846 micro pasos agrupados por bloques, con una acción, un fragmento, motivo y comprobación. El código se estudia línea a línea con notas en español. Los ejemplos C# y los ZIP usan tipos explícitos; los comentarios adaptados están traducidos. Las acciones se presentan como botones separados. Descarga el ZIP como base y referencia; reconstruye los archivos en una copia de trabajo. La web guía la práctica y Visual Studio compila y ejecuta MAUI. El paso actual queda en la URL; las casillas y el progreso anteriores conservan su funcionamiento. El código XAML del taller añade saltos entre etiquetas para facilitar la lectura, sin cambiar los valores. Los originales permanecen intactos.
+
+
+Para regenerar los fragmentos después de editar las soluciones, aplica este orden antes de empaquetar:
+
+```powershell
+python scripts/spanish-sources.py
+dotnet run --project scripts/study-code/StudyCode.csproj -- .
+python scripts/workshop-parts.py
+./scripts/verify-solutions.ps1
+python scripts/package-solutions.py
+npm test
+npm run build
+```
+
+La herramienta StudyCode utiliza Roslyn incluido en el SDK .NET; no añade paquetes de producción. Comprueba que el espaciado no cambia los tokens C#. Los fragmentos conservan el código canónico y el archivo completo se ofrece plegado para situarlos.

@@ -1,18 +1,16 @@
 using Microsoft.UI.Xaml;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
+// Para saber más sobre WinUI y la estructura de sus proyectos,
+// y sobre las plantillas de proyecto, consulta http://aka.ms/winui-project-info.
 namespace TipCalculator.WinUI;
-
 /// <summary>
-/// Provides application-specific behavior to supplement the default Application class.
+/// Añade el comportamiento específico de esta aplicación a la clase Application predeterminada.
 /// </summary>
 public partial class App : MauiWinUIApplication
 {
     /// <summary>
-    /// Initializes the singleton application object.  This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
+    /// Inicializa la instancia única de la aplicación. Esta es la primera línea de código propio
+    /// que se ejecuta; equivale lógicamente a main() o WinMain().
     /// </summary>
     public App()
     {
@@ -21,4 +19,3 @@ public partial class App : MauiWinUIApplication
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 }
-
