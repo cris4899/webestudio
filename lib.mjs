@@ -1,3 +1,4 @@
+import { workshops } from './data/workshops.mjs';
 export const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 export function readStudy(raw, lessons) {
   let value;
@@ -24,6 +25,6 @@ export function searchCourse(query, lessons, materials, references = [], solutio
     lessons: lessons.filter(l => matches(JSON.stringify(l))),
     materials: materials.filter(m => matches(JSON.stringify(m))),
     references: references.filter(c => matches(JSON.stringify(c))),
-    solutions: solutions.filter(p => matches(JSON.stringify({title:p.title,order:p.order,cases:p.cases,notes:p.notes})))
+    solutions: solutions.filter(p => matches(JSON.stringify({title:p.title,order:p.order,cases:p.cases,notes:p.notes,workshop:workshops.find(w=>w.id===p.id)})))
   };
 }

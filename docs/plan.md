@@ -19,3 +19,9 @@ Arquitectura: HTML/CSS y módulos JavaScript; contenido en data/*.json; build co
 6. Verificación web, documentación de límites y publicación GitHub/Vercel.
 
 Estado local: localStorage conserva lecciones, casillas y respuestas, además de la preferencia de tema. No existe sincronización entre dispositivos.
+## Talleres guiados en Visual Studio
+
+1. Asociar a cada relación pasos con acción, motivo, archivo, código canónico y comprobación.
+2. Enlazar el taller desde prácticas, lecciones y descargas, con navegación por URL estable.
+3. Retirar emojis de interfaz sin modificar originales ni los datos de progreso.
+4. Comprobar cobertura de los ocho talleres, referencias de código, rutas, búsqueda y adaptación móvil; publicar en GitHub/Vercel.

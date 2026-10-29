@@ -4,11 +4,42 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { lessons, referenceCards } from '../data/course.mjs';
+import { workshops, workshopSteps, workshopCode } from '../data/workshops.mjs';
 import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
 const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
+
+test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados', () => {
+  assert.deepEqual(workshops.map(w=>w.id),Array.from({length:8},(_,i)=>`relacion-${i+1}`));
+  for(const w of workshops) {
+    const pkg=solutions.find(p=>p.id===w.id),steps=workshopSteps(w,pkg);
+    assert.ok(lessons.some(l=>l.id===w.lesson));
+    assert.equal(new Set(steps.map(s=>s.id)).size,steps.length);
+    assert.equal(steps[0].id,'preparar');
+    assert.equal(steps.at(-1).id,'comprobar');
+    assert.ok(steps.at(-2).files.length>0,`Falta arranque en ${w.id}`);
+    for(const s of steps) {
+      assert.ok(s.action && s.explanation && s.check);
+      for(const f of s.files) {
+        const code=workshopCode(f,pkg);
+        assert.ok(code.length && f.explanation);
+        assert.ok(pkg.files.find(p=>p.path===f.path).code.includes(code));
+      }
+    }
+  }
+  assert.ok(searchCourse('aritmética modular',lessons,materials,referenceCards,solutions).solutions.some(p=>p.id==='relacion-3'));
+  assert.throws(()=>workshopCode({path:'no-existe.cs'},solutions[0]),/inexistente/);
+  assert.throws(()=>workshopCode({path:solutions[0].files.find(f=>f.code)?.path,start:'ancla que no existe'},solutions[0]),/inválido/);
+});
+
+test('Interfaz sin emojis ni marcas Unicode decorativas añadidas', async () => {
+  for(const name of ['app.mjs','index.html','data/workshops.mjs']) {
+    const source=await readFile(path.join(root,name),'utf8');
+    assert.doesNotMatch(source,/[\p{Extended_Pictographic}\uFE0F\u2713\u2717]/u,name);
+  }
+});
 test('AC2/AC3: todos los originales y fuentes tienen cobertura', async () => {
   const originals = (await Promise.all(['UD2', 'UD3-4'].map(async dir => (await readdir(path.join(root, dir))).map(name => `${dir}/${name}`)))).flat();
   assert.deepEqual(materials.map(m => m.path).sort(), originals.sort());
@@ -100,7 +131,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

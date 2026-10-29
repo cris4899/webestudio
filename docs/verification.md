@@ -1,5 +1,13 @@
 # Verificación SDD
 
+## Talleres Visual Studio · 29 de octubre de 2026
+
+- Ocho talleres y 68 pasos, con todas las variantes de las relaciones. Cada paso indica acción, explicación, archivos y comprobación; el código se obtiene del manifiesto verificado de los ZIP.
+- Diez pruebas Node: se añaden cobertura de los ocho talleres, identificadores únicos, referencias y fragmentos de código existentes, búsqueda de explicaciones de taller y ausencia de emojis decorativos en la interfaz. Se mantienen las pruebas de compatibilidad del progreso anterior.
+- El código MAUI, los ZIP y los originales no se modifican en esta ampliación; no se repite su compilación Windows. Los saltos añadidos a la presentación XAML solo separan etiquetas para facilitar lectura.
+- Navegador: acceso desde Prácticas a los ocho talleres, cambio al siguiente paso y tabla final de casos. Revisión en escritorio y a 390×844 en tema claro, con documento de 375 px sin desbordamiento; el tema oscuro se revisó en escritorio. Se retiran los emojis y glifos decorativos Unicode de la interfaz; los botones de tema y menú usan texto.
+
+
 Fecha: 28 de octubre de 2026.
 
 ## Guía completa · 29 de octubre de 2026

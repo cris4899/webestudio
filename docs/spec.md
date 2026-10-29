@@ -25,6 +25,9 @@ Preparar un examen práctico de .NET MAUI/XAML con explicaciones muy detalladas,
 - **AC7 · Entrega.** Web estática sin dependencias de producción, comprobación con Node, compilación a dist y configuración para Vercel. Documentación de uso y publicación. Actualizar el repositorio y despliegue existentes tras verificar los cambios.
 
 ## Alcance y límites
+### Talleres guiados en Visual Studio
+Las ocho relaciones tendrán un taller navegable por pasos. Cada paso indicará la acción en Visual Studio, el archivo concreto, código procedente del paquete verificado, explicación del comportamiento y comprobación manual. Se cubrirán todas las variantes existentes; la relación 7 y la 8 se enlazarán desde sus dos lecciones. La solución completa permanecerá disponible por separado. Se conservarán los identificadores y posiciones de progreso anteriores. La interfaz no utilizará emojis ni símbolos decorativos Unicode añadidos; los originales permanecerán intactos. Se comprobarán referencias de archivos, fragmentos, rutas, navegación por pasos y adaptación móvil.
+
 Se conservan los originales. Los RAR contienen metadatos de Visual Studio y productos de compilación: se leen los fuentes para estudiar, sin modificar los archivos originales. Los ejemplos nuevos siguen .NET MAUI 10; se advierte que los PDF usan DisplayAlert y no se promete compilación sin adaptar namespaces y proyectos. Se mantienen juntas las unidades 3 y 4 porque así están los materiales. No añadir backend, usuarios, IA, editor compilable ni paquetes de UI.
 
 ## Trazabilidad
