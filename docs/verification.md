@@ -78,3 +78,20 @@ Fecha: 28 de octubre de 2026.
 - Las convenciones no especificadas en los PDF se indican como tales: alfabeto exacto para usuario/matrícula y cumpleaños de 29 de febrero. No se añaden restricciones de matrículas reales ni un criterio de evaluación atribuido al profesor.
 - Tras la autorización posterior se ha creado el repositorio público cris4899/webestudio y el proyecto webestudio en Vercel, conectado a main. Primer despliegue confirmado como Deployed to Production en https://webestudio-three.vercel.app. En producción se verifican inicio, navegación y búsqueda. Se añade .gitattributes para impedir que Git normalice los listados originales.
 - Los archivos originales no se modificaron. La importación y el renderizado generan datos y páginas de consulta; los RAR se descargan completos, incluidos sus metadatos originales.
+
+## Incorporación de la rúbrica de la práctica 1
+
+- Fuente: PDF aportado por el usuario, conservado sin modificación y descargable desde la guía.
+- Cobertura: RA1 (AB, C, D, E, F, G, H), RA3 (A, B, C, DE, F, GH) y RA4 (ABC, DE, FGHI). Se conservan los porcentajes y se distinguen los RA de las unidades.
+- La adaptación incluye explicación, evidencias prácticas, fallos frecuentes, enlaces a lecciones, preguntas razonadas de repaso y orden de estudio. No declara nuevos enunciados de examen ni inventa una nota global.
+- Pruebas Node: 17 superadas. Comprueban pesos exactos, cobertura, referencias, restauración del progreso independiente y servicio HTTP de la rúbrica y del nuevo módulo. Las pruebas anteriores de compatibilidad permanecen superadas. Build completado.
+
+## Academia: diagnóstico, práctica y conservación del progreso · 29 de octubre de 2026
+
+- Contenido añadido: 32 preguntas (dos por criterio), 16 retos, 16 actividades de código (ocho de explicación y ocho de corrección), y 65 casos para ocho relaciones. Las entradas y resultados de los casos anteriores se conservan. Se verifican todos los identificadores, criterios y archivos de referencia.
+- Las ayudas y soluciones están cerradas al entrar. La segunda pista está dentro de la primera; consultar ayuda se registra sin asignar automáticamente «resuelto solo». Los fragmentos con defectos se identifican como didácticos y no modifican soluciones ni ZIP.
+- El ejemplo de evento público en LoginView es una ampliación didáctica de una copia. El original solo expone UserName/PassWord y el botón de consumo está en Solucion.xaml. El caso de 29/02 usa fechas controladas y la convención AddYears de las soluciones.
+- 26 pruebas Node superadas: incluye cobertura, referencias, reintentos, revisión del cuaderno, prioridad dentro del RA, datos corruptos, compatibilidad, importación válida/inválida, combinar/reemplazar y restauración tras fallo de escritura. Build completado con los módulos nuevos y la rúbrica original.
+- Playwright con Chromium: diagnóstico completo y filtrado, corrección al terminar, reintento sin respuestas, persistencia de ayudas y valoraciones, casos, cuaderno (también preguntas anteriores), búsqueda, copia/exportación, vista previa sin escritura, reemplazo, restauración en navegador vacío y funcionamiento/exportación con almacenamiento bloqueado. Sin errores JavaScript no controlados en esos recorridos.
+- 52 vistas comprobadas: 13 rutas en 1440×1000 y 390×844, claro y oscuro. Un h1 por vista y sin desbordamiento horizontal del documento; tablas y código conservan desplazamiento interno. Se revisan capturas de portada y controles de teclado, apertura de pistas, menú móvil/Escape y persistencia del tema.
+- Estas verificaciones corresponden a la aplicación web. No constituyen compilación ni ejecución de los ejemplos MAUI; sus comprobaciones siguen siendo trabajo en Visual Studio. No se publica el sitio como parte de esta entrega.
