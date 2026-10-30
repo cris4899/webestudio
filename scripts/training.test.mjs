@@ -120,6 +120,8 @@ test('Repaso espaciado: intervalos, tope antes del examen y salida',()=>{
   assert.equal(state.spaced[q.id].due,'2026-10-31');
   assert.equal(dueReviews(state,'2026-10-30').length,0);assert.equal(dueReviews(state,'2026-10-31')[0].id,q.id);
   assert.equal(readTraining(JSON.stringify(state)).spaced[q.id].step,0);
+  state.spaced[q.id]={due:'2026-11-03',step:2};queueErrors(state,'2026-10-31','2026-11-04');
+  assert.deepEqual(state.spaced[q.id],{due:'2026-11-01',step:0},'Un fallo nuevo reinicia el repaso');
 });
 test('Simulacro: un reto por RA y rotación',()=>{
   const a=pickMock(0),b=pickMock(1);

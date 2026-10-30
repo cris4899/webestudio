@@ -203,6 +203,7 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
         const correct=Number(value)===q.answer,next=scheduleReview(state.spaced[id],correct,localToday(),state.plan.examDate);
         if(next)state.spaced[id]=next;else delete state.spaced[id];
         if(correct && state.errors[id])state.errors[id].reviewed=true;
+        if(!correct)state.errors[id]={note:state.errors[id]?.note || '',reviewed:false};
         save();form.querySelector('button').remove();form.querySelector('.feedback').classList.toggle('correct',correct);
         form.querySelector('.feedback').textContent=`${correct?'Correcto.':'Respuesta: '+q.options[q.answer]+'.'} ${q.explanation} ${next?'Volverá el '+next.due+'.':'Sale de la cola de repaso.'}`;
       }

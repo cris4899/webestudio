@@ -107,7 +107,7 @@ export function scheduleReview(entry,correct,today,examDate) {
   return {due:capped<today?today:capped,step};
 }
 export function queueErrors(state,today,examDate) {
-  for(const [id,error] of Object.entries(state.errors))if(!error.reviewed && !state.spaced[id])state.spaced[id]=scheduleReview(null,false,today,examDate);
+  for(const [id,error] of Object.entries(state.errors))if(!error.reviewed && !(state.spaced[id]?.step===0))state.spaced[id]=scheduleReview(null,false,today,examDate);
   return state;
 }
 export const dueReviews = (state,today) => notebookQuestions.filter(q=>state.spaced[q.id]?.due<=today);
