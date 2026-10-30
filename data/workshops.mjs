@@ -6,6 +6,8 @@ const r2 = 'Relacion2_Estudio';
 const r3 = 'Relacion3_Estudio';
 const r5 = 'BLoginViews_Estudio';
 const r8 = 'BRelacion07Estudio';
+const lib = 'BLoginViews_Estudio';
+const host = 'R07E01R05App_Estudio';
 
 export const workshops = [
   { id:'relacion-1', lesson:'formulario', steps:[
@@ -199,6 +201,40 @@ export const workshops = [
       'La aplicación hospeda ambas vistas y prueba su interfaz pública. Asignar matrícula, modificar umbral y mostrar datos son operaciones separadas. Los botones de aspecto permiten comprobar que espaciado, relleno y fondo llegan a los elementos internos.',
       [file('PruebasR07_Estudio/Solucion.xaml','El namespace assembly encuentra los dos controles en la biblioteca. Los x:Name permiten al anfitrión hablar con cada instancia.'),file('PruebasR07_Estudio/Solucion.xaml.cs','TryParse valida el texto del umbral antes de pasarlo al View. Las excepciones de las vistas se informan mediante alerta. Aspecto usa únicamente sus propiedades públicas.')],
       'Ejecuta matrícula válida/errónea, fecha futura, cumpleaños, límite inválido y cambio de aspecto. Contrasta las dos vistas con las capturas del PDF.')
+  ]},
+  { id:'relacion-7-r5', lesson:'extensiones-login', steps:[
+    step('base','Partir de la base de V0','En BLoginViews_Estudio abre EntryContraseniaV1.xaml. Es la contraseña sin personalizar: la base de V0 y el punto de partida de V1.',
+      'Un ContentView contiene un StackLayout horizontal con una etiqueta, un Entry con IsPassword y otra etiqueta para el mensaje de error. El StackLayout no declara Spacing: usa el valor predeterminado. El evento Unfocused conecta la pérdida de foco con la validación del code-behind.',
+      [file(`${lib}/EntryContraseniaV1.xaml`,'Esta es la plantilla que las variantes V2 a V5 modifican. Solo cambiará el atributo o la propiedad Spacing del StackLayout y, en V4 y V5, el diccionario de recursos.'),file(`${lib}/EntryContraseniaV1.xaml.cs`,'Password vuelve a validar antes de entregar el texto, igual que en la relación 5. Las cuatro banderas registran qué categorías de carácter se han visto.','    public string Password','    // MANEJADORES DE EVENTOS')],
+      'Localiza el StackLayout y comprueba que no tiene Spacing. Esa ausencia es lo que V1 resuelve en las cuatro variantes siguientes.'),
+    step('usuario','Comprobar que el nombre de usuario no cambia','Abre EntryNombreUsuarioV1.xaml y compáralo con la contraseña.',
+      'En el RAR, EntryNombreUsuario no recibe ninguna personalización en V1: V0 y V1 contienen el mismo código para este control. La personalización de V1 se limita a la contraseña.',
+      [file(`${lib}/EntryNombreUsuarioV1.xaml`,'Aquí tampoco hay Spacing. Es un control de apoyo para que la aplicación anfitriona tenga las dos entradas.')],
+      'Confirma que este archivo no contiene extensiones, OnPlatform ni diccionarios de recursos.'),
+    step('v2-extension','V2: crear EspaciadoExtension','Abre EntryContraseniaV2.xaml.cs. Añade las dos constantes y la clase EspaciadoExtension al final del archivo.',
+      'IMarkupExtension permite que XAML pida un valor al cargar. ProvideValue consulta DeviceInfo.Platform: WinUI devuelve la constante de Windows y Android la de Android. Cualquier otra plataforma deja el valor inicial 0. El atributo AcceptEmptyServiceProvider indica que la extensión no necesita servicios del analizador XAML.',
+      [file(`${lib}/EntryContraseniaV2.xaml.cs`,'Las constantes viven en el control para que el selector de plataforma y el XAML hablen del mismo número.','#region PARÁMETROS','    const int LONGITUD'),file(`${lib}/EntryContraseniaV2.xaml.cs`,'La clase devuelve un double: Spacing espera ese tipo. No devuelve texto.','[AcceptEmptyServiceProvider]')],
+      'Sigue el valor de DeviceInfo.Platform en Windows y comprueba que el switch devuelve EspaciadoWindows.'),
+    step('v2-xaml','V2: usar la extensión en XAML','Abre EntryContraseniaV2.xaml. Declara el prefijo codigo y escribe Spacing con la extensión.',
+      'El prefijo codigo apunta al namespace CLR de la biblioteca. La sintaxis Espaciado, sin el sufijo Extension, resuelve la clase EspaciadoExtension. El resto del XAML coincide con V1.',
+      [file(`${lib}/EntryContraseniaV2.xaml`,'Compara con V1: se añade xmlns:codigo y el atributo Spacing del StackLayout.')],
+      'Comprueba que Espaciado se escribe sin el sufijo Extension y que el prefijo codigo está declarado.'),
+    step('v3','V3: OnPlatform con x:Static','Abre EntryContraseniaV3.xaml.cs y EntryContraseniaV3.xaml. El XAML consume las constantes públicas del control.',
+      'Spacing se escribe como elemento de propiedad con un OnPlatform de tipo double. Cada On elige el valor según la plataforma. x:Static obtiene la constante pública del control; no hace falta una extensión propia ni código que decida la plataforma.',
+      [file(`${lib}/EntryContraseniaV3.xaml.cs`,'Son las mismas constantes que V2, pero consumidas desde XAML mediante x:Static.','#region PARÁMETROS','    const int LONGITUD'),file(`${lib}/EntryContraseniaV3.xaml`,'OnPlatform sustituye al switch de la extensión. El tipo de x:TypeArguments debe coincidir con el de Spacing.')],
+      'Comprueba que Platform usa Android y WinUI, y que cada Value apunta a su constante.'),
+    step('v4','V4: StaticResource en el ContentView','Abre EntryContraseniaV4.xaml. Declara las dos claves en ContentView.Resources y consúmelas con StaticResource.',
+      'Las constantes del code-behind desaparecen: el valor vive en un diccionario de recursos del propio ContentView. StaticResource busca la clave una vez, al cargar el XAML. El code-behind de V4 coincide con V1, salvo el nombre de la clase.',
+      [file(`${lib}/EntryContraseniaV4.xaml`,'Los dos x:Double declaran el valor con su tipo. OnPlatform decide cuál se aplica.')],
+      'Localiza las dos claves y comprueba que cada una tiene el tipo x:Double.'),
+    step('v5','V5: DynamicResource y propiedades de configuración','Abre EntryContraseniaV5.xaml y EntryContraseniaV5.xaml.cs. Quita OnPlatform, nombra el StackLayout, enlaza Spacing con SetDynamicResource y añade las dos propiedades públicas.',
+      'DynamicResource mantiene la relación con la clave, así que reemplazar el valor del diccionario actualiza el espaciado. Las propiedades EspaciadoAndroid y EspaciadoWindows leen y escriben this.Resources con el mismo nombre de clave. Una clave mal escrita falla al leer el diccionario.',
+      [file(`${lib}/EntryContraseniaV5.xaml`,'El RAR usa DynamicResource dentro de OnPlatform, pero On.Value no es enlazable. Aquí el XAML solo nombra el StackLayout y el enlace se hace en C#.'),file(`${lib}/EntryContraseniaV5.xaml.cs`,'SetDynamicResource enlaza Spacing con la clave de la plataforma; las propiedades añadidas escriben esa clave. Las propiedades permiten configurar el control desde la aplicación que lo aloja.','public EntryContraseniaV5()','    // MANEJADORES DE EVENTOS')],
+      'Comprueba que los nombres entre corchetes son idénticos a los x:Key del XAML.'),
+    step('anfitrion','Probar los controles en una aplicación anfitriona','En R07E01R05App_Estudio abre MainPage.xaml y MainPage.xaml.cs. Coloca una instancia de cada variante.',
+      'El MainPage del RAR es la plantilla sin usar: no contiene los controles. Esta página los aloja para poder compararlos. El botón de V5 asigna las dos propiedades; como DynamicResource sigue vinculado, el espaciado cambia en pantalla. Este paquete no resuelve relleno, margen, color de fondo ni tamaño de fuente.',
+      [file(`${host}/MainPage.xaml`,'El prefijo v con assembly localiza los controles de la biblioteca. Hay una instancia de V1 a V5.'),file(`${host}/MainPage.xaml.cs`,'Mostrar lee las propiedades validadas. CambiarEspaciadoV5 modifica solo la variante dinámica.')],
+      'Ejecuta en Windows y pulsa el botón de V5: solo esa fila debe cambiar su espaciado.')
   ]}
 ];
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:codigo="clr-namespace:BLoginViews_Estudio"
+             x:Class="BLoginViews_Estudio.EntryContraseniaV3">
+    <StackLayout Orientation="Horizontal">
+        <StackLayout.Spacing>
+            <OnPlatform x:TypeArguments="x:Double">
+                <!-- Establecimiento los valores empleando StaticExtension -->
+                <On Platform="Android" Value="{x:Static Member=codigo:EntryContraseniaV3.EspaciadoAndroid}" />
+                <On Platform="WinUI" Value="{x:Static Member=codigo:EntryContraseniaV3.EspaciadoWindows}" />
+            </OnPlatform>
+        </StackLayout.Spacing>
+        <Label Text="Contraseña"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Entry x:Name="eContrasenia" 
+               MaxLength="10"
+               Keyboard="Default"
+               IsPassword="True"
+               Unfocused="ContraseniaPierdeFoco"/>
+        <Label x:Name="lContrasenia"
+            Text=""
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+    </StackLayout>
+</ContentView>

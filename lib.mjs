@@ -1,5 +1,30 @@
 import { workshops, workshopSteps } from './data/workshops.mjs';
 import { workshopStudy } from './data/workshop-study.mjs';
+import { topicOf } from './data/topics.mjs';
+export const lessonRoute = (id, block = 'entender', part = '') => `/tema/${topicOf(id)?.id}/${id}?bloque=${block}${part ? `&apartado=${part}` : ''}`;
+const oldParts = { guia:'entender', ejercicio:'construir', repaso:'repasar', comprobacion:'repasar' };
+// Rutas anteriores al rediseño por temas: los enlaces guardados siguen funcionando.
+export function legacyRoute(route) {
+  const [pathname, query = ''] = route.split('?');
+  const [, section, id] = pathname.split('/');
+  if (section === 'unidad' || section === 'practica') return '/';
+  if (section === 'leccion' && topicOf(id)) {
+    const part = new URLSearchParams(query).get('apartado');
+    return part && /^\d+$/.test(part) ? lessonRoute(id, 'entender', part) : lessonRoute(id, oldParts[part]);
+  }
+  if (section === 'comparar') { const workshop = workshops.find(w => w.id === id); if (workshop) return lessonRoute(workshop.lesson, 'comparar'); }
+  return null;
+}
+export function readLastPlace(raw) {
+  if (typeof raw !== 'string') return null;
+  const [pathname, query = ''] = raw.split('?');
+  const [, section, first, second, extra] = pathname.split('/');
+  if (extra !== undefined) return null;
+  if (section === 'taller') return !second && workshops.some(w => w.id === first) ? `/taller/${first}` : null;
+  if (section !== 'tema' || topicOf(second)?.id !== first) return null;
+  const block = new URLSearchParams(query).get('bloque');
+  return lessonRoute(second, ['entender','construir','comparar','repasar'].includes(block) ? block : undefined);
+}
 export function readWorkshopPositions(raw, packages) {
   let value;
   try { value=JSON.parse(raw); } catch { return {}; }

@@ -62,6 +62,16 @@ export const workshopStudy = {
       ['DynamicResource','Se conserva la referencia a la clave y su actualización.','Ámbito local y propiedades del View.','BAccesoRecursosDinamicos/LoginView.xaml'],
     ],
   },
+  'relacion-7-r5': {
+    focus: 'Las cuatro variantes producen el mismo Spacing en Windows y Android: lo que cambia es dónde vive la decisión. V2 la toma en una clase C# propia, V3 en OnPlatform con constantes, V4 en recursos resueltos una vez y V5 en recursos que siguen vinculados a su clave. Solo se personaliza el espaciado de la contraseña.',
+    mistake: 'Dar por resueltos relleno, margen, color de fondo y tamaño de fuente. V1 no los resuelve, y EntryNombreUsuario no cambia respecto a V0.',
+    rows: [
+      ['V2 Extensión propia','EspaciadoExtension decide el valor con DeviceInfo.Platform.','Las constantes de espaciado y el tipo double de Spacing.','BLoginViews_Estudio/EntryContraseniaV2.xaml.cs'],
+      ['V3 x:Static','OnPlatform elige entre dos constantes públicas.','Los mismos valores y el mismo StackLayout.','BLoginViews_Estudio/EntryContraseniaV3.xaml'],
+      ['V4 StaticResource','Las claves viven en ContentView.Resources y se resuelven al cargar.','OnPlatform y los mismos valores.','BLoginViews_Estudio/EntryContraseniaV4.xaml'],
+      ['V5 DynamicResource','La referencia a la clave se mantiene y puede actualizarse.','Diccionario local; añade propiedades públicas y enlaza con SetDynamicResource porque On.Value no admite un recurso dinámico.','BLoginViews_Estudio/EntryContraseniaV5.xaml'],
+    ],
+  },
   'relacion-8': {
     focus: 'La matrícula debe validar toda la cadena antes de sustituir el valor anterior. La edad se calcula teniendo en cuenta el cumpleaños; cambiar nacimiento o umbral obliga a recalcular el aviso.',
     mistake: 'Calcular la edad solo restando años, aceptar futuro, o asignar el límite antes de comprobar que es superior a 12.',

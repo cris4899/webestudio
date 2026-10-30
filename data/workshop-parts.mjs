@@ -6174,6 +6174,1104 @@ export default {
       "line": 30
     }
   ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV1.xaml.cs": [
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "EntryContraseniaV1",
+      "kind": "clase",
+      "code": "public partial class EntryContraseniaV1 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "LONGITUD",
+      "kind": "campo",
+      "code": "const int LONGITUD = 10;",
+      "context": "",
+      "line": 4
+    },
+    {
+      "name": "_minuscula",
+      "kind": "campo",
+      "code": "bool _minuscula;",
+      "context": "",
+      "line": 7
+    },
+    {
+      "name": "_mayuscula",
+      "kind": "campo",
+      "code": "bool _mayuscula;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "_digito",
+      "kind": "campo",
+      "code": "bool _digito;",
+      "context": "",
+      "line": 9
+    },
+    {
+      "name": "_signosPuntuacion",
+      "kind": "campo",
+      "code": "bool _signosPuntuacion;",
+      "context": "",
+      "line": 10
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "bool esValido;",
+      "context": "",
+      "line": 12
+    },
+    {
+      "name": "EntryContraseniaV1",
+      "kind": "constructor",
+      "code": "public EntryContraseniaV1()\n    {\n        InitializeComponent();\n        // Incicialización de estado del view\n        esValido = false;\n        // Inicialización de los Flags de Control\n        _minuscula = false;\n        _mayuscula = false;\n        _digito = false;\n        _signosPuntuacion = false;\n    }",
+      "context": "",
+      "line": 13
+    },
+    {
+      "name": "Password",
+      "kind": "propiedad",
+      "code": "public string Password\n    {\n        get\n        {\n            // Comprobar la validez de la Contraseña\n            ValidarContrasenia(eContrasenia.Text);\n            return eContrasenia.Text;\n        }\n    }",
+      "context": "",
+      "line": 26
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 45
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 47
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarContrasenia(eContrasenia.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lContrasenia.Text = mensaje;\n                lContrasenia.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lContrasenia.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 48
+    },
+    {
+      "name": "ValidarContrasenia · operación 1",
+      "kind": "método",
+      "code": "_signosPuntuacion = _digito = _mayuscula = _minuscula = false;",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 84
+    },
+    {
+      "name": "ValidarContrasenia · operación 2",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(pass))\n            throw new Exception(\"Debe introducir la Contraseña\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 86
+    },
+    {
+      "name": "ValidarContrasenia · operación 3",
+      "kind": "método",
+      "code": "if (pass.Length != LONGITUD)\n            throw new Exception($\"La Contraseña tiene que tener {LONGITUD} caracteres\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 89
+    },
+    {
+      "name": "ValidarContrasenia · operación 4",
+      "kind": "método",
+      "code": "foreach (char letra in pass)\n        {\n            if (Char.IsUpper(letra))\n                _mayuscula = true;\n            if (Char.IsLower(letra))\n                _minuscula = true;\n            if (Char.IsDigit(letra))\n                _digito = true;\n            if (Char.IsPunctuation(letra))\n                _signosPuntuacion = true;\n        }",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 92
+    },
+    {
+      "name": "ValidarContrasenia · operación 5",
+      "kind": "método",
+      "code": "if (!_mayuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra mayúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 105
+    },
+    {
+      "name": "ValidarContrasenia · operación 6",
+      "kind": "método",
+      "code": "if (!_minuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra minúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 107
+    },
+    {
+      "name": "ValidarContrasenia · operación 7",
+      "kind": "método",
+      "code": "if (!_digito)\n            throw new Exception(\"La contraseña debe contener al menos un dígito\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 109
+    },
+    {
+      "name": "ValidarContrasenia · operación 8",
+      "kind": "método",
+      "code": "if (!_signosPuntuacion)\n            throw new Exception(\"La contraseña debe contener al menos un signo de puntuación\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 111
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV2.xaml.cs": [
+    {
+      "name": "Microsoft.Maui.Controls.Xaml",
+      "kind": "importación",
+      "code": "using Microsoft.Maui.Controls.Xaml;",
+      "context": "",
+      "line": 1
+    },
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 3
+    },
+    {
+      "name": "EntryContraseniaV2",
+      "kind": "clase",
+      "code": "public partial class EntryContraseniaV2 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 4
+    },
+    {
+      "name": "EspaciadoExtension",
+      "kind": "clase",
+      "code": "[AcceptEmptyServiceProvider]\npublic class EspaciadoExtension : IMarkupExtension\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 125
+    },
+    {
+      "name": "EspaciadoAndroid",
+      "kind": "campo",
+      "code": "public const double EspaciadoAndroid = 10;",
+      "context": "",
+      "line": 7
+    },
+    {
+      "name": "EspaciadoWindows",
+      "kind": "campo",
+      "code": "public const double EspaciadoWindows = 20;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "LONGITUD",
+      "kind": "campo",
+      "code": "const int LONGITUD = 10;",
+      "context": "",
+      "line": 10
+    },
+    {
+      "name": "_minuscula",
+      "kind": "campo",
+      "code": "bool _minuscula;",
+      "context": "",
+      "line": 13
+    },
+    {
+      "name": "_mayuscula",
+      "kind": "campo",
+      "code": "bool _mayuscula;",
+      "context": "",
+      "line": 14
+    },
+    {
+      "name": "_digito",
+      "kind": "campo",
+      "code": "bool _digito;",
+      "context": "",
+      "line": 15
+    },
+    {
+      "name": "_signosPuntuacion",
+      "kind": "campo",
+      "code": "bool _signosPuntuacion;",
+      "context": "",
+      "line": 16
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "bool esValido;",
+      "context": "",
+      "line": 18
+    },
+    {
+      "name": "EntryContraseniaV2",
+      "kind": "constructor",
+      "code": "public EntryContraseniaV2()\n    {\n        InitializeComponent();\n        // Incicialización de estado del view\n        esValido = false;\n        // Inicialización de los Flags de Control\n        _minuscula = false;\n        _mayuscula = false;\n        _digito = false;\n        _signosPuntuacion = false;\n    }",
+      "context": "",
+      "line": 19
+    },
+    {
+      "name": "Password",
+      "kind": "propiedad",
+      "code": "public string Password\n    {\n        get\n        {\n            // Comprobar la validez de la Contraseña\n            ValidarContrasenia(eContrasenia.Text);\n            return eContrasenia.Text;\n        }\n    }",
+      "context": "",
+      "line": 32
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 51
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 53
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarContrasenia(eContrasenia.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lContrasenia.Text = mensaje;\n                lContrasenia.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lContrasenia.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 54
+    },
+    {
+      "name": "ValidarContrasenia · operación 1",
+      "kind": "método",
+      "code": "_signosPuntuacion = _digito = _mayuscula = _minuscula = false;",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 90
+    },
+    {
+      "name": "ValidarContrasenia · operación 2",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(pass))\n            throw new Exception(\"Debe introducir la Contraseña\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 92
+    },
+    {
+      "name": "ValidarContrasenia · operación 3",
+      "kind": "método",
+      "code": "if (pass.Length != LONGITUD)\n            throw new Exception($\"La Contraseña tiene que tener {LONGITUD} caracteres\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 95
+    },
+    {
+      "name": "ValidarContrasenia · operación 4",
+      "kind": "método",
+      "code": "foreach (char letra in pass)\n        {\n            if (Char.IsUpper(letra))\n                _mayuscula = true;\n            if (Char.IsLower(letra))\n                _minuscula = true;\n            if (Char.IsDigit(letra))\n                _digito = true;\n            if (Char.IsPunctuation(letra))\n                _signosPuntuacion = true;\n        }",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 98
+    },
+    {
+      "name": "ValidarContrasenia · operación 5",
+      "kind": "método",
+      "code": "if (!_mayuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra mayúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 111
+    },
+    {
+      "name": "ValidarContrasenia · operación 6",
+      "kind": "método",
+      "code": "if (!_minuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra minúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 113
+    },
+    {
+      "name": "ValidarContrasenia · operación 7",
+      "kind": "método",
+      "code": "if (!_digito)\n            throw new Exception(\"La contraseña debe contener al menos un dígito\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 115
+    },
+    {
+      "name": "ValidarContrasenia · operación 8",
+      "kind": "método",
+      "code": "if (!_signosPuntuacion)\n            throw new Exception(\"La contraseña debe contener al menos un signo de puntuación\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 117
+    },
+    {
+      "name": "ProvideValue · operación 1",
+      "kind": "método",
+      "code": "string plataforma = DeviceInfo.Platform.ToString();",
+      "context": "Dentro de ProvideValue, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 130
+    },
+    {
+      "name": "ProvideValue · operación 2",
+      "kind": "método",
+      "code": "double espaciado = 0;",
+      "context": "Dentro de ProvideValue, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 131
+    },
+    {
+      "name": "ProvideValue · operación 3",
+      "kind": "método",
+      "code": "switch (plataforma)\n        {\n            case \"WinUI\":\n                espaciado = EntryContraseniaV2.EspaciadoWindows;\n                break;\n            case \"Android\":\n                espaciado = EntryContraseniaV2.EspaciadoAndroid;\n                break;\n        }",
+      "context": "Dentro de ProvideValue, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 132
+    },
+    {
+      "name": "ProvideValue · operación 4",
+      "kind": "método",
+      "code": "return espaciado;",
+      "context": "Dentro de ProvideValue, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 142
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV3.xaml.cs": [
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "EntryContraseniaV3",
+      "kind": "clase",
+      "code": "public partial class EntryContraseniaV3 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "EspaciadoAndroid",
+      "kind": "campo",
+      "code": "public const double EspaciadoAndroid = 10;",
+      "context": "",
+      "line": 5
+    },
+    {
+      "name": "EspaciadoWindows",
+      "kind": "campo",
+      "code": "public const double EspaciadoWindows = 20;",
+      "context": "",
+      "line": 6
+    },
+    {
+      "name": "LONGITUD",
+      "kind": "campo",
+      "code": "const int LONGITUD = 10;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "_minuscula",
+      "kind": "campo",
+      "code": "bool _minuscula;",
+      "context": "",
+      "line": 11
+    },
+    {
+      "name": "_mayuscula",
+      "kind": "campo",
+      "code": "bool _mayuscula;",
+      "context": "",
+      "line": 12
+    },
+    {
+      "name": "_digito",
+      "kind": "campo",
+      "code": "bool _digito;",
+      "context": "",
+      "line": 13
+    },
+    {
+      "name": "_signosPuntuacion",
+      "kind": "campo",
+      "code": "bool _signosPuntuacion;",
+      "context": "",
+      "line": 14
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "bool esValido;",
+      "context": "",
+      "line": 16
+    },
+    {
+      "name": "EntryContraseniaV3",
+      "kind": "constructor",
+      "code": "public EntryContraseniaV3()\n    {\n        InitializeComponent();\n        // Incicialización de estado del view\n        esValido = false;\n        // Inicialización de los Flags de Control\n        _minuscula = false;\n        _mayuscula = false;\n        _digito = false;\n        _signosPuntuacion = false;\n    }",
+      "context": "",
+      "line": 17
+    },
+    {
+      "name": "Password",
+      "kind": "propiedad",
+      "code": "public string Password\n    {\n        get\n        {\n            // Comprobar la validez de la Contraseña\n            ValidarContrasenia(eContrasenia.Text);\n            return eContrasenia.Text;\n        }\n    }",
+      "context": "",
+      "line": 30
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 49
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 51
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarContrasenia(eContrasenia.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lContrasenia.Text = mensaje;\n                lContrasenia.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lContrasenia.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 52
+    },
+    {
+      "name": "ValidarContrasenia · operación 1",
+      "kind": "método",
+      "code": "_signosPuntuacion = _digito = _mayuscula = _minuscula = false;",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 88
+    },
+    {
+      "name": "ValidarContrasenia · operación 2",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(pass))\n            throw new Exception(\"Debe introducir la Contraseña\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 90
+    },
+    {
+      "name": "ValidarContrasenia · operación 3",
+      "kind": "método",
+      "code": "if (pass.Length != LONGITUD)\n            throw new Exception($\"La Contraseña tiene que tener {LONGITUD} caracteres\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 93
+    },
+    {
+      "name": "ValidarContrasenia · operación 4",
+      "kind": "método",
+      "code": "foreach (char letra in pass)\n        {\n            if (Char.IsUpper(letra))\n                _mayuscula = true;\n            if (Char.IsLower(letra))\n                _minuscula = true;\n            if (Char.IsDigit(letra))\n                _digito = true;\n            if (Char.IsPunctuation(letra))\n                _signosPuntuacion = true;\n        }",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 96
+    },
+    {
+      "name": "ValidarContrasenia · operación 5",
+      "kind": "método",
+      "code": "if (!_mayuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra mayúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 109
+    },
+    {
+      "name": "ValidarContrasenia · operación 6",
+      "kind": "método",
+      "code": "if (!_minuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra minúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 111
+    },
+    {
+      "name": "ValidarContrasenia · operación 7",
+      "kind": "método",
+      "code": "if (!_digito)\n            throw new Exception(\"La contraseña debe contener al menos un dígito\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 113
+    },
+    {
+      "name": "ValidarContrasenia · operación 8",
+      "kind": "método",
+      "code": "if (!_signosPuntuacion)\n            throw new Exception(\"La contraseña debe contener al menos un signo de puntuación\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 115
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV4.xaml.cs": [
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "EntryContraseniaV4",
+      "kind": "clase",
+      "code": "public partial class EntryContraseniaV4 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "LONGITUD",
+      "kind": "campo",
+      "code": "const int LONGITUD = 10;",
+      "context": "",
+      "line": 4
+    },
+    {
+      "name": "_minuscula",
+      "kind": "campo",
+      "code": "bool _minuscula;",
+      "context": "",
+      "line": 7
+    },
+    {
+      "name": "_mayuscula",
+      "kind": "campo",
+      "code": "bool _mayuscula;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "_digito",
+      "kind": "campo",
+      "code": "bool _digito;",
+      "context": "",
+      "line": 9
+    },
+    {
+      "name": "_signosPuntuacion",
+      "kind": "campo",
+      "code": "bool _signosPuntuacion;",
+      "context": "",
+      "line": 10
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "bool esValido;",
+      "context": "",
+      "line": 12
+    },
+    {
+      "name": "EntryContraseniaV4",
+      "kind": "constructor",
+      "code": "public EntryContraseniaV4()\n    {\n        InitializeComponent();\n        // Incicialización de estado del view\n        esValido = false;\n        // Inicialización de los Flags de Control\n        _minuscula = false;\n        _mayuscula = false;\n        _digito = false;\n        _signosPuntuacion = false;\n    }",
+      "context": "",
+      "line": 13
+    },
+    {
+      "name": "Password",
+      "kind": "propiedad",
+      "code": "public string Password\n    {\n        get\n        {\n            // Comprobar la validez de la Contraseña\n            ValidarContrasenia(eContrasenia.Text);\n            return eContrasenia.Text;\n        }\n    }",
+      "context": "",
+      "line": 26
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 45
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 47
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarContrasenia(eContrasenia.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lContrasenia.Text = mensaje;\n                lContrasenia.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lContrasenia.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 48
+    },
+    {
+      "name": "ValidarContrasenia · operación 1",
+      "kind": "método",
+      "code": "_signosPuntuacion = _digito = _mayuscula = _minuscula = false;",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 84
+    },
+    {
+      "name": "ValidarContrasenia · operación 2",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(pass))\n            throw new Exception(\"Debe introducir la Contraseña\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 86
+    },
+    {
+      "name": "ValidarContrasenia · operación 3",
+      "kind": "método",
+      "code": "if (pass.Length != LONGITUD)\n            throw new Exception($\"La Contraseña tiene que tener {LONGITUD} caracteres\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 89
+    },
+    {
+      "name": "ValidarContrasenia · operación 4",
+      "kind": "método",
+      "code": "foreach (char letra in pass)\n        {\n            if (Char.IsUpper(letra))\n                _mayuscula = true;\n            if (Char.IsLower(letra))\n                _minuscula = true;\n            if (Char.IsDigit(letra))\n                _digito = true;\n            if (Char.IsPunctuation(letra))\n                _signosPuntuacion = true;\n        }",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 92
+    },
+    {
+      "name": "ValidarContrasenia · operación 5",
+      "kind": "método",
+      "code": "if (!_mayuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra mayúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 105
+    },
+    {
+      "name": "ValidarContrasenia · operación 6",
+      "kind": "método",
+      "code": "if (!_minuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra minúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 107
+    },
+    {
+      "name": "ValidarContrasenia · operación 7",
+      "kind": "método",
+      "code": "if (!_digito)\n            throw new Exception(\"La contraseña debe contener al menos un dígito\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 109
+    },
+    {
+      "name": "ValidarContrasenia · operación 8",
+      "kind": "método",
+      "code": "if (!_signosPuntuacion)\n            throw new Exception(\"La contraseña debe contener al menos un signo de puntuación\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 111
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV5.xaml.cs": [
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "EntryContraseniaV5",
+      "kind": "clase",
+      "code": "public partial class EntryContraseniaV5 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "LONGITUD",
+      "kind": "campo",
+      "code": "const int LONGITUD = 10;",
+      "context": "",
+      "line": 4
+    },
+    {
+      "name": "_minuscula",
+      "kind": "campo",
+      "code": "bool _minuscula;",
+      "context": "",
+      "line": 7
+    },
+    {
+      "name": "_mayuscula",
+      "kind": "campo",
+      "code": "bool _mayuscula;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "_digito",
+      "kind": "campo",
+      "code": "bool _digito;",
+      "context": "",
+      "line": 9
+    },
+    {
+      "name": "_signosPuntuacion",
+      "kind": "campo",
+      "code": "bool _signosPuntuacion;",
+      "context": "",
+      "line": 10
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "bool esValido;",
+      "context": "",
+      "line": 12
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 1",
+      "kind": "constructor",
+      "code": "InitializeComponent();",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 15
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 2",
+      "kind": "constructor",
+      "code": "pila.SetDynamicResource(StackLayout.SpacingProperty, DeviceInfo.Platform == DevicePlatform.Android ? \"EspaciadoAndroid\" : \"EspaciadoWindows\");",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 17
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 3",
+      "kind": "constructor",
+      "code": "esValido = false;",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 19
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 4",
+      "kind": "constructor",
+      "code": "_minuscula = false;",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 21
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 5",
+      "kind": "constructor",
+      "code": "_mayuscula = false;",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 22
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 6",
+      "kind": "constructor",
+      "code": "_digito = false;",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 23
+    },
+    {
+      "name": "EntryContraseniaV5 · operación 7",
+      "kind": "constructor",
+      "code": "_signosPuntuacion = false;",
+      "context": "Dentro de EntryContraseniaV5, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 24
+    },
+    {
+      "name": "Password",
+      "kind": "propiedad",
+      "code": "public string Password\n    {\n        get\n        {\n            // Comprobar la validez de la Contraseña\n            ValidarContrasenia(eContrasenia.Text);\n            return eContrasenia.Text;\n        }\n    }",
+      "context": "",
+      "line": 28
+    },
+    {
+      "name": "EspaciadoAndroid",
+      "kind": "propiedad",
+      "code": "public Double EspaciadoAndroid\n    {\n        get\n        {\n            return (double)this.Resources[\"EspaciadoAndroid\"];\n        }\n\n        set\n        {\n            this.Resources[\"EspaciadoAndroid\"] = value;\n        }\n    }",
+      "context": "",
+      "line": 41
+    },
+    {
+      "name": "EspaciadoWindows",
+      "kind": "propiedad",
+      "code": "public Double EspaciadoWindows\n    {\n        get\n        {\n            return (double)this.Resources[\"EspaciadoWindows\"];\n        }\n\n        set\n        {\n            this.Resources[\"EspaciadoWindows\"] = value;\n        }\n    }",
+      "context": "",
+      "line": 54
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 77
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 79
+    },
+    {
+      "name": "ContraseniaPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarContrasenia(eContrasenia.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lContrasenia.Text = mensaje;\n                lContrasenia.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lContrasenia.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de ContraseniaPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 80
+    },
+    {
+      "name": "ValidarContrasenia · operación 1",
+      "kind": "método",
+      "code": "_signosPuntuacion = _digito = _mayuscula = _minuscula = false;",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 116
+    },
+    {
+      "name": "ValidarContrasenia · operación 2",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(pass))\n            throw new Exception(\"Debe introducir la Contraseña\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 118
+    },
+    {
+      "name": "ValidarContrasenia · operación 3",
+      "kind": "método",
+      "code": "if (pass.Length != LONGITUD)\n            throw new Exception($\"La Contraseña tiene que tener {LONGITUD} caracteres\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 121
+    },
+    {
+      "name": "ValidarContrasenia · operación 4",
+      "kind": "método",
+      "code": "foreach (char letra in pass)\n        {\n            if (Char.IsUpper(letra))\n                _mayuscula = true;\n            if (Char.IsLower(letra))\n                _minuscula = true;\n            if (Char.IsDigit(letra))\n                _digito = true;\n            if (Char.IsPunctuation(letra))\n                _signosPuntuacion = true;\n        }",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 124
+    },
+    {
+      "name": "ValidarContrasenia · operación 5",
+      "kind": "método",
+      "code": "if (!_mayuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra mayúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 137
+    },
+    {
+      "name": "ValidarContrasenia · operación 6",
+      "kind": "método",
+      "code": "if (!_minuscula)\n            throw new Exception(\"La contraseña debe contener al menos una letra minúscula\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 139
+    },
+    {
+      "name": "ValidarContrasenia · operación 7",
+      "kind": "método",
+      "code": "if (!_digito)\n            throw new Exception(\"La contraseña debe contener al menos un dígito\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 141
+    },
+    {
+      "name": "ValidarContrasenia · operación 8",
+      "kind": "método",
+      "code": "if (!_signosPuntuacion)\n            throw new Exception(\"La contraseña debe contener al menos un signo de puntuación\");",
+      "context": "Dentro de ValidarContrasenia, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 143
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryNombreUsuarioV1.xaml.cs": [
+    {
+      "name": "BLoginViews_Estudio",
+      "kind": "namespace",
+      "code": "namespace BLoginViews_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "EntryNombreUsuarioV1",
+      "kind": "clase",
+      "code": "public partial class EntryNombreUsuarioV1 : ContentView\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "LONG_MIN",
+      "kind": "campo",
+      "code": "private const int LONG_MIN = 5;",
+      "context": "",
+      "line": 5
+    },
+    {
+      "name": "LONG_MAX",
+      "kind": "campo",
+      "code": "private const int LONG_MAX = 15;",
+      "context": "",
+      "line": 6
+    },
+    {
+      "name": "esValido",
+      "kind": "campo",
+      "code": "private bool esValido;",
+      "context": "",
+      "line": 8
+    },
+    {
+      "name": "EntryNombreUsuarioV1",
+      "kind": "constructor",
+      "code": "public EntryNombreUsuarioV1()\n    {\n        InitializeComponent();\n    }",
+      "context": "",
+      "line": 9
+    },
+    {
+      "name": "Usuario",
+      "kind": "propiedad",
+      "code": "public string Usuario\n    {\n        get\n        {\n            // Comprobación de si el dato es válido\n            if (!esValido)\n                throw new Exception(lUsuario.Text);\n            return eUsuario.Text;\n        }\n    }",
+      "context": "",
+      "line": 18
+    },
+    {
+      "name": "UsuarioPierdeFoco · operación 1",
+      "kind": "método",
+      "code": "esValido = true;",
+      "context": "Dentro de UsuarioPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 37
+    },
+    {
+      "name": "UsuarioPierdeFoco · operación 2",
+      "kind": "método",
+      "code": "string mensaje = \"\";",
+      "context": "Dentro de UsuarioPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 39
+    },
+    {
+      "name": "UsuarioPierdeFoco · operación 3",
+      "kind": "método",
+      "code": "try\n        {\n            // Validación del usuario introducido\n            ValidarUsuario(eUsuario.Text);\n        }\n        catch (Exception ex)\n        {\n            // Detección del Error\n            esValido = false;\n            mensaje = ex.Message;\n        }\n        finally\n        {\n            if (!esValido)\n            {\n                // Retroalimentación\n                lUsuario.Text = mensaje;\n                lUsuario.BackgroundColor = Colors.Red;\n            }\n            else\n            {\n                // Restablecer color del view\n                lUsuario.BackgroundColor = Colors.White;\n            }\n        }",
+      "context": "Dentro de UsuarioPierdeFoco, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 40
+    },
+    {
+      "name": "ValidarUsuario · operación 1",
+      "kind": "método",
+      "code": "if (string.IsNullOrEmpty(usuario))\n            throw new Exception(\"Debe introducir el nombre del usuario\");",
+      "context": "Dentro de ValidarUsuario, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 76
+    },
+    {
+      "name": "ValidarUsuario · operación 2",
+      "kind": "método",
+      "code": "if (usuario.Length < LONG_MIN)\n            throw new Exception($\"El nombre del usuario tiene que tener al menos {LONG_MIN} caracteres\");",
+      "context": "Dentro de ValidarUsuario, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 79
+    },
+    {
+      "name": "ValidarUsuario · operación 3",
+      "kind": "método",
+      "code": "foreach (char letra in usuario)\n        {\n            if (!Char.IsLetter(letra))\n                throw new Exception(\"El nombre del usuario contiene caracteres no válidos\");\n        }",
+      "context": "Dentro de ValidarUsuario, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 82
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/App.xaml.cs": [
+    {
+      "name": "Microsoft.Extensions.DependencyInjection",
+      "kind": "importación",
+      "code": "using Microsoft.Extensions.DependencyInjection;",
+      "context": "",
+      "line": 1
+    },
+    {
+      "name": "R07E01R05App_Estudio",
+      "kind": "namespace",
+      "code": "namespace R07E01R05App_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 3
+    },
+    {
+      "name": "App",
+      "kind": "clase",
+      "code": "public partial class App : Application\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 4
+    },
+    {
+      "name": "App",
+      "kind": "constructor",
+      "code": "public App()\n    {\n        InitializeComponent();\n    }",
+      "context": "",
+      "line": 6
+    },
+    {
+      "name": "CreateWindow",
+      "kind": "método",
+      "code": "protected override Window CreateWindow(IActivationState? activationState)\n    {\n        return new Window(new AppShell());\n    }",
+      "context": "",
+      "line": 11
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/AppShell.xaml.cs": [
+    {
+      "name": "R07E01R05App_Estudio",
+      "kind": "namespace",
+      "code": "namespace R07E01R05App_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "AppShell",
+      "kind": "clase",
+      "code": "public partial class AppShell : Shell\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "AppShell",
+      "kind": "constructor",
+      "code": "public AppShell()\n    {\n        InitializeComponent();\n    }",
+      "context": "",
+      "line": 4
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/MainPage.xaml.cs": [
+    {
+      "name": "R07E01R05App_Estudio",
+      "kind": "namespace",
+      "code": "namespace R07E01R05App_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 1
+    },
+    {
+      "name": "MainPage",
+      "kind": "clase",
+      "code": "public partial class MainPage : ContentPage\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 2
+    },
+    {
+      "name": "MainPage",
+      "kind": "constructor",
+      "code": "public MainPage()\n    {\n        InitializeComponent();\n    }",
+      "context": "",
+      "line": 4
+    },
+    {
+      "name": "Mostrar",
+      "kind": "método",
+      "code": "private async void Mostrar(object? sender, EventArgs e)\n    {\n        try\n        {\n            string datos = $\"{usuario.Usuario} / {clave2.Password}\";\n            await DisplayAlertAsync(\"Prueba académica\", datos, \"Aceptar\");\n        }\n        catch (Exception ex)\n        {\n            await DisplayAlertAsync(\"Error\", ex.Message, \"Aceptar\");\n        }\n    }",
+      "context": "",
+      "line": 9
+    },
+    {
+      "name": "CambiarEspaciadoV5",
+      "kind": "método",
+      "code": "private void CambiarEspaciadoV5(object? sender, EventArgs e)\n    {\n        // Las propiedades de V5 sustituyen la clave del diccionario; DynamicResource actualiza el espaciado.\n        clave5.EspaciadoWindows = 40;\n        clave5.EspaciadoAndroid = 30;\n    }",
+      "context": "",
+      "line": 22
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/MauiProgram.cs": [
+    {
+      "name": "Microsoft.Extensions.Logging",
+      "kind": "importación",
+      "code": "using Microsoft.Extensions.Logging;",
+      "context": "",
+      "line": 1
+    },
+    {
+      "name": "R07E01R05App_Estudio",
+      "kind": "namespace",
+      "code": "namespace R07E01R05App_Estudio;",
+      "context": "Al principio del archivo, antes de declarar la clase.",
+      "line": 3
+    },
+    {
+      "name": "MauiProgram",
+      "kind": "clase",
+      "code": "public static class MauiProgram\n{",
+      "context": "Cabecera de la clase: los miembros siguientes van dentro de sus llaves. Conserva el cierre del archivo completo.",
+      "line": 4
+    },
+    {
+      "name": "CreateMauiApp · builder",
+      "kind": "método",
+      "code": "MauiAppBuilder builder = MauiApp.CreateBuilder();\n        builder.UseMauiApp<App>().ConfigureFonts(fonts =>\n        {\n            fonts.AddFont(\"OpenSans-Regular.ttf\", \"OpenSansRegular\");\n            fonts.AddFont(\"OpenSans-Semibold.ttf\", \"OpenSansSemibold\");\n        });",
+      "context": "Dentro de CreateMauiApp: crea y configura builder antes de continuar.",
+      "line": 8
+    },
+    {
+      "name": "CreateMauiApp · operación 1",
+      "kind": "método",
+      "code": "return builder.Build();",
+      "context": "Dentro de CreateMauiApp, en el orden indicado. No sustituye la declaración del método ni sus llaves.",
+      "line": 17
+    }
+  ],
   "relacion-8/BRelacion07Estudio/AspectoExtension.cs": [
     {
       "name": "Microsoft.Maui.Controls.Xaml",
@@ -9897,6 +10995,460 @@ export default {
       "display": "<VerticalStackLayout\n    Padding=\"20\"\n    Spacing=\"10\"><v:LoginView\n    x:Name=\"login\" /><Button\n    Text=\"Mostrar datos\"\n    Clicked=\"Mostrar\" /><Button\n    Text=\"Personalizar desde anfitrión\"\n    Clicked=\"Cambiar\" /></VerticalStackLayout>",
       "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
       "line": 1
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/BLoginViews_Estudio.csproj": [
+    {
+      "name": "TargetFrameworks",
+      "kind": "etiqueta",
+      "code": "<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>",
+      "display": "<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 1
+    },
+    {
+      "name": "UseMaui",
+      "kind": "etiqueta",
+      "code": "<UseMaui>true</UseMaui>",
+      "display": "<UseMaui>true</UseMaui>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 1
+    },
+    {
+      "name": "SingleProject",
+      "kind": "etiqueta",
+      "code": "<SingleProject>true</SingleProject>",
+      "display": "<SingleProject>true</SingleProject>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 1
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV1.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             x:Class=\"BLoginViews_Estudio.EntryContraseniaV1\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    x:Class=\"BLoginViews_Estudio.EntryContraseniaV1\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout Orientation=\"Horizontal\">\n        <Label Text=\"Contraseña\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n        <Entry x:Name=\"eContrasenia\" \n               MaxLength=\"10\"\n               Keyboard=\"Default\"\n               IsPassword=\"True\"\n               Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label x:Name=\"lContrasenia\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "display": "<StackLayout\n    Orientation=\"Horizontal\">\n        <Label\n    Text=\"Contraseña\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n        <Entry\n    x:Name=\"eContrasenia\"\n    MaxLength=\"10\"\n    Keyboard=\"Default\"\n    IsPassword=\"True\"\n    Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label\n    x:Name=\"lContrasenia\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 5
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV2.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             xmlns:codigo=\"clr-namespace:BLoginViews_Estudio\"\n             x:Class=\"BLoginViews_Estudio.EntryContraseniaV2\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    xmlns:codigo=\"clr-namespace:BLoginViews_Estudio\"\n    x:Class=\"BLoginViews_Estudio.EntryContraseniaV2\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout Orientation=\"Horizontal\"\n                 Spacing=\"{codigo:Espaciado}\"> <!-- Establecimiento de la Extensión-->\n        <Label Text=\"Contraseña\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n        <Entry x:Name=\"eContrasenia\" \n               MaxLength=\"10\"\n               Keyboard=\"Default\"\n               IsPassword=\"True\"\n               Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label x:Name=\"lContrasenia\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "display": "<StackLayout\n    Orientation=\"Horizontal\"\n    Spacing=\"{codigo:Espaciado}\"> <!-- Establecimiento de la Extensión-->\n        <Label\n    Text=\"Contraseña\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n        <Entry\n    x:Name=\"eContrasenia\"\n    MaxLength=\"10\"\n    Keyboard=\"Default\"\n    IsPassword=\"True\"\n    Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label\n    x:Name=\"lContrasenia\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 6
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV3.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             xmlns:codigo=\"clr-namespace:BLoginViews_Estudio\"\n             x:Class=\"BLoginViews_Estudio.EntryContraseniaV3\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    xmlns:codigo=\"clr-namespace:BLoginViews_Estudio\"\n    x:Class=\"BLoginViews_Estudio.EntryContraseniaV3\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout Orientation=\"Horizontal\">",
+      "display": "<StackLayout\n    Orientation=\"Horizontal\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 6
+    },
+    {
+      "name": "StackLayout.Spacing",
+      "kind": "etiqueta",
+      "code": "<StackLayout.Spacing>\n            <OnPlatform x:TypeArguments=\"x:Double\">\n                <!-- Establecimiento los valores empleando StaticExtension -->\n                <On Platform=\"Android\" Value=\"{x:Static Member=codigo:EntryContraseniaV3.EspaciadoAndroid}\" />\n                <On Platform=\"WinUI\" Value=\"{x:Static Member=codigo:EntryContraseniaV3.EspaciadoWindows}\" />\n            </OnPlatform>\n        </StackLayout.Spacing>",
+      "display": "<StackLayout.Spacing>\n            <OnPlatform\n    x:TypeArguments=\"x:Double\">\n                <!-- Establecimiento los valores empleando StaticExtension -->\n                <On\n    Platform=\"Android\"\n    Value=\"{x:Static\n    Member=codigo:EntryContraseniaV3.EspaciadoAndroid}\" />\n                <On\n    Platform=\"WinUI\"\n    Value=\"{x:Static\n    Member=codigo:EntryContraseniaV3.EspaciadoWindows}\" />\n            </OnPlatform>\n        </StackLayout.Spacing>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 7
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"Contraseña\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />",
+      "display": "<Label\n    Text=\"Contraseña\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 14
+    },
+    {
+      "name": "Entry",
+      "kind": "etiqueta",
+      "code": "<Entry x:Name=\"eContrasenia\" \n               MaxLength=\"10\"\n               Keyboard=\"Default\"\n               IsPassword=\"True\"\n               Unfocused=\"ContraseniaPierdeFoco\"/>",
+      "display": "<Entry\n    x:Name=\"eContrasenia\"\n    MaxLength=\"10\"\n    Keyboard=\"Default\"\n    IsPassword=\"True\"\n    Unfocused=\"ContraseniaPierdeFoco\"/>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 17
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label x:Name=\"lContrasenia\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />",
+      "display": "<Label\n    x:Name=\"lContrasenia\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 22
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV4.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             x:Class=\"BLoginViews_Estudio.EntryContraseniaV4\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    x:Class=\"BLoginViews_Estudio.EntryContraseniaV4\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "ContentView.Resources",
+      "kind": "etiqueta",
+      "code": "<ContentView.Resources>\n        <x:Double x:Key=\"EspaciadoAndroid\">10</x:Double>\n        <x:Double x:Key=\"EspaciadoWindows\">20</x:Double>\n    </ContentView.Resources>",
+      "display": "<ContentView.Resources>\n        <x:Double\n    x:Key=\"EspaciadoAndroid\">10</x:Double>\n        <x:Double\n    x:Key=\"EspaciadoWindows\">20</x:Double>\n    </ContentView.Resources>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 5
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout Orientation=\"Horizontal\">",
+      "display": "<StackLayout\n    Orientation=\"Horizontal\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 9
+    },
+    {
+      "name": "StackLayout.Spacing",
+      "kind": "etiqueta",
+      "code": "<StackLayout.Spacing>\n            <OnPlatform x:TypeArguments=\"x:Double\">\n                <!-- Establecimiento los valores empleando Recursos Estáticos -->\n                <On Platform=\"Android\" Value=\"{StaticResource EspaciadoAndroid}\" />\n                <On Platform=\"WinUI\" Value=\"{StaticResource EspaciadoWindows}\" />\n            </OnPlatform>\n        </StackLayout.Spacing>",
+      "display": "<StackLayout.Spacing>\n            <OnPlatform\n    x:TypeArguments=\"x:Double\">\n                <!-- Establecimiento los valores empleando Recursos Estáticos -->\n                <On\n    Platform=\"Android\"\n    Value=\"{StaticResource EspaciadoAndroid}\" />\n                <On\n    Platform=\"WinUI\"\n    Value=\"{StaticResource EspaciadoWindows}\" />\n            </OnPlatform>\n        </StackLayout.Spacing>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 10
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"Contraseña\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />",
+      "display": "<Label\n    Text=\"Contraseña\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 17
+    },
+    {
+      "name": "Entry",
+      "kind": "etiqueta",
+      "code": "<Entry x:Name=\"eContrasenia\" \n               MaxLength=\"10\"\n               Keyboard=\"Default\"\n               IsPassword=\"True\"\n               Unfocused=\"ContraseniaPierdeFoco\"/>",
+      "display": "<Entry\n    x:Name=\"eContrasenia\"\n    MaxLength=\"10\"\n    Keyboard=\"Default\"\n    IsPassword=\"True\"\n    Unfocused=\"ContraseniaPierdeFoco\"/>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 20
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label x:Name=\"lContrasenia\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />",
+      "display": "<Label\n    x:Name=\"lContrasenia\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 25
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryContraseniaV5.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             x:Class=\"BLoginViews_Estudio.EntryContraseniaV5\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    x:Class=\"BLoginViews_Estudio.EntryContraseniaV5\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "ContentView.Resources",
+      "kind": "etiqueta",
+      "code": "<ContentView.Resources>\n        <x:Double x:Key=\"EspaciadoAndroid\">10</x:Double>\n        <x:Double x:Key=\"EspaciadoWindows\">20</x:Double>\n    </ContentView.Resources>",
+      "display": "<ContentView.Resources>\n        <x:Double\n    x:Key=\"EspaciadoAndroid\">10</x:Double>\n        <x:Double\n    x:Key=\"EspaciadoWindows\">20</x:Double>\n    </ContentView.Resources>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 5
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout x:Name=\"pila\" Orientation=\"Horizontal\">\n        <Label Text=\"Contraseña\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n        <Entry x:Name=\"eContrasenia\" \n               MaxLength=\"10\"\n               Keyboard=\"Default\"\n               IsPassword=\"True\"\n               Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label x:Name=\"lContrasenia\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "display": "<StackLayout\n    x:Name=\"pila\"\n    Orientation=\"Horizontal\">\n        <Label\n    Text=\"Contraseña\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n        <Entry\n    x:Name=\"eContrasenia\"\n    MaxLength=\"10\"\n    Keyboard=\"Default\"\n    IsPassword=\"True\"\n    Unfocused=\"ContraseniaPierdeFoco\"/>\n        <Label\n    x:Name=\"lContrasenia\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 10
+    }
+  ],
+  "relacion-7-r5/BLoginViews_Estudio/EntryNombreUsuarioV1.xaml": [
+    {
+      "name": "ContentView",
+      "kind": "etiqueta",
+      "code": "<ContentView xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             x:Class=\"BLoginViews_Estudio.EntryNombreUsuarioV1\">",
+      "display": "<ContentView\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    x:Class=\"BLoginViews_Estudio.EntryNombreUsuarioV1\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "StackLayout",
+      "kind": "etiqueta",
+      "code": "<StackLayout Orientation=\"Horizontal\">\n        <Label Text=\"Usuario\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n        <Entry x:Name=\"eUsuario\" \n               MaxLength=\"15\"\n               Keyboard=\"Text\"\n               Unfocused=\"UsuarioPierdeFoco\"/>\n        <Label x:Name=\"lUsuario\"\n            Text=\"\"\n            VerticalOptions=\"Center\" \n            HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "display": "<StackLayout\n    Orientation=\"Horizontal\">\n        <Label\n    Text=\"Usuario\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n        <Entry\n    x:Name=\"eUsuario\"\n    MaxLength=\"15\"\n    Keyboard=\"Text\"\n    Unfocused=\"UsuarioPierdeFoco\"/>\n        <Label\n    x:Name=\"lUsuario\"\n    Text=\"\"\n    VerticalOptions=\"Center\"\n    HorizontalOptions=\"Center\" />\n    </StackLayout>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 5
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/App.xaml": [
+    {
+      "name": "Application",
+      "kind": "etiqueta",
+      "code": "<Application xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\" xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\" x:Class=\"R07E01R05App_Estudio.App\">",
+      "display": "<Application\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    x:Class=\"R07E01R05App_Estudio.App\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 1
+    },
+    {
+      "name": "Application.Resources",
+      "kind": "etiqueta",
+      "code": "<Application.Resources><ResourceDictionary /></Application.Resources>",
+      "display": "<Application.Resources><ResourceDictionary /></Application.Resources>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 1
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/AppShell.xaml": [
+    {
+      "name": "Shell",
+      "kind": "etiqueta",
+      "code": "<Shell xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\" xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\" xmlns:local=\"clr-namespace:R07E01R05App_Estudio\" x:Class=\"R07E01R05App_Estudio.AppShell\" FlyoutBehavior=\"Flyout\">",
+      "display": "<Shell\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    xmlns:local=\"clr-namespace:R07E01R05App_Estudio\"\n    x:Class=\"R07E01R05App_Estudio.AppShell\"\n    FlyoutBehavior=\"Flyout\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 1
+    },
+    {
+      "name": "FlyoutItem",
+      "kind": "etiqueta",
+      "code": "<FlyoutItem Title=\"Espaciado V1\"><ShellContent ContentTemplate=\"{DataTemplate local:MainPage}\" /></FlyoutItem>",
+      "display": "<FlyoutItem\n    Title=\"Espaciado V1\"><ShellContent\n    ContentTemplate=\"{DataTemplate local:MainPage}\" /></FlyoutItem>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 1
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/MainPage.xaml": [
+    {
+      "name": "ContentPage",
+      "kind": "etiqueta",
+      "code": "<ContentPage xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n             xmlns:v=\"clr-namespace:BLoginViews_Estudio;assembly=BLoginViews_Estudio\"\n             x:Class=\"R07E01R05App_Estudio.MainPage\"\n             Title=\"R07E01R05 Espaciado\">",
+      "display": "<ContentPage\n    xmlns=\"http://schemas.microsoft.com/dotnet/2021/maui\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2009/xaml\"\n    xmlns:v=\"clr-namespace:BLoginViews_Estudio;assembly=BLoginViews_Estudio\"\n    x:Class=\"R07E01R05App_Estudio.MainPage\"\n    Title=\"R07E01R05 Espaciado\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 2
+    },
+    {
+      "name": "ScrollView",
+      "kind": "etiqueta",
+      "code": "<ScrollView>",
+      "display": "<ScrollView>",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 7
+    },
+    {
+      "name": "VerticalStackLayout",
+      "kind": "etiqueta",
+      "code": "<VerticalStackLayout Padding=\"20\" Spacing=\"12\">",
+      "display": "<VerticalStackLayout\n    Padding=\"20\"\n    Spacing=\"12\">",
+      "context": "Etiqueta de apertura: conserva los hijos y el cierre del archivo.",
+      "line": 8
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"Entrada de usuario (sin cambios entre V0 y V1)\" />",
+      "display": "<Label\n    Text=\"Entrada de usuario (sin cambios entre V0 y V1)\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 9
+    },
+    {
+      "name": "v:EntryNombreUsuarioV1",
+      "kind": "etiqueta",
+      "code": "<v:EntryNombreUsuarioV1 x:Name=\"usuario\" />",
+      "display": "<v:EntryNombreUsuarioV1\n    x:Name=\"usuario\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 10
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"V1: base, sin Spacing personalizado\" />",
+      "display": "<Label\n    Text=\"V1: base, sin Spacing personalizado\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 12
+    },
+    {
+      "name": "v:EntryContraseniaV1",
+      "kind": "etiqueta",
+      "code": "<v:EntryContraseniaV1 x:Name=\"clave1\" />",
+      "display": "<v:EntryContraseniaV1\n    x:Name=\"clave1\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 13
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"V2: extensión de marcado propia\" />",
+      "display": "<Label\n    Text=\"V2: extensión de marcado propia\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 14
+    },
+    {
+      "name": "v:EntryContraseniaV2",
+      "kind": "etiqueta",
+      "code": "<v:EntryContraseniaV2 x:Name=\"clave2\" />",
+      "display": "<v:EntryContraseniaV2\n    x:Name=\"clave2\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 15
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"V3: OnPlatform con x:Static\" />",
+      "display": "<Label\n    Text=\"V3: OnPlatform con x:Static\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 16
+    },
+    {
+      "name": "v:EntryContraseniaV3",
+      "kind": "etiqueta",
+      "code": "<v:EntryContraseniaV3 x:Name=\"clave3\" />",
+      "display": "<v:EntryContraseniaV3\n    x:Name=\"clave3\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 17
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"V4: StaticResource en ContentView.Resources\" />",
+      "display": "<Label\n    Text=\"V4: StaticResource en ContentView.Resources\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 18
+    },
+    {
+      "name": "v:EntryContraseniaV4",
+      "kind": "etiqueta",
+      "code": "<v:EntryContraseniaV4 x:Name=\"clave4\" />",
+      "display": "<v:EntryContraseniaV4\n    x:Name=\"clave4\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 19
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"V5: DynamicResource en ContentView.Resources\" />",
+      "display": "<Label\n    Text=\"V5: DynamicResource en ContentView.Resources\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 20
+    },
+    {
+      "name": "v:EntryContraseniaV5",
+      "kind": "etiqueta",
+      "code": "<v:EntryContraseniaV5 x:Name=\"clave5\" />",
+      "display": "<v:EntryContraseniaV5\n    x:Name=\"clave5\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 21
+    },
+    {
+      "name": "Button",
+      "kind": "etiqueta",
+      "code": "<Button Text=\"Mostrar datos\" Clicked=\"Mostrar\" />",
+      "display": "<Button\n    Text=\"Mostrar datos\"\n    Clicked=\"Mostrar\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 23
+    },
+    {
+      "name": "Button",
+      "kind": "etiqueta",
+      "code": "<Button Text=\"V5: cambiar espaciado de Windows y Android\" Clicked=\"CambiarEspaciadoV5\" />",
+      "display": "<Button\n    Text=\"V5: cambiar espaciado de Windows y Android\"\n    Clicked=\"CambiarEspaciadoV5\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 24
+    },
+    {
+      "name": "Label",
+      "kind": "etiqueta",
+      "code": "<Label Text=\"Solo se resuelve el espaciado de la contraseña. Relleno, margen, color de fondo y tamaño de fuente no están resueltos en V1.\" />",
+      "display": "<Label\n    Text=\"Solo se resuelve el espaciado de la contraseña. Relleno, margen, color de fondo y tamaño de fuente no están resueltos en V1.\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 25
+    }
+  ],
+  "relacion-7-r5/R07E01R05App_Estudio/R07E01R05App_Estudio.csproj": [
+    {
+      "name": "TargetFrameworks",
+      "kind": "etiqueta",
+      "code": "<TargetFrameworks>net10.0-android</TargetFrameworks>",
+      "display": "<TargetFrameworks>net10.0-android</TargetFrameworks>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 4
+    },
+    {
+      "name": "TargetFrameworks",
+      "kind": "etiqueta",
+      "code": "<TargetFrameworks Condition=\"!$([MSBuild]::IsOSPlatform('linux'))\">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>",
+      "display": "<TargetFrameworks\n    Condition=\"!$([MSBuild]::IsOSPlatform('linux'))\">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 5
+    },
+    {
+      "name": "TargetFrameworks",
+      "kind": "etiqueta",
+      "code": "<TargetFrameworks Condition=\"$([MSBuild]::IsOSPlatform('windows'))\">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>",
+      "display": "<TargetFrameworks\n    Condition=\"$([MSBuild]::IsOSPlatform('windows'))\">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 6
+    },
+    {
+      "name": "OutputType",
+      "kind": "etiqueta",
+      "code": "<OutputType>Exe</OutputType>",
+      "display": "<OutputType>Exe</OutputType>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 15
+    },
+    {
+      "name": "UseMaui",
+      "kind": "etiqueta",
+      "code": "<UseMaui>true</UseMaui>",
+      "display": "<UseMaui>true</UseMaui>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 17
+    },
+    {
+      "name": "SingleProject",
+      "kind": "etiqueta",
+      "code": "<SingleProject>true</SingleProject>",
+      "display": "<SingleProject>true</SingleProject>",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 18
+    },
+    {
+      "name": "ProjectReference",
+      "kind": "etiqueta",
+      "code": "<ProjectReference Include=\"../BLoginViews_Estudio/BLoginViews_Estudio.csproj\" />",
+      "display": "<ProjectReference\n    Include=\"../BLoginViews_Estudio/BLoginViews_Estudio.csproj\" />",
+      "context": "Elemento XAML dentro de su contenedor; no sustituye el archivo completo.",
+      "line": 73
     }
   ],
   "relacion-8/BRelacion07Estudio/BRelacion07Estudio.csproj": [

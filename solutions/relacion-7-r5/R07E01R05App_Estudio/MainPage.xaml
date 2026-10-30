@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:BLoginViews_Estudio;assembly=BLoginViews_Estudio"
+             x:Class="R07E01R05App_Estudio.MainPage"
+             Title="R07E01R05 Espaciado">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+            <Label Text="Entrada de usuario (sin cambios entre V0 y V1)" />
+            <v:EntryNombreUsuarioV1 x:Name="usuario" />
+
+            <Label Text="V1: base, sin Spacing personalizado" />
+            <v:EntryContraseniaV1 x:Name="clave1" />
+            <Label Text="V2: extensión de marcado propia" />
+            <v:EntryContraseniaV2 x:Name="clave2" />
+            <Label Text="V3: OnPlatform con x:Static" />
+            <v:EntryContraseniaV3 x:Name="clave3" />
+            <Label Text="V4: StaticResource en ContentView.Resources" />
+            <v:EntryContraseniaV4 x:Name="clave4" />
+            <Label Text="V5: DynamicResource en ContentView.Resources" />
+            <v:EntryContraseniaV5 x:Name="clave5" />
+
+            <Button Text="Mostrar datos" Clicked="Mostrar" />
+            <Button Text="V5: cambiar espaciado de Windows y Android" Clicked="CambiarEspaciadoV5" />
+            <Label Text="Solo se resuelve el espaciado de la contraseña. Relleno, margen, color de fondo y tamaño de fuente no están resueltos en V1." />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

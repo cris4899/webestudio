@@ -78,3 +78,12 @@ Fecha: 28 de octubre de 2026.
 - Las convenciones no especificadas en los PDF se indican como tales: alfabeto exacto para usuario/matrícula y cumpleaños de 29 de febrero. No se añaden restricciones de matrículas reales ni un criterio de evaluación atribuido al profesor.
 - Tras la autorización posterior se ha creado el repositorio público cris4899/webestudio y el proyecto webestudio en Vercel, conectado a main. Primer despliegue confirmado como Deployed to Production en https://webestudio-three.vercel.app. En producción se verifican inicio, navegación y búsqueda. Se añade .gitattributes para impedir que Git normalice los listados originales.
 - Los archivos originales no se modificaron. La importación y el renderizado generan datos y páginas de consulta; los RAR se descargan completos, incluidos sus metadatos originales.
+
+## Rediseño por temas y R07E01R05 (30 de octubre de 2026)
+
+- `npm test`: 17 pruebas correctas, incluidas compatibilidad de progreso, rutas anteriores y último sitio. `npm run build` correcto.
+- Compilación Windows de los dos proyectos nuevos de `relacion-7-r5`: 0 errores y 0 advertencias. No se recompilan los otros 36 proyectos porque no cambian. `verify-solutions.ps1` no se ejecutó completo: requiere PowerShell 7. Sin pruebas en Android ni iOS.
+- `import-materials.py` no se ejecutó porque faltan `pypdf` y `pypdfium2`; las dos entradas RAR se añadieron con su misma lógica y `assets/pdf` no cambia.
+- Navegador: Inicio, tema, bloques, taller, repaso, redirecciones, búsqueda y progreso antiguo tras recargar, en claro y oscuro, escritorio y 375 px sin desbordamiento horizontal.
+- `dist` ocupa 254 MB por los dos RAR nuevos.
+- Revisión con Codex: `DynamicResource` dentro de `OnPlatform` (V5 del RAR) no puede enlazar `Spacing` porque `On.Value` no es enlazable. El paquete usa `SetDynamicResource` y la lección señala la discrepancia; el RAR no se modifica ni se ejecuta. La compilación de los proyectos nuevos sigue limpia, pero la actualización del espaciado no se ha probado en ejecución.

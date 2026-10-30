@@ -8,24 +8,40 @@ import { workshops, workshopSteps, workshopCode } from '../data/workshops.mjs';
 import { explainPart, explainLine } from '../data/study-explanations.mjs';
 import { workshopStudy, isImportantCode } from '../data/workshop-study.mjs';
 import { readWorkshopPositions } from '../lib.mjs';
-import { referenceCategories, studyPaths, practiceGroups } from '../data/interface.mjs';
-import { readProgress, readStudy, normalize, searchCourse } from '../lib.mjs';
+import { referenceCategories } from '../data/interface.mjs';
+import { topics, topicOf } from '../data/topics.mjs';
+import { readProgress, readStudy, normalize, searchCourse, legacyRoute, lessonRoute, readLastPlace } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
 const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
 
-test('Organización: ocho relaciones, cinco módulos y todas las fichas sin duplicados', () => {
-  const groups=practiceGroups(lessons);
-  assert.equal(groups.filter(g=>g.id.startsWith('relacion-')).length,8);
-  assert.equal(groups.filter(g=>g.id.startsWith('learn-')).length,5);
-  const ids=groups.flatMap(g=>g.lessons.map(l=>l.id));
+test('Organización: cada lección en un solo tema y todas las fichas sin duplicados', () => {
+  const ids=topics.flatMap(t=>t.lessons);
   assert.equal(new Set(ids).size,ids.length);
-  assert.deepEqual(ids.sort(),lessons.filter(l=>l.tag.startsWith('Relación')||l.id.startsWith('learn-')).map(l=>l.id).sort());
+  assert.deepEqual([...ids].sort(),lessons.map(l=>l.id).sort());
+  assert.equal(new Set(topics.map(t=>t.id)).size,7);
   const cards=referenceCategories.flatMap(c=>c.cards);
   assert.equal(new Set(cards).size,cards.length);
   assert.deepEqual(cards.sort(),referenceCards.map(c=>c.id).sort());
-  assert.equal(studyPaths.length,3);
+});
+
+test('Rutas: los enlaces anteriores llegan a su tema y bloque', () => {
+  for(const l of lessons)assert.equal(legacyRoute(`/leccion/${l.id}`),lessonRoute(l.id));
+  assert.equal(legacyRoute('/leccion/recursos?apartado=2'),'/tema/extensiones/recursos?bloque=entender&apartado=2');
+  assert.equal(legacyRoute('/leccion/edad?apartado=comprobacion'),'/tema/formularios/edad?bloque=repasar');
+  assert.equal(legacyRoute('/leccion/calculadora?apartado=ejercicio'),'/tema/eventos/calculadora?bloque=construir');
+  for(const w of workshops)assert.equal(legacyRoute(`/comparar/${w.id}`),lessonRoute(w.lesson,'comparar'));
+  for(const old of ['/practica','/unidad/UD2','/unidad/UD3-4'])assert.equal(legacyRoute(old),'/');
+  for(const current of ['/','/consulta','/autoevaluacion','/leccion/inventada','/comparar/inventada','/taller/relacion-1'])assert.equal(legacyRoute(current),null);
+});
+
+test('Último sitio: rechaza datos corruptos y rutas desconocidas', () => {
+  for(const raw of [null,5,'{mal','/','/tema/xaml','/tema/xaml/inventada','/tema/navegacion/entorno','/taller/inventado','/taller/relacion-1/extra','/tema/xaml/xaml-layouts/extra'])assert.equal(readLastPlace(raw),null,String(raw));
+  assert.equal(readLastPlace('/tema/xaml/xaml-layouts?bloque=repasar'),'/tema/xaml/xaml-layouts?bloque=repasar');
+  assert.equal(readLastPlace('/tema/xaml/xaml-layouts?bloque=inventado'),'/tema/xaml/xaml-layouts?bloque=entender');
+  assert.equal(readLastPlace('/taller/relacion-1'),'/taller/relacion-1');
+  assert.equal(topicOf('inventada'),undefined);
 });
 
 test('Último paso: datos corruptos, alias, posición inicial y relaciones independientes', () => {
@@ -36,8 +52,8 @@ test('Último paso: datos corruptos, alias, posición inicial y relaciones indep
   assert.deepEqual(readWorkshopPositions(JSON.stringify(saved),[]),{});
 });
 
-test('Comparaciones: ocho relaciones y archivos del paquete, sin sintaxis trivial destacada', () => {
-  assert.equal(Object.keys(workshopStudy).length,8);
+test('Comparaciones: nueve talleres y archivos del paquete, sin sintaxis trivial destacada', () => {
+  assert.equal(Object.keys(workshopStudy).length,9);
   for(const [id,info] of Object.entries(workshopStudy)) {
     const pkg=solutions.find(p=>p.id===id);
     assert.ok(info.focus && info.mistake && info.rows.length>=2);
@@ -50,14 +66,14 @@ test('Comparaciones: ocho relaciones y archivos del paquete, sin sintaxis trivia
   assert.ok(searchCourse('referencia local',lessons,materials,referenceCards,solutions).solutions.some(p=>p.id==='relacion-7'));
 });
 
-test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados', () => {
-  assert.deepEqual(workshops.map(w=>w.id),Array.from({length:8},(_,i)=>`relacion-${i+1}`));
+test('Talleres: nueve recorridos, pasos únicos y código de los ZIP verificados', () => {
+  assert.deepEqual(workshops.map(w=>w.id),[...Array.from({length:8},(_,i)=>`relacion-${i+1}`),'relacion-7-r5']);
   for(const w of workshops) {
     const pkg=solutions.find(p=>p.id===w.id),steps=workshopSteps(w,pkg);
     assert.ok(lessons.some(l=>l.id===w.lesson));
     assert.equal(new Set(steps.map(s=>s.id)).size,steps.length);
     assert.ok(steps.length>=10 && steps.length<=50,'Recorrido intermedio por relación');
-    const previousCounts={'relacion-1':77,'relacion-2':178,'relacion-3':50,'relacion-4':115,'relacion-5':60,'relacion-6':60,'relacion-7':224,'relacion-8':82};
+    const previousCounts={'relacion-1':77,'relacion-2':178,'relacion-3':50,'relacion-4':115,'relacion-5':60,'relacion-6':60,'relacion-7':224,'relacion-8':82,'relacion-7-r5':103};
     assert.equal(new Set(steps.flatMap(s=>[s.id,...s.aliases])).size,previousCounts[w.id],'Todas las URL de micro pasos siguen resolviendo');
     for(const s of steps)assert.ok(new Set(s.files.map(f=>f.path)).size<=1,'Se trabaja en un archivo por paso');
     assert.equal(steps[0].id,'preparar');
@@ -75,6 +91,8 @@ test('Talleres: ocho relaciones, pasos únicos y código de los ZIP verificados'
       }
     }
   }
+  const r5=solutions.find(p=>p.id==='relacion-7-r5');
+  assert.ok(workshopSteps(workshops.find(w=>w.id===r5.id),r5).some(s=>s.files.some(f=>workshopCode(f,r5).includes('SetDynamicResource'))),'El taller muestra el enlace dinámico de V5');
   assert.ok(searchCourse('aritmética modular',lessons,materials,referenceCards,solutions).solutions.some(p=>p.id==='relacion-3'));
   assert.throws(()=>workshopCode({path:'no-existe.cs'},solutions[0]),/inexistente/);
   assert.throws(()=>workshopCode({path:solutions[0].files.find(f=>f.code)?.path,start:'ancla que no existe'},solutions[0]),/inválido/);
@@ -135,9 +153,9 @@ test('AC1: búsqueda sin tildes, varias palabras y contenido interior', () => {
   assert.ok(searchCourse('fecha futuro', lessons, materials).lessons.some(l => l.id === 'edad'));
   assert.deepEqual(searchCourse('inexistente-9384739', lessons, materials), { lessons: [], materials: [], references: [], solutions: [] });
 });
-test('Guía completa: 17 lecciones, 85 preguntas y los 13 paquetes', async () => {
-  assert.equal(lessons.length,17);
-  assert.equal(solutions.length,13);
+test('Guía completa: 18 lecciones y los 14 paquetes', async () => {
+  assert.equal(lessons.length,18);
+  assert.equal(solutions.length,14);
   assert.ok(lessons.every(l=>l.quizzes.length>=5 && l.guide.steps.length>=3));
   for(const l of lessons) assert.ok(solutions.some(p=>p.id===l.guide.packageId));
   for(const c of referenceCards) {
@@ -197,7 +215,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/topics.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <!-- Consulta https://aka.ms/maui-publish-app-store#add-entitlements para saber cómo añadir permisos de la aplicación.-->
+    <dict>
+        <!-- El aislamiento App Sandbox debe estar activado para distribuir una aplicación MacCatalyst mediante Mac App Store. -->
+        <key>com.apple.security.app-sandbox</key>
+        <true/>
+        <!-- Con App Sandbox activado, este valor permite abrir conexiones de red salientes. -->
+        <key>com.apple.security.network.client</key>
+        <true/>
+    </dict>
+</plist>
+

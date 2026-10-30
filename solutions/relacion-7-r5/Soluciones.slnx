@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/BLoginViews_Estudio/">
+    <Project Path="BLoginViews_Estudio/BLoginViews_Estudio.csproj" />
+  </Folder>
+  <Folder Name="/R07E01R05App_Estudio/">
+    <Project Path="R07E01R05App_Estudio/R07E01R05App_Estudio.csproj" />
+  </Folder>
+</Solution>

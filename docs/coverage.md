@@ -13,6 +13,7 @@ La referencia normativa son los PDF y módulos enlazados por el profesor. Las so
 | R6: composición, UserName, PassWord y aplicación de prueba | contentview | relacion-6 / BAcceso y LoginAccesoV2 | Leer desde anfitrión y tratar errores sin depender del foco |
 | R7: extensiones propias y x:Static, cinco propiedades, plataformas y tipos de View | extensiones | relacion-7 / BAccesoPropias y BAccesoStatic | Tipos, valores Windows/Android y personalización |
 | R7: recursos estáticos/dinámicos de ContentView y configuración desde anfitrión | recursos | relacion-7 / BAccesoRecursosEstaticos y BAccesoRecursosDinamicos | Reemplazo de clave, asignación inicial y propiedades públicas |
+| R7 ejercicio 1 (RAR V0 y V1): espaciado de EntryContrasenia con extensión propia, x:Static, StaticResource y DynamicResource; relleno, margen, fondo y fuente quedan sin resolver en V1 | extensiones-login | relacion-7-r5 / BLoginViews_Estudio (V1 a V5) y R07E01R05App_Estudio | Espaciado por plataforma, cambio desde anfitrión en V5 y aviso de lo pendiente |
 | R8: matrícula leíble/asignable 0000-BBB sin vocales, extensiones 10, verde, error amarillo/transparente | matricula | relacion-8 / ViewMatriculaEstudio y AspectoExtension | Formato completo, asignaciones y recuperación tras error |
 | R8: DatePicker, años cumplidos, futuro, umbral 18 y >12, azul, datos y apariencia desde anfitrión | edad | relacion-8 / ViewMayorEdadEstudio y PruebasR07 | Cumpleaños, futuro, umbrales y recalcular |
 | Learn: arquitectura, proyecto, primera aplicación y Phoneword | learn-primera-app | learn-primera-app / contador, traductor y marcador | Incremento +5, traducción, invalidación y cancelación |
@@ -36,4 +37,5 @@ Cada bloque anterior se desglosa en `data/workshops.mjs` mediante los fragmentos
 | 5 | 13 | Validación, especialización y anfitrión |
 | 6 | 14 | Composición, propiedades públicas y prueba |
 | 7 | 48 | Extensiones, x:Static, recursos y cuatro anfitriones |
+| 7 · R5 | 23 | Base V0, cuatro variantes de espaciado de V1 y anfitrión |
 | 8 | 18 | Matrícula, fecha/umbral, aspecto e integración |

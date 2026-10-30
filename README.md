@@ -21,13 +21,13 @@ npm run build
 
 ## Qué incluye
 
-- 17 lecciones: 12 en UD2 y 5 en UD3-4, con las ocho relaciones y los cinco módulos Learn enviados.
+- 18 lecciones repartidas en siete temas, con las ocho relaciones, R07E01R05 y los cinco módulos Learn enviados.
 - Explicaciones secuenciales, fragmentos identificados, guías de resolución y comprobaciones.
 - Las ocho relaciones del profesor; sin supuestos nuevos de examen.
 - Autoevaluación de 85 preguntas razonadas y 19 fichas de consulta rápida.
 - Guías de construcción, flujo de datos, requisitos previos y soluciones completas ocultas inicialmente para practicar antes de consultarlas.
 - 13 proyectos descargables en ZIP: uno por relación y uno por módulo Learn. Incluyen todas sus variantes, 36 proyectos MAUI con compilación Windows comprobada, instrucciones y casos de verificación.
-- Progreso de lecciones, casillas de práctica y respuestas comprobadas de autoevaluación guardados en este navegador y restaurados al volver. Las casillas se comparten entre la lección y la vista de prácticas.
+- Progreso de lecciones, casillas de práctica y respuestas comprobadas de autoevaluación guardados en este navegador y restaurados al volver. Inicio retoma el último sitio visitado.
 - Selector de modo claro/oscuro con preferencia guardada; la primera visita utiliza el tema del sistema.
 - Biblioteca con páginas de los PDF (17 páginas con imágenes), texto extraído y descarga del original.
 - 85 archivos fuente consultables de los cinco RAR, sin ejecutar sus proyectos.
@@ -48,11 +48,11 @@ Mapa del proyecto:
 | `data/course.mjs` | Lecciones, ejercicios derivados y preguntas |
 | `data/guide.mjs` | Ampliación didáctica, módulos Learn y consulta rápida |
 | `data/solution-guides.mjs`, `data/solutions.json` | Pasos, casos y exportación exacta de los archivos de solución |
-| `solutions/`, `downloads/` | Fuentes y ZIP de los 13 paquetes |
+| `solutions/`, `downloads/` | Fuentes y ZIP de los 14 paquetes |
 | `data/materials.json` | Inventario, texto de PDF y código extraído |
 | `assets/pdf/` | Páginas renderizadas de los documentos originales |
 | `app.mjs`, `lib.mjs` | Navegación, búsqueda, progreso y evaluación |
-| `styles.css` | Diseño responsive, tarjetas y colores por unidad |
+| `styles.css` | Diseño responsive y colores por unidad |
 | `scripts/` | Build, servidor, importación y comprobaciones |
 | `UD2/`, `UD3-4/` | Archivos originales |
 
@@ -97,7 +97,7 @@ Los generadores `create-relations.py` y `create-learn.py` permiten reconstruir e
 Límites: compilación verificada para Windows; no se afirma ejecución Android/iOS. Phoneword requiere marcador compatible y confirmación del usuario. Astronomy mantiene la dependencia de red del ejercicio oficial. Las limitaciones heredadas de los ejemplos se señalan junto a su solución.
 ## Resolver las relaciones desde Visual Studio
 
-El menú separa **Estudiar**, **Practicar** y **Consultar**. Las prácticas tienen una ficha por relación y una sección aparte para los módulos Learn. Consulta rápida agrupa las fichas por función; Autoevaluación permite elegir una lección y abrir solo sus preguntas. Las páginas internas muestran su ubicación para volver al apartado superior. La tipografía principal es de 16 px; código de 13 px y botones de 14 px.
+El menú lista los **siete temas** de `data/topics.mjs`. Cada lección tiene los bloques **Entender**, **Construir**, **Comparar** y **Repasar**. Fichas agrupa la consulta por función; Repaso general permite elegir una lección y abrir solo sus preguntas. Las páginas internas muestran su ubicación para volver al apartado superior. La tipografía principal es de 16 px; código de 13 px y botones de 14 px.
 
 La web recuerda automáticamente el último paso visitado por relación y ofrece «Continuar la relación». Esta posición es independiente de las casillas y lecciones completadas. «Ir al primer paso» permite volver al inicio. Cada relación incluye «Comparar variantes», con diferencias, elementos compartidos y archivos reales para contrastar. Se destacan las explicaciones de lógica importante y se mantiene opcional el detalle de sintaxis sencilla. El guardado se limita a este navegador y dominio.
 
