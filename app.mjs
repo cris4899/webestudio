@@ -1,7 +1,7 @@
 import { createAcademy } from './academy.mjs';
 import { rubricGroups, rubricSource, readRubricChecks } from './data/rubric.mjs';
 import { lessons, officialNotes, referenceCards } from './data/course.mjs';
-import { normalize, readProgress, readStudy, searchCourse, readWorkshopPositions, lessonRoute, legacyRoute, readLastPlace } from './lib.mjs';
+import { normalize, readProgress, readStudy, searchCourse, readWorkshopPositions, lessonRoute, legacyRoute, readLastPlace, lessonState, lessonStateLabels } from './lib.mjs';
 import { workshops, workshopSteps, workshopCode } from './data/workshops.mjs';
 import { explainLine } from './data/study-explanations.mjs';
 import { workshopStudy, isImportantCode } from './data/workshop-study.mjs';
@@ -60,7 +60,8 @@ $('#theme-toggle').addEventListener('click', () => {
   try { localStorage.setItem('aula-interfaces.tema', document.documentElement.dataset.theme); }
   catch { notify('El tema se aplicará solo durante esta sesión: el almacenamiento está bloqueado.'); }
 });
-function progress(list = lessons) { const count = list.filter(l => completed.has(l.id)).length; return { count, total: list.length, percent: Math.round(count / list.length * 100) }; }
+const stateOf = l => lessonState(l, { completed, study, positions: lastSteps });
+function progress(list = lessons) { const count = list.filter(l => stateOf(l) === 'dominada').length; return { count, total: list.length, percent: Math.round(count / list.length * 100) }; }
 const topicLessons = topic => topic.lessons.map(id => lessons.find(l => l.id === id)).filter(Boolean);
 const track = (percent, label) => `<div class="progress-track" role="progressbar" aria-label="${esc(label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><div class="progress-fill" style="width:${percent}%"></div></div>`;
 const heading = (eyebrow, title, description, badge = '') => `<div class="page-heading"><div><h1>${title}</h1><p class="subheading">${description}</p></div>${badge ? `<span class="pill">${badge}</span>` : ''}</div>`;
@@ -126,6 +127,7 @@ function sectionJump(items) {
 }
 function rubricPage() {
   return heading('EXAMEN · UNIDADES 2, 3 Y 4', 'Repaso con la rúbrica del profesor.', 'Comprueba lo que sabes construir, explicar y verificar, criterio por criterio.') +
+    academy.pendingPanel() +
     `<section class="panel"><h2>Cómo usar esta guía</h2><p>La fuente es la rúbrica de la práctica 1: RA1, RA3 y RA4 son resultados de aprendizaje, no números de unidad. La usamos para preparar las unidades 2, 3 y 4; no confirma el enunciado, las preguntas ni la ponderación del examen. Cada RA suma 100% por separado; no se conoce su peso conjunto. Los niveles publicados son 5, 4, 3, 2 y 0, con celdas vacías: no inventamos descriptores ni calculamos una nota.</p><a class="button" href="${rubricSource}" download>Descargar rúbrica original (PDF)</a><p>Los criterios y porcentajes proceden del PDF. Las explicaciones, pruebas y recomendaciones son una guía didáctica. Marca un criterio después de realizar su comprobación sin copiar la solución. Las casillas se guardan en este navegador, independientemente del progreso anterior, y no acreditan una calificación.</p><p id="rubric-progress" role="status">${rubricChecks.size} de 16 criterios comprobados.</p></section>` +
     rubricGroups.map(group=>`<section class="content-section"><h2>${esc(group.id)} · ${esc(group.title)}</h2><p>Pesos dentro de ${esc(group.id)}: 100%. Revisa todos los criterios, también los de menor peso.</p>${group.criteria.map(c=>`<article class="panel" id="${c.id}"><h3>CE-${esc(c.ce)} · ${esc(c.title)} · ${c.weight}%</h3><p>${esc(c.explanation)}</p><h4>Comprobación práctica</h4><p>${esc(c.evidence)}</p><p><strong>Fallo que debes evitar:</strong> ${esc(c.pitfall)}</p><div class="academy-actions"><a class="button secondary" href="#/reto/reto-${c.id.toLowerCase()}">Practicar este criterio</a><a class="button secondary" href="#/diagnostico?ra=${group.id}">Diagnóstico de ${group.id}</a></div><div class="exam-links">${c.lessons.map(id=>`<a href="#/leccion/${id}">${esc(lessons.find(l=>l.id===id).title)}</a>`).join('')}</div><label><input type="checkbox" data-rubric="${c.id}"${rubricChecks.has(c.id)?' checked':''}> He realizado y puedo explicar esta comprobación sin copiar.</label></article>`).join('')}</section>`).join('') +
     `<section class="panel"><h2>Orden de repaso para no dejar huecos</h2><ol><li>Fundamentos: proyecto, XAML/C#, layouts y propiedades. Resuelve R1–R3 y trata entradas y operaciones erróneas.</li><li>Navegación: R4 y Learn multipágina. Abre todas las páginas desde el menú flotante.</li><li>Componentes: R5–R6 y R8. Comprueba biblioteca, API pública, valores iniciales, eventos, documentación y consumo real.</li><li>Aspecto: R7 y Learn recursos. Explica extensiones, ámbito, recursos y estilos; contrasta distribución y legibilidad con el modelo.</li><li>Integra: compila, ejecuta casos válidos y límites, recupera después de un error y explica el flujo completo desde la entrada hasta el resultado.</li></ol><p>Elige primero los criterios pendientes de mayor peso de cada RA: RA1 eventos (20%); RA3 eventos (30%) y API pública (25%); RA4 aspecto (40%). Esto organiza el tiempo, no elimina el resto.</p><h2>Preguntas para explicar en voz alta</h2><details><summary>¿Cómo viaja un cambio desde un View compuesto hasta su página consumidora?</summary><p>El evento interno recoge la entrada; se convierte y valida; se actualiza la propiedad pública y el estado visual; se emite el evento público con la información acordada; la página suscrita actualiza su respuesta. Si el dato falla, informa y conserva un estado coherente. No expongas hijos privados para que la página haga todo el trabajo.</p></details><details><summary>¿Qué diferencia una propiedad pública de una BindableProperty?</summary><p>Una propiedad C# permite get/set y puede validar o actualizar controles. BindableProperty integra el valor con el sistema de propiedades MAUI para bindings, estilos y notificación de cambios; su envoltorio usa GetValue/SetValue y puede definir un valor por defecto y propertyChanged. No toda propiedad pública tiene que ser enlazable: justifica la elección según su uso.</p></details><details><summary>¿Qué debe contener la documentación de un componente?</summary><p>Propósito y clase base; dependencias y namespace; constructores; propiedades con tipo, valor inicial y restricciones; métodos; eventos con momento de emisión y datos; errores y un ejemplo de integración. Demuestra una suscripción y una lectura/escritura desde el proyecto consumidor.</p></details><details><summary>¿Qué demuestra que la biblioteca está integrada?</summary><p>El proyecto de biblioteca compila y genera su DLL; el consumidor tiene la referencia correcta; el namespace y assembly de XAML coinciden; una página instancia el componente y usa realmente sus propiedades y eventos. Una captura o una DLL aislada no demuestra el flujo completo.</p></details><h2>Última pasada antes del examen</h2><p>Reconstruye una práctica del profesor desde una copia vacía y sin mirar la solución. Contrasta cada apartado del enunciado con la rúbrica; prueba entradas normales, vacías, inválidas y límites; comprueba recuperación, todas las páginas y todos los componentes. Anota qué archivo demuestra cada criterio. No hay una práctica nueva ni una nota estimada en esta guía.</p></section>`;
@@ -151,17 +153,17 @@ function solutionsPage(id) {
 
 function renderNav(route, segment) {
   const topicId = segment[1] === 'tema' ? segment[2] : segment[1] === 'taller' ? topicOf(workshops.find(w => w.id === segment[2])?.lesson)?.id : null;
-  const practice = ['/entrenar','/diagnostico','/reto/','/codigo/','/casos/'];
+  const practice = ['/entrenar','/diagnostico','/reto/','/codigo/','/casos/','/autoevaluacion','/cuaderno'];
   const active = target => route === target || (target === '/entrenar' && practice.some(p => route.startsWith(p))) || (target === '/biblioteca' && route.startsWith('/material/')) || (target === '/soluciones' && route.startsWith('/solucion/')) || target === `/tema/${topicId}`;
   const navLink = (target, name, symbol, count = '') => `<a class="nav-link${active(target) ? ' active' : ''}" href="#${target}"${active(target) ? ' aria-current="page"' : ''}>${symbol}<span>${name}</span>${count ? `<span class="nav-count">${count}</span>` : ''}</a>`;
-  $('#nav').innerHTML = navLink('/', 'Inicio', icon('home')) + '<div class="nav-label">Temas</div>' + topics.map(t => { const p = progress(topicLessons(t)); return navLink(`/tema/${t.id}`, esc(t.title), `<span class="nav-dot${t.unit === 'UD3-4' ? ' purple' : ''}"></span>`, `${p.count}/${p.total}`); }).join('') + '<div class="nav-label">Repasar y consultar</div>' + navLink('/academia', 'Mi preparación', icon('check')) + navLink('/entrenar', 'Practicar', icon('practice')) + navLink('/autoevaluacion', 'Repaso general', icon('quiz')) + navLink('/rubrica', 'Rúbrica', icon('check')) + navLink('/consulta', 'Fichas', icon('book')) + navLink('/soluciones', 'Soluciones y descargas', icon('files')) + navLink('/biblioteca', 'Material del profesor', icon('files'));
+  $('#nav').innerHTML = navLink('/', 'Inicio', icon('home')) + '<div class="nav-label">Temas</div>' + topics.map(t => { const p = progress(topicLessons(t)); return navLink(`/tema/${t.id}`, esc(t.title), `<span class="nav-dot${t.unit === 'UD3-4' ? ' purple' : ''}"></span>`, `${p.count}/${p.total}`); }).join('') + '<div class="nav-label">Repasar y consultar</div>' + navLink('/entrenar', 'Practicar', icon('practice')) + navLink('/rubrica', 'Rúbrica', icon('check')) + navLink('/consulta', 'Fichas', icon('book')) + navLink('/soluciones', 'Soluciones y descargas', icon('files')) + navLink('/biblioteca', 'Material del profesor', icon('files')) + navLink('/progreso', 'Copia del progreso', icon('files'));
   const p = progress();
-  $('#sidebar-progress').innerHTML = `<div class="progress-top"><span>Lecciones completadas</span><strong>${p.count} de ${p.total}</strong></div>${track(p.percent, 'Lecciones completadas')}`;
+  $('#sidebar-progress').innerHTML = `<div class="progress-top"><span>Lecciones dominadas</span><strong>${p.count} de ${p.total}</strong></div>${track(p.percent, 'Lecciones dominadas')}`;
 }
 
 function resumePlace() {
   const place = readLastPlace(lastPlace);
-  const next = lessons.find(l => !completed.has(l.id));
+  const next = lessons.find(l => stateOf(l) !== 'dominada');
   if (place?.startsWith('/taller/')) {
     const id = place.split('/')[2], pkg = solutions.find(p => p.id === id), saved = lastSteps[id] && workshopSteps(workshops.find(w => w.id === id), pkg).find(s => s.id === lastSteps[id]);
     return { href: '#' + place, title: pkg.title, detail: saved ? `Taller · ${saved.title}` : 'Taller en Visual Studio' };
@@ -171,21 +173,21 @@ function resumePlace() {
     return { href: '#' + place, title: l.title, detail: `${topicOf(l.id).title} · ${block.title}` };
   }
   const l = next || lessons[0];
-  return { href: lessonLink(l), title: l.title, detail: `${topicOf(l.id).title} · ${next ? 'Primera lección sin completar' : 'Todo completado: vuelve a repasar'}` };
+  return { href: lessonLink(l), title: l.title, detail: `${topicOf(l.id).title} · ${next ? 'Primera lección sin dominar' : 'Todo dominado: vuelve a repasar'}` };
 }
 function home() {
-  const place = resumePlace(), p = progress();
+  const place = resumePlace(), p = progress(), step = academy.nextStep();
   return heading('', 'Aula de Interfaces', '.NET MAUI y XAML · Unidades 2, 3 y 4 de Desarrollo de Interfaces.') +
-    `<section class="resume" aria-labelledby="continua"><div><p class="resume-label" id="continua">Continúa aquí</p><h2>${esc(place.title)}</h2><p>${esc(place.detail)}</p></div><a class="button" href="${place.href}">Continuar</a><div class="resume-progress"><div class="progress-top"><span>Lecciones completadas</span><strong>${p.count} de ${p.total}</strong></div>${track(p.percent, 'Lecciones completadas')}</div></section><h2 class="list-title">Temas</h2><ol class="topic-list">${topics.map(topicRow).join('')}</ol><p class="source-notice">Basado en los archivos del profesor. Las explicaciones y preguntas son apoyo de estudio; los enunciados originales son la referencia. Tu progreso se guarda en este navegador.</p>`;
+    `<section class="resume" aria-labelledby="continua"><div><p class="resume-label" id="continua">Continúa aquí</p><h2>${esc(place.title)}</h2><p>${esc(place.detail)}</p></div><a class="button" href="${place.href}">Continuar</a><div class="resume-progress"><div class="progress-top"><span>Lecciones dominadas</span><strong>${p.count} de ${p.total}</strong></div>${track(p.percent, 'Lecciones dominadas')}</div></section><section class="today" aria-labelledby="hoy"><div><h2 id="hoy">Hoy toca</h2><p>${step.review ? 'Revisar errores en' : 'Practicar'} ${esc(step.id)}: ${esc(step.title)}</p></div><a class="button secondary" href="${step.href}">Ir a la actividad</a></section><h2 class="list-title">Temas</h2><ol class="topic-list">${topics.map(topicRow).join('')}</ol><p class="source-notice">Basado en los archivos del profesor. Las explicaciones y preguntas son apoyo de estudio; los enunciados originales son la referencia. Tu progreso se guarda en este navegador.</p>`;
 }
 function topicRow(t) {
-  const list = topicLessons(t), p = progress(list), state = p.count === p.total ? 'Completado' : `${p.count} de ${p.total}`;
+  const list = topicLessons(t), p = progress(list), state = p.count === p.total ? 'Dominado' : `${p.count} de ${p.total}`;
   return `<li class="topic-row${t.unit === 'UD3-4' ? ' purple' : ''}"><a href="#/tema/${t.id}"><span class="topic-main"><strong>${esc(t.title)}</strong><span>${esc(t.summary)}</span></span><span class="topic-side"><span>${t.unit} · ${state}</span>${track(p.percent, `Progreso de ${t.title}`)}</span></a></li>`;
 }
 function topicPage(id) {
   const t = topics.find(item => item.id === id); if (!t) return notFound();
   const list = topicLessons(t);
-  return heading('', esc(t.title), esc(t.summary)) + `<ol class="lesson-list">${list.map(l => `<li><a href="${lessonLink(l, completed.has(l.id) ? 'repasar' : undefined)}"><span><strong>${esc(l.title)}</strong><span>${esc(l.summary)}</span></span><span class="lesson-state${completed.has(l.id) ? ' done' : ''}">${esc(l.tag)} · ${completed.has(l.id) ? 'Completada' : lastSteps[l.guide.packageId] && workshops.find(w => w.id === l.guide.packageId)?.lesson === l.id ? 'En curso' : 'Sin empezar'}</span></a></li>`).join('')}</ol>`;
+  return heading('', esc(t.title), esc(t.summary)) + `<ol class="lesson-list">${list.map(l => `<li><a href="${lessonLink(l, stateOf(l) === 'dominada' ? 'repasar' : undefined)}"><span><strong>${esc(l.title)}</strong><span>${esc(l.summary)}</span></span><span class="lesson-state${stateOf(l) === 'dominada' ? ' done' : ''}">${esc(l.tag)} · ${lessonStateLabels[stateOf(l)]}</span></a></li>`).join('')}</ol>`;
 }
 
 function quizForm(l, q, index, order) {
@@ -206,7 +208,7 @@ function buildBlock(l) {
 }
 function reviewBlock(l, next) {
   const criteria = rubricGroups.flatMap(g => g.criteria).filter(c => c.lessons.includes(l.id));
-  return academy.lessonActivities(l.id) + (criteria.length ? `<section class="panel"><h2>Qué debes demostrar en la rúbrica</h2><div class="exam-links">${criteria.map(c => `<a href="#/rubrica?criterio=${c.id}">${esc(c.id)} · ${esc(c.title)}</a>`).join('')}</div></section>` : '') + `<section id="repaso"><h2>Preguntas</h2><p>Comprueba los requisitos del enunciado. Son apoyo de estudio, no preguntas oficiales de examen.</p>${l.quizzes.map((q, i) => quizForm(l, q, i, lessons.indexOf(l))).join('')}</section><section class="checklist" id="comprobacion"><h2>Antes de darlo por terminado</h2>${checklist(l)}</section><div class="reader-bottom"><button class="button" data-complete="${l.id}">${completed.has(l.id) ? 'Completada · desmarcar' : 'Marcar como completada'}</button>${next ? `<a class="button secondary" href="${lessonLink(next)}">Siguiente: ${esc(next.title)}</a>` : ''}</div>`;
+  return academy.lessonActivities(l.id) + (criteria.length ? `<section class="panel"><h2>Qué debes demostrar en la rúbrica</h2><div class="exam-links">${criteria.map(c => `<a href="#/rubrica?criterio=${c.id}">${esc(c.id)} · ${esc(c.title)}</a>`).join('')}</div></section>` : '') + `<section id="repaso"><h2>Preguntas</h2><p>Comprueba los requisitos del enunciado. Son apoyo de estudio, no preguntas oficiales de examen.</p>${l.quizzes.map((q, i) => quizForm(l, q, i, lessons.indexOf(l))).join('')}</section><section class="checklist" id="comprobacion"><h2>Antes de darlo por terminado</h2>${checklist(l)}</section><div class="reader-bottom"><button class="button" data-complete="${l.id}">${completed.has(l.id) ? 'Dominada · desmarcar' : 'Marcar como dominada'}</button>${next ? `<a class="button secondary" href="${lessonLink(next)}">Siguiente: ${esc(next.title)}</a>` : ''}</div>`;
 }
 function lessonPage(topicId, id, requested) {
   const l = lessons.find(item => item.id === id), t = topicOf(id);
@@ -217,7 +219,7 @@ function lessonPage(topicId, id, requested) {
   const body = { entender: understandBlock, construir: buildBlock, comparar: () => comparisonBlock(l.guide.packageId), repasar: () => reviewBlock(l, next) }[block.id](l);
   const sources = `<div class="panel"><h2>Fuentes</h2>${(solutions.find(p=>p.id===l.guide.packageId)?.sources || []).map(sourceReference).join('')}${matchedSources(l).map(m => `<a class="source-link" href="${materialLink(m)}">${esc(m.name)}</a>`).join('')}</div>`;
   const contents = block.id === 'entender' ? `<div class="panel"><h2>En esta lección</h2><a class="toc-link" href="${lessonLink(l)}&apartado=guia">Antes de empezar</a>${l.sections.map((s, i) => `<a class="toc-link" href="${lessonLink(l)}&apartado=${i}">${esc(s.title)}</a>`).join('')}</div>` : '';
-  return heading('', esc(l.title), esc(l.summary), esc(l.tag)) + `<nav class="lesson-tabs" aria-label="Bloques de la lección">${available.map(b => `<a href="${lessonLink(l, b.id)}"${b === block ? ' aria-current="page"' : ''}>${b.title}</a>`).join('')}</nav><div class="reader-layout"><article class="reader">${body}${after ? `<div class="reader-bottom"><a class="button" href="${lessonLink(l, after.id)}">Seguir con ${after.title}</a></div>` : ''}</article><aside class="reader-aside">${contents}<div class="panel"><h2>Lecciones del tema</h2>${list.map(item => `<a class="toc-link" href="${lessonLink(item)}"${item === l ? ' aria-current="true"' : ''}>${esc(item.title)}${completed.has(item.id) ? ' · completada' : ''}</a>`).join('')}</div>${sources}</aside></div>`;
+  return heading('', esc(l.title), esc(l.summary), esc(l.tag)) + `<nav class="lesson-tabs" aria-label="Bloques de la lección">${available.map(b => `<a href="${lessonLink(l, b.id)}"${b === block ? ' aria-current="page"' : ''}>${b.title}</a>`).join('')}</nav><div class="reader-layout"><article class="reader">${body}${after ? `<div class="reader-bottom"><a class="button" href="${lessonLink(l, after.id)}">Seguir con ${after.title}</a></div>` : ''}</article><aside class="reader-aside">${contents}<div class="panel"><h2>Lecciones del tema</h2>${list.map(item => `<a class="toc-link" href="${lessonLink(item)}"${item === l ? ' aria-current="true"' : ''}>${esc(item.title)}${stateOf(item) === 'dominada' ? ' · dominada' : ''}</a>`).join('')}</div>${sources}</aside></div>`;
 }
 
 function libraryPage() {
@@ -239,7 +241,7 @@ function learnTitle(url) { const slug = new URL(url).pathname.split('/').filter(
 function assessmentPage(selected='all') {
   const chosen=lessons.some(l=>l.id===selected)?selected:'all';
   const list=chosen==='all'?lessons:lessons.filter(l=>l.id===chosen);
-  return heading('','Repaso general','Todas las preguntas, por lección. Son de apoyo, no oficiales del examen.')+`<div class="assessment-controls panel"><label for="assessment-lesson">Qué quieres repasar</label><select id="assessment-lesson"><option value="all"${chosen==='all'?' selected':''}>Todas las lecciones, agrupadas</option>${lessons.map(l=>`<option value="${l.id}"${chosen===l.id?' selected':''}>${esc(l.unit)} · ${esc(l.title)}</option>`).join('')}</select></div><p class="source-notice">El resumen recoge todas tus respuestas guardadas, aunque estés viendo una sola lección.</p><div class="quiz-summary" id="quiz-summary" aria-live="polite">${scoreText()}</div><div class="assessment-list">${list.map((l,i)=>`<details class="assessment-group"${i===0?' open':''}><summary>${esc(l.title)} <span>${l.quizzes.length} preguntas</span></summary><div class="reader">${l.quizzes.map((q,j)=>quizForm(l,q,j,lessons.indexOf(l))).join('')}<a class="button secondary" href="${lessonLink(l)}">Volver a la explicación</a></div></details>`).join('')}</div>`;
+  return heading('','Practicar','Preguntas por lección. Son de apoyo, no oficiales del examen.')+academy.tabs('autoevaluacion')+`<div class="assessment-controls panel"><label for="assessment-lesson">Qué quieres repasar</label><select id="assessment-lesson"><option value="all"${chosen==='all'?' selected':''}>Todas las lecciones, agrupadas</option>${lessons.map(l=>`<option value="${l.id}"${chosen===l.id?' selected':''}>${esc(topicOf(l.id).title)} · ${esc(l.title)}</option>`).join('')}</select></div><p class="source-notice">El resumen recoge todas tus respuestas guardadas, aunque estés viendo una sola lección.</p><div class="quiz-summary" id="quiz-summary" aria-live="polite">${scoreText()}</div><div class="assessment-list">${list.map((l,i)=>`<details class="assessment-group"${i===0?' open':''}><summary>${esc(l.title)} <span>${l.quizzes.length} preguntas</span></summary><div class="reader">${l.quizzes.map((q,j)=>quizForm(l,q,j,lessons.indexOf(l))).join('')}<a class="button secondary" href="${lessonLink(l)}">Volver a la explicación</a></div></details>`).join('')}</div>`;
 }
 function scoreText() { const total = lessons.reduce((n, l) => n + l.quizzes.length, 0); const correct = [...quizResults.values()].filter(Boolean).length; return `${correct} correctas · ${quizResults.size} respondidas · ${total} preguntas de repaso. Respuestas guardadas en este navegador.`; }
 function searchPage(query) {
@@ -277,15 +279,14 @@ function render({ focus = true } = {}) {
     case '': content = home(); break;
     case 'tema': content = segment[3] ? lessonPage(segment[2], segment[3], params.get('bloque')) : topicPage(segment[2]); title = segment[3] ? lessons.find(l => l.id === segment[3])?.title || 'Lección' : topics.find(t => t.id === segment[2])?.title || 'Tema'; break;
     case 'biblioteca': content = libraryPage(); title = 'Material del profesor'; break;
-    case 'academia': content = academy.render('',params); title = 'Mi preparación'; break;
-    case 'temario': case 'materiales': case 'entrenar': case 'diagnostico': case 'reto': case 'codigo': case 'casos': case 'cuaderno': case 'progreso':
+    case 'entrenar': case 'diagnostico': case 'reto': case 'codigo': case 'casos': case 'cuaderno': case 'progreso':
       content = academy.render(segment[1],params,segment[2]) || notFound();
-      title = {temario:'Temario',materiales:'Materiales',entrenar:'Practicar',diagnostico:'Diagnóstico',reto:'Reto práctico',codigo:'Código razonado',casos:'Casos de prueba',cuaderno:'Cuaderno de errores',progreso:'Copia del progreso'}[segment[1]];
+      title = {entrenar:'Practicar',diagnostico:'Diagnóstico',reto:'Reto práctico',codigo:'Código razonado',casos:'Casos de prueba',cuaderno:'Cuaderno de errores',progreso:'Copia del progreso'}[segment[1]];
       academy.touchRoute(segment[1],segment[2]);
       break;
     case 'material': { let path; try { path = decodeURIComponent(segment.slice(2).join('/')); } catch { path = ''; } content = materialPage(path); title = 'Material original'; break; }
     case 'taller': content = workshopPage(segment[2], params.get('paso')); title = 'Taller en Visual Studio'; break;
-    case 'autoevaluacion': content = assessmentPage(params.get('leccion') || 'all'); title = 'Repaso general'; break;
+    case 'autoevaluacion': content = assessmentPage(params.get('leccion') || 'all'); title = 'Preguntas por lección'; break;
     case 'rubrica': content = rubricPage(); title = 'Rúbrica y repaso de examen'; break;
     case 'consulta': content = referencePage(); title = 'Fichas'; break;
     case 'soluciones': content = solutionsPage(); title = 'Soluciones y descargas'; break;
@@ -363,7 +364,7 @@ document.addEventListener('click', async event => {
     completed.has(id) ? completed.delete(id) : completed.add(id);
     try { localStorage.setItem(key, JSON.stringify([...completed])); } catch { storageWarning = true; }
     render({ focus: false }); document.querySelector('[data-complete]')?.focus({ preventScroll: true });
-    notify(storageWarning ? 'Progreso actualizado en esta sesión. El navegador no permite guardarlo de forma persistente.' : completed.has(id) ? 'Lección completada. Tu progreso está guardado en este navegador.' : 'Lección desmarcada. Progreso actualizado.');
+    notify(storageWarning ? 'Progreso actualizado en esta sesión. El navegador no permite guardarlo de forma persistente.' : completed.has(id) ? 'Lección marcada como dominada. Tu progreso está guardado en este navegador.' : 'Lección desmarcada. Progreso actualizado.');
   }
   const filter = event.target.closest('[data-filter]');
   if (filter) { libraryFilter = filter.dataset.filter; render({ focus: false }); document.querySelector(`[data-filter="${libraryFilter}"]`)?.focus({ preventScroll: true }); }

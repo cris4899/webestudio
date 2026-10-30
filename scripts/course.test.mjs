@@ -10,7 +10,7 @@ import { workshopStudy, isImportantCode } from '../data/workshop-study.mjs';
 import { readWorkshopPositions } from '../lib.mjs';
 import { referenceCategories } from '../data/interface.mjs';
 import { topics, topicOf } from '../data/topics.mjs';
-import { readProgress, readStudy, normalize, searchCourse, legacyRoute, lessonRoute, readLastPlace } from '../lib.mjs';
+import { readProgress, readStudy, normalize, searchCourse, legacyRoute, lessonRoute, readLastPlace, lessonState } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
@@ -34,7 +34,19 @@ test('Rutas: los enlaces anteriores llegan a su tema y bloque', () => {
   for(const w of workshops)assert.equal(legacyRoute(`/comparar/${w.id}`),lessonRoute(w.lesson,'comparar'));
   for(const old of ['/unidad/UD2','/unidad/UD3-4'])assert.equal(legacyRoute(old),'/');
   assert.equal(legacyRoute('/practica'),'/entrenar');
+  for(const old of ['/academia','/temario'])assert.equal(legacyRoute(old),'/');
+  assert.equal(legacyRoute('/materiales'),'/biblioteca');
   for(const current of ['/','/consulta','/autoevaluacion','/leccion/inventada','/comparar/inventada','/taller/relacion-1'])assert.equal(legacyRoute(current),null);
+});
+
+test('Estado por lección: señales, dominio ganado y botón manual', () => {
+  const l=lessons[0],base={completed:new Set(),study:{answers:{},checks:new Set()}};
+  assert.equal(lessonState(l,base),'sin-empezar');
+  assert.equal(lessonState(l,{...base,study:{answers:{[`${l.id}-0`]:l.quizzes[0].answer},checks:new Set()}}),'en-curso');
+  assert.equal(lessonState(l,{...base,completed:new Set([l.id])}),'dominada');
+  const answers=Object.fromEntries(l.quizzes.map((q,i)=>[`${l.id}-${i}`,q.answer]));
+  assert.equal(lessonState(l,{...base,study:{answers,checks:new Set(l.checks.map((_,i)=>`${l.id}-${i}`))}}),'dominada');
+  assert.equal(lessonState(l,{...base,study:{answers,checks:new Set()}}),'en-curso');
 });
 
 test('Último sitio: rechaza datos corruptos y rutas desconocidas', () => {

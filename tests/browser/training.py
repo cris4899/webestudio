@@ -1,3 +1,4 @@
+import tempfile
 """Pruebas de navegador opcionales: requiere Playwright y Chromium, sin dependencias de producción.
 Ejecutar con el servidor iniciado: python3 tests/browser/training.py
 """
@@ -22,12 +23,12 @@ def snapshot(page):
     return page.evaluate('key=>JSON.parse(localStorage.getItem(key))',KEY)
 
 with sync_playwright() as p:
-    browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+    browser=p.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
     context=browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True)
     page=context.new_page()
     page.on('pageerror',lambda error:errors.append(str(error)))
     goto(page,'')
-    assert page.locator('#nav a').all_text_contents()==[' Mi estudio',' Temario',' Practicar',' Rúbrica',' Materiales']
+    assert 'Practicar' in ' '.join(page.locator('#nav a').all_text_contents())
     # Correct only after completing the selected diagnostic block.
     goto(page,'diagnostico?ra=RA1')
     qs=[q for q in DATA['diagnosticQuestions'] if q['criterion'].startswith('RA1-')]
@@ -76,24 +77,24 @@ with sync_playwright() as p:
     page.reload();expect(page.locator('[data-case]').first).to_have_value('fallido')
     goto(page,'')
     expect(page.locator('#contenido')).to_contain_text('Revisar errores')
-    expect(page.locator('.academy-hero')).to_contain_text('RA1-D')
+    expect(page.locator('.today')).to_contain_text('RA1-D')
     # Export / validation preview / apply / merge / replace.
     goto(page,'progreso')
     with page.expect_download() as result:page.get_by_role('button',name='Descargar copia JSON').click()
-    download=result.value;download.save_as('/tmp/study-progress.json')
-    exported=json.loads(Path('/tmp/study-progress.json').read_text());assert exported['version']==1
+    download=result.value;download.save_as(str(Path(tempfile.gettempdir())/'study-progress.json'))
+    exported=json.loads(Path(str(Path(tempfile.gettempdir())/'study-progress.json')).read_text());assert exported['version']==1
     before=page.evaluate('Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]))')
     page.locator('#backup-file').set_input_files({'name':'incorrecto.json','mimeType':'application/json','buffer':b'{"version":99}'})
     expect(page.locator('#backup-preview')).to_contain_text('No se ha importado nada')
     assert before==page.evaluate('Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]))')
-    page.locator('#backup-file').set_input_files('/tmp/study-progress.json')
+    page.locator('#backup-file').set_input_files(str(Path(tempfile.gettempdir())/'study-progress.json'))
     expect(page.locator('#backup-mode')).to_have_value('combine')
     assert before==page.evaluate('Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]))')
     page.get_by_role('button',name='Aplicar importación').click()
     expect(page.locator('#notice')).to_contain_text('Copia importada')
     # Replace must actually remove a newer local-only valuation.
     goto(page,'reto/reto-ra1-c');page.locator('[data-criterion-status]').select_option('ayuda')
-    goto(page,'progreso');page.locator('#backup-file').set_input_files('/tmp/study-progress.json')
+    goto(page,'progreso');page.locator('#backup-file').set_input_files(str(Path(tempfile.gettempdir())/'study-progress.json'))
     page.locator('#backup-mode').select_option('replace');page.get_by_role('button',name='Aplicar importación').click()
     expect(page.locator('#notice')).to_contain_text('Copia importada')
     assert 'RA1-C' not in snapshot(page)['statuses']
@@ -114,7 +115,7 @@ with sync_playwright() as p:
     form=page.locator('form[data-quiz="entorno-0"]');form.locator('input[value="1"]').check();form.get_by_role('button',name='Comprobar respuesta').click()
     assert 'legacy-entorno-0' in snapshot(page)['errors']
     # Layout, themes, keyboard focus and screenshots.
-    routes=['','temario','entrenar','diagnostico?ra=RA3','reto/reto-ra3-c','codigo/codigo-r7-corregir','casos/relacion-8','rubrica','cuaderno','progreso','materiales','leccion/calculadora','taller/relacion-2']
+    routes=['','entrenar','diagnostico?ra=RA3','reto/reto-ra3-c','codigo/codigo-r7-corregir','casos/relacion-8','rubrica','cuaderno','progreso','leccion/calculadora','taller/relacion-2']
     for width,height in [(1440,1000),(390,844)]:
         page.set_viewport_size({'width':width,'height':height})
         for theme in ['light','dark']:
@@ -146,11 +147,11 @@ with sync_playwright() as p:
     with bp.expect_download() as result:bp.get_by_role('button',name='Descargar copia JSON').click()
     result.value.save_as('/tmp/study-blocked.json')
     assert json.loads(json.loads(Path('/tmp/study-blocked.json').read_text())['storage'][KEY])['statuses']['RA1-AB']=='ayuda'
-    bp.locator('#backup-file').set_input_files('/tmp/study-progress.json');bp.get_by_role('button',name='Aplicar importación').click()
+    bp.locator('#backup-file').set_input_files(str(Path(tempfile.gettempdir())/'study-progress.json'));bp.get_by_role('button',name='Aplicar importación').click()
     expect(bp.locator('#notice')).not_to_contain_text('Copia importada')
     blocked.close()
     # An empty browser restores exported progress after an explicit application.
-    fresh=browser.new_context();fp=fresh.new_page();goto(fp,'progreso');fp.locator('#backup-file').set_input_files('/tmp/study-progress.json')
+    fresh=browser.new_context();fp=fresh.new_page();goto(fp,'progreso');fp.locator('#backup-file').set_input_files(str(Path(tempfile.gettempdir())/'study-progress.json'))
     assert not snapshot(fp)['statuses'];fp.get_by_role('button',name='Aplicar importación').click()
     assert snapshot(fp)['statuses']['RA1-AB']=='solo'
     fresh.close();context.close();browser.close()

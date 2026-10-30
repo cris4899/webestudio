@@ -7,7 +7,8 @@ const oldParts = { guia:'entender', ejercicio:'construir', repaso:'repasar', com
 export function legacyRoute(route) {
   const [pathname, query = ''] = route.split('?');
   const [, section, id] = pathname.split('/');
-  if (section === 'unidad') return '/';
+  if (section === 'unidad' || section === 'academia' || section === 'temario') return '/';
+  if (section === 'materiales') return '/biblioteca';
   if (section === 'practica') return '/entrenar';
   if (section === 'leccion' && topicOf(id)) {
     const part = new URLSearchParams(query).get('apartado');
@@ -15,6 +16,15 @@ export function legacyRoute(route) {
   }
   if (section === 'comparar') { const workshop = workshops.find(w => w.id === id); if (workshop) return lessonRoute(workshop.lesson, 'comparar'); }
   return null;
+}
+export const lessonStateLabels = { 'sin-empezar':'Sin empezar', 'en-curso':'En curso', dominada:'Dominada' };
+export function lessonState(lesson, { completed, study, positions = {} }) {
+  const answers = lesson.quizzes.map((_, i) => study.answers[`${lesson.id}-${i}`]);
+  const checks = lesson.checks.map((_, i) => study.checks.has(`${lesson.id}-${i}`));
+  const earned = lesson.quizzes.every((q, i) => answers[i] === q.answer) && checks.every(Boolean);
+  if (completed.has(lesson.id) || earned) return 'dominada';
+  const started = answers.some(a => a !== undefined) || checks.some(Boolean) || (positions[lesson.guide.packageId] && workshops.find(w => w.id === lesson.guide.packageId)?.lesson === lesson.id);
+  return started ? 'en-curso' : 'sin-empezar';
 }
 export function readLastPlace(raw) {
   if (typeof raw !== 'string') return null;
