@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.RecEstilos"
+             Title="Estilos">
+    <ContentPage.Resources>
+        <!-- ejemplo:rec-estilos -->
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style x:Key="estiloAviso" TargetType="Label">
+            <Setter Property="TextColor" Value="DarkRed" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="BackgroundColor" Value="LightYellow" />
+        </Style>
+        <!-- fin:rec-estilos -->
+    </ContentPage.Resources>
+    <VerticalStackLayout Padding="20" Spacing="8">
+        <Label Text="Etiqueta normal: recibe el estilo implícito" />
+        <Label Text="Aviso: estilo con clave" Style="{StaticResource estiloAviso}" />
+        <Label Text="Otro aviso con el mismo estilo" Style="{StaticResource estiloAviso}" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LpPhoneword"
+             Title="Phoneword">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Entry x:Name="entradaTexto" Placeholder="1-800-FLORES" />
+        <Button Text="Traducir" Clicked="TraducirClick" />
+        <Label x:Name="etiquetaNumero" />
+    </VerticalStackLayout>
+</ContentPage>

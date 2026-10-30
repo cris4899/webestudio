@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Estudio"
+       x:Class="Estudio.AppShell"
+       FlyoutBehavior="Flyout">
+    <!-- ejemplo:lm-paginas -->
+    <Shell.FlyoutHeader>
+        <Label Text="Ejemplos de estudio" FontSize="20" Padding="16" />
+    </Shell.FlyoutHeader>
+    <!-- fin:lm-paginas -->
+    <!-- ejemplo:nav-integrar -->
+    <FlyoutItem Title="Integración">
+        <ShellContent Title="Verificar destino" ContentTemplate="{DataTemplate local:NavVerificar}" />
+        <ShellContent Title="Tablero" ContentTemplate="{DataTemplate local:TableroCicloColor}" />
+    </FlyoutItem>
+    <!-- fin:nav-integrar -->
+    <!-- ejemplo:lm-flyout -->
+    <FlyoutItem Title="Astronomía" FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Cuerpos" ContentTemplate="{DataTemplate local:LmDetalle}" />
+        <ShellContent Title="Comprobar" ContentTemplate="{DataTemplate local:LmComprobar}" />
+    </FlyoutItem>
+    <!-- fin:lm-flyout -->
+    <!-- ejemplo:lm-pestanas -->
+    <FlyoutItem Title="Pestañas">
+        <Tab Title="Cuerpos">
+            <ShellContent Title="Cuerpos" ContentTemplate="{DataTemplate local:LmDetalle}" />
+        </Tab>
+        <Tab Title="Comprobar">
+            <ShellContent Title="Comprobar" ContentTemplate="{DataTemplate local:LmComprobar}" />
+        </Tab>
+    </FlyoutItem>
+    <!-- fin:lm-pestanas -->
+        <FlyoutItem Title="navegacion" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Comprobar qué página aloja Shell" ContentTemplate="{DataTemplate local:NavVerificar}" />
+        </FlyoutItem>
+        <FlyoutItem Title="tablero" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Cada botón recuerda su propio color" ContentTemplate="{DataTemplate local:TableroCicloColor}" />
+            <ShellContent Title="Leer el número del botón con sender" ContentTemplate="{DataTemplate local:TableroSender}" />
+        </FlyoutItem>
+        <FlyoutItem Title="entorno" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="InitializeComponent antes de usar los co" ContentTemplate="{DataTemplate local:EntornoArranque}" />
+        </FlyoutItem>
+        <FlyoutItem Title="formulario" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Convertir el enunciado en comprobaciones" ContentTemplate="{DataTemplate local:FormComprobaciones}" />
+            <ShellContent Title="El modelo valida el dato antes de guarda" ContentTemplate="{DataTemplate local:FormModelo}" />
+            <ShellContent Title="Probar justo por debajo, en el límite y " ContentTemplate="{DataTemplate local:FormFronteras}" />
+        </FlyoutItem>
+        <FlyoutItem Title="calculadora" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Varios botones, un único manejador" ContentTemplate="{DataTemplate local:CalcEventoCentralizado}" />
+            <ShellContent Title="La misma calculadora creada desde C#" ContentTemplate="{DataTemplate local:CalcEnCSharp}" />
+        </FlyoutItem>
+        <FlyoutItem Title="matricula" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Comprobar el formato 0000-BBB" ContentTemplate="{DataTemplate local:MatFormato}" />
+            <ShellContent Title="Mensaje y fondo coherentes entre sí" ContentTemplate="{DataTemplate local:MatAviso}" />
+            <ShellContent Title="Una propiedad pública que valida antes d" ContentTemplate="{DataTemplate local:MatPropiedad}" />
+        </FlyoutItem>
+        <FlyoutItem Title="edad" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Mayoría de edad configurable con límite " ContentTemplate="{DataTemplate local:EdadContrato}" />
+            <ShellContent Title="Primero la fecha futura, después la edad" ContentTemplate="{DataTemplate local:EdadOrden}" />
+            <ShellContent Title="El anfitrión cambia aspecto y límite" ContentTemplate="{DataTemplate local:EdadIntegracion}" />
+        </FlyoutItem>
+        <FlyoutItem Title="xaml-layouts" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="StackLayout con orientaciones anidadas" ContentTemplate="{DataTemplate local:XlStack}" />
+            <ShellContent Title="Margin, Padding y Spacing no son lo mism" ContentTemplate="{DataTemplate local:XlEspaciado}" />
+            <ShellContent Title="Label, Entry y Button juntos" ContentTemplate="{DataTemplate local:XlControles}" />
+            <ShellContent Title="BoxView controlado por un Slider" ContentTemplate="{DataTemplate local:XlBoxSlider}" />
+        </FlyoutItem>
+        <FlyoutItem Title="especializacion" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Un Entry especializado para nombres de u" ContentTemplate="{DataTemplate local:EspContrato}" />
+            <ShellContent Title="Componer: un Entry dentro de un ContentV" ContentTemplate="{DataTemplate local:EspComponer}" />
+            <ShellContent Title="Validar al perder el foco y también al p" ContentTemplate="{DataTemplate local:EspValidarAlPulsar}" />
+        </FlyoutItem>
+        <FlyoutItem Title="contentview" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="LoginView agrupa dos controles" ContentTemplate="{DataTemplate local:CvAgrupar}" />
+            <ShellContent Title="Un tipo público vive en un ensamblado" ContentTemplate="{DataTemplate local:CvBiblioteca}" />
+            <ShellContent Title="Image y su propiedad Aspect" ContentTemplate="{DataTemplate local:CvImage}" />
+        </FlyoutItem>
+        <FlyoutItem Title="extensiones" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Propiedades visuales desde x:Static" ContentTemplate="{DataTemplate local:ExtPedido}" />
+            <ShellContent Title="Distinguir Windows de Android con Device" ContentTemplate="{DataTemplate local:ExtDeviceInfo}" />
+        </FlyoutItem>
+        <FlyoutItem Title="recursos" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Recursos con ámbito de ContentView" ContentTemplate="{DataTemplate local:RecAmbito}" />
+            <ShellContent Title="Static no cambia, Dynamic sí" ContentTemplate="{DataTemplate local:RecVerificar}" />
+            <ShellContent Title="Style: agrupar propiedades con Setter" ContentTemplate="{DataTemplate local:RecEstilos}" />
+        </FlyoutItem>
+        <FlyoutItem Title="extensiones-login" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Solo la contraseña expone su espaciado" ContentTemplate="{DataTemplate local:ElEspaciado}" />
+            <ShellContent Title="Una aplicación anfitriona que cambia el " ContentTemplate="{DataTemplate local:ElAnfitrion}" />
+        </FlyoutItem>
+        <FlyoutItem Title="learn-primera-app" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Contador que suma cinco" ContentTemplate="{DataTemplate local:LpContador}" />
+            <ShellContent Title="Traducir letras a dígitos del teclado" ContentTemplate="{DataTemplate local:LpPhoneword}" />
+            <ShellContent Title="Habilitar Llamar solo con un resultado v" ContentTemplate="{DataTemplate local:LpHabilitar}" />
+        </FlyoutItem>
+        <FlyoutItem Title="learn-layouts" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Alinear un View dentro de su celda" ContentTemplate="{DataTemplate local:LlAlineacion}" />
+            <ShellContent Title="Cálculo de la propina separado de la int" ContentTemplate="{DataTemplate local:LlCalculo}" />
+            <ShellContent Title="Filas horizontales dentro de una pila ve" ContentTemplate="{DataTemplate local:LlPila}" />
+            <ShellContent Title="La misma pantalla con un Grid" ContentTemplate="{DataTemplate local:LlGrid}" />
+            <ShellContent Title="Comprobar que la fórmula da lo esperado" ContentTemplate="{DataTemplate local:LlValidar}" />
+        </FlyoutItem>
+        <FlyoutItem Title="learn-xaml" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Notes declarado en XAML" ContentTemplate="{DataTemplate local:LxXaml}" />
+            <ShellContent Title="Conectar Guardar y Borrar a su manejador" ContentTemplate="{DataTemplate local:LxEventos}" />
+            <ShellContent Title="Guardar sin perder la nota anterior" ContentTemplate="{DataTemplate local:LxErrores}" />
+            <ShellContent Title="Colores compartidos desde una clase" ContentTemplate="{DataTemplate local:LxStatic}" />
+            <ShellContent Title="Altura del Editor según la plataforma" ContentTemplate="{DataTemplate local:LxOnPlatform}" />
+        </FlyoutItem>
+        <FlyoutItem Title="learn-multipagina" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Abrir un detalle con PushAsync" ContentTemplate="{DataTemplate local:LmDetalle}" />
+            <ShellContent Title="Comprobar dónde estás en la navegación" ContentTemplate="{DataTemplate local:LmComprobar}" />
+        </FlyoutItem>
+        <FlyoutItem Title="learn-recursos" FlyoutDisplayOptions="AsMultipleItems">
+            <ShellContent Title="Recursos de página para valores repetido" ContentTemplate="{DataTemplate local:LrPagina}" />
+            <ShellContent Title="DynamicResource y cambio de tema" ContentTemplate="{DataTemplate local:LrDinamico}" />
+            <ShellContent Title="infoLabelStyle: agrupar propiedades" ContentTemplate="{DataTemplate local:LrStyle}" />
+            <ShellContent Title="Recursos en Application.Resources" ContentTemplate="{DataTemplate local:LrApp}" />
+            <ShellContent Title="Estático, dinámico y estilo ante el mism" ContentTemplate="{DataTemplate local:LrComparar}" />
+        </FlyoutItem>
+</Shell>

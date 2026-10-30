@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LrDinamico"
+             Title="Cambio dinámico">
+    <ContentPage.Resources>
+        <Color x:Key="fgColor">Black</Color>
+        <Color x:Key="bgColor">White</Color>
+    </ContentPage.Resources>
+    <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="{DynamicResource bgColor}">
+        <Label Text="Importe de la cuenta" TextColor="{DynamicResource fgColor}" />
+        <Label Text="Total" TextColor="{DynamicResource fgColor}" />
+        <HorizontalStackLayout Spacing="8">
+            <Button Text="Light" Clicked="ClaroClick" />
+            <Button Text="Dark" Clicked="OscuroClick" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

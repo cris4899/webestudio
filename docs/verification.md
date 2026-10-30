@@ -117,3 +117,10 @@ Fecha: 28 de octubre de 2026.
 
 - El rediseño se fusiona con los commits de `origin/main` que añadían academia, rúbrica y fichas ampliadas. Se conservan sus rutas; `#/academia` recoge el antiguo panel «Mi estudio», y sus actividades y criterios aparecen en el bloque Repasar.
 - 31 pruebas Node correctas y 16 rutas revisadas en navegador sin errores de consola ni desbordamiento.
+
+## Flujo de estudio para el examen (30 de octubre de 2026)
+
+- Inicio y Practicar sustituyen a Mi preparación y Temario. Se añaden estado derivado por lección, plan hasta la fecha del examen, simulacro, mapa de rúbrica, chuletas con índice de relaciones, errores frecuentes, repaso espaciado, sesión de 25 minutos, recuperar antes de leer, ocultar código, atajos, modo compacto y recordatorio de copia.
+- 60 ejemplos, uno por cada apartado sin código. `examples/EjemplosEstudio` compila en Windows con 0 errores y `data/lesson-examples-code.mjs` se extrae de ese proyecto. No se ha ejecutado la aplicación: los textos de resultado se deducen del código.
+- Los campos nuevos del entrenamiento son opcionales; estados y copias anteriores siguen cargando.
+- `tests/browser/training.py` se adaptó, pero no se ejecutó porque Playwright no está instalado. La revisión de navegador se hizo con el panel integrado.

@@ -17,7 +17,7 @@ const object = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const own = (o,k) => Object.hasOwn(o,k);
 const dictionaries = ['statuses','answers','cases','errors','help','reviews'];
 export const defaultExamDate = '2026-11-04';
-export const emptyTraining = () => ({version:1,statuses:{},answers:{},cases:{},errors:{},help:{},reviews:{},lastActivity:null,plan:{examDate:defaultExamDate},mocks:[],activeMock:null,spaced:{},notes:{},lastBackup:null});
+export const emptyTraining = () => ({version:1,statuses:{},answers:{},cases:{},errors:{},help:{},reviews:{},lastActivity:null,plan:{examDate:defaultExamDate},mocks:[],activeMock:null,spaced:{},notes:{},lastBackup:null,lastPlace:null});
 const validDate = v => typeof v==='string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v));
 const validMock = m => object(m) && Number.isFinite(Date.parse(m.at)) && Number.isInteger(m.minutes) && object(m.results) && Object.entries(m.results).every(([id,v])=>criterionIds.has(id) && ['bien','regular','mal'].includes(v));
 const validActiveMock = m => object(m) && Number.isFinite(Date.parse(m.startedAt)) && Number.isInteger(m.minutes) && Array.isArray(m.challenges) && m.challenges.every(id=>challenges.some(c=>c.id===id)) && Array.isArray(m.cases) && m.cases.every(id=>caseIds.has(id));
@@ -55,6 +55,7 @@ function validateTraining(value, strict=false) {
   if(validActiveMock(value.activeMock)) out.activeMock=value.activeMock;
   if(object(value.spaced)) for(const [id,item] of Object.entries(value.spaced)) if(questionMap.has(id) && object(item) && validDate(item.due) && [0,1,2].includes(item.step)) out.spaced[id]={due:item.due,step:item.step};
   if(object(value.notes)) for(const [id,note] of Object.entries(value.notes)) if(courseLessons.some(l=>l.id===id) && typeof note==='string' && note.length<=10000) out.notes[id]=note;
+  if(typeof value.lastPlace==='string' && value.lastPlace.length<=300 && value.lastPlace.startsWith('/')) out.lastPlace=value.lastPlace;
   if(typeof value.lastBackup==='string' && Number.isFinite(Date.parse(value.lastBackup))) out.lastBackup=value.lastBackup;
   return out;
 }
@@ -156,7 +157,7 @@ export function combineBackups(current,incoming,mode='combine') {
       merged.lastActivity=Date.parse(left.lastActivity?.at || 0)>Date.parse(right.lastActivity?.at || 0)?left.lastActivity:right.lastActivity;
       merged.plan=right.plan?.examDate && right.plan.examDate!==defaultExamDate?right.plan:left.plan || merged.plan;merged.activeMock=left.activeMock || right.activeMock || null;
       merged.mocks=[...new Map([...(left.mocks || []),...(right.mocks || [])].map(m=>[m.at,m])).values()].slice(-50);
-      merged.spaced={...left.spaced,...right.spaced};merged.notes={...left.notes,...right.notes};
+      merged.lastPlace=right.lastPlace || left.lastPlace || null;merged.spaced={...left.spaced,...right.spaced};merged.notes={...left.notes,...right.notes};
       merged.lastBackup=[left.lastBackup,right.lastBackup].filter(Boolean).sort().at(-1) || null;
       for(const [id,answer] of Object.entries(merged.answers)) {
         if(answer!==questionMap.get(id)?.answer)merged.errors[id]={note:merged.errors[id]?.note || '',reviewed:merged.errors[id]?.reviewed || false};

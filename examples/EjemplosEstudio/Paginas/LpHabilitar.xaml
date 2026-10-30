@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LpHabilitar"
+             Title="Traducir y llamar">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Entry x:Name="entradaTexto" Placeholder="1-800-FLORES" TextChanged="TextoCambiado" />
+        <Button Text="Traducir" Clicked="TraducirClick" />
+        <Button x:Name="botonLlamar" Text="Llamar" IsEnabled="False" Clicked="LlamarClick" />
+        <Label x:Name="etiquetaEstado" />
+    </VerticalStackLayout>
+</ContentPage>

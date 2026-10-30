@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LlCalculo"
+             Title="Calculadora de propinas">
+    <VerticalStackLayout Padding="20" Spacing="8">
+        <Entry x:Name="entradaCuenta" Placeholder="Importe de la cuenta" Keyboard="Numeric" TextChanged="DatoCambiado" />
+        <Slider x:Name="deslizador" Minimum="0" Maximum="30" Value="15" ValueChanged="DeslizadorCambiado" />
+        <Label x:Name="etiquetaPorcentaje" />
+        <Label x:Name="etiquetaPropina" />
+        <Label x:Name="etiquetaTotal" />
+        <HorizontalStackLayout Spacing="6">
+            <Button Text="Redondear abajo" Clicked="RedondearAbajoClick" />
+            <Button Text="Redondear arriba" Clicked="RedondearArribaClick" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

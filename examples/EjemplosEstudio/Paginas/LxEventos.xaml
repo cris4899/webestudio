@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LxEventos"
+             Title="Eventos y datos">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Editor x:Name="editor" Placeholder="Escribe una nota" HeightRequest="140" />
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+            <Button Text="Guardar" Grid.Column="0" Clicked="GuardarClick" />
+            <Button Text="Borrar" Grid.Column="1" Clicked="BorrarClick" />
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

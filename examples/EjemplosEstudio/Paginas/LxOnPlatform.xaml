@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LxOnPlatform"
+             Title="OnPlatform">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <!-- ejemplo:lx-onplatform -->
+        <Editor Placeholder="Altura según plataforma"
+                HeightRequest="{OnPlatform WinUI=100, Android=220, iOS=220, Default=140}" />
+        <!-- fin:lx-onplatform -->
+        <Label Text="Solo cambia una propiedad visual; la lógica es la misma." />
+    </VerticalStackLayout>
+</ContentPage>

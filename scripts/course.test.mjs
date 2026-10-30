@@ -10,6 +10,8 @@ import { workshopStudy, isImportantCode } from '../data/workshop-study.mjs';
 import { readWorkshopPositions } from '../lib.mjs';
 import { referenceCategories } from '../data/interface.mjs';
 import { topics, topicOf } from '../data/topics.mjs';
+import { lessonExamples } from '../data/lesson-examples.mjs';
+import exampleCode from '../data/lesson-examples-code.mjs';
 import { readProgress, readStudy, normalize, searchCourse, legacyRoute, lessonRoute, readLastPlace, lessonState } from '../lib.mjs';
 import { root, server } from './serve.mjs';
 
@@ -37,6 +39,19 @@ test('Rutas: los enlaces anteriores llegan a su tema y bloque', () => {
   for(const old of ['/academia','/temario'])assert.equal(legacyRoute(old),'/');
   assert.equal(legacyRoute('/materiales'),'/biblioteca');
   for(const current of ['/','/consulta','/autoevaluacion','/leccion/inventada','/comparar/inventada','/taller/relacion-1'])assert.equal(legacyRoute(current),null);
+});
+
+test('Ejemplos: cada apartado sin código tiene ejemplo extraído del proyecto compilado', async () => {
+  for(const l of lessons)l.sections.forEach((s,i)=>{if(!s.code)assert.ok(lessonExamples.some(e=>e.lesson===l.id&&e.section===i),`${l.id}/${i}`);});
+  assert.equal(new Set(lessonExamples.map(e=>e.id)).size,lessonExamples.length);
+  for(const e of lessonExamples){
+    assert.ok(lessons.find(l=>l.id===e.lesson)?.sections[e.section],e.id);
+    assert.ok(e.title && e.context && e.steps.length && e.result,e.id);
+    const code=exampleCode[e.id]?.code;assert.ok(code,e.id);
+    const source=(await readFile(path.join(root,e.path),'utf8')).replaceAll('\r\n','\n');
+    for(const line of code.split('\n'))assert.ok(source.includes(line.replace(/\r$/,'')),`${e.id}: ${line}`);
+    if(e.path.endsWith('.cs'))assert.doesNotMatch(code,/\bvar\b/,e.id);
+  }
 });
 
 test('Estado por lección: señales, dominio ganado y botón manual', () => {
@@ -228,7 +243,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/academy.mjs', '/training-state.mjs', '/data/training.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/reference-details.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/topics.mjs', '/data/rubric.mjs', '/assets/documents/RubricaPractica1.pdf', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/academy.mjs', '/training-state.mjs', '/data/training.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/reference-details.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/topics.mjs', '/data/lesson-examples.mjs', '/data/lesson-examples-code.mjs', '/data/rubric.mjs', '/assets/documents/RubricaPractica1.pdf', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

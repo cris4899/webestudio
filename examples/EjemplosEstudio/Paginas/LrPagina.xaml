@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LrPagina"
+             Title="Recursos de página">
+    <!-- ejemplo:lr-pagina -->
+    <ContentPage.Resources>
+        <Color x:Key="fgColor">DarkSlateBlue</Color>
+        <Color x:Key="bgColor">Lavender</Color>
+        <x:Double x:Key="tamanoTexto">20</x:Double>
+    </ContentPage.Resources>
+    <!-- fin:lr-pagina -->
+    <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="{StaticResource bgColor}">
+        <Label Text="Importe de la cuenta" TextColor="{StaticResource fgColor}" FontSize="{StaticResource tamanoTexto}" />
+        <Label Text="Porcentaje de propina" TextColor="{StaticResource fgColor}" FontSize="{StaticResource tamanoTexto}" />
+        <Label Text="Total" TextColor="{StaticResource fgColor}" FontSize="{StaticResource tamanoTexto}" />
+    </VerticalStackLayout>
+</ContentPage>

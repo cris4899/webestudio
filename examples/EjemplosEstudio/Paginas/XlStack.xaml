@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.XlStack"
+             Title="StackLayout anidado">
+    <!-- ejemplo:xl-stack -->
+    <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
+        <Label Text="Nombre" />
+        <StackLayout Orientation="Horizontal" Spacing="8">
+            <Entry Placeholder="Nombre" WidthRequest="140" />
+            <Button Text="Aceptar" />
+        </StackLayout>
+        <Label Text="Cada StackLayout ordena en una sola dirección." />
+    </StackLayout>
+    <!-- fin:xl-stack -->
+</ContentPage>

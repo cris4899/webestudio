@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LmDetalle"
+             Title="Cuerpos astronómicos">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Elige un cuerpo:" />
+        <Button Text="Earth" Clicked="CuerpoClick" />
+        <Button Text="Moon" Clicked="CuerpoClick" />
+        <Button Text="Sun" Clicked="CuerpoClick" />
+        <Button Text="Halley" Clicked="CuerpoClick" />
+    </VerticalStackLayout>
+</ContentPage>

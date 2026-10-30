@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LrApp"
+             Title="Recursos de aplicación">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Esta etiqueta usa un estilo definido en App.xaml" Style="{StaticResource estiloAviso}" />
+        <Label Text="Otra página puede usarlo igual" Style="{StaticResource estiloAviso}" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -136,7 +136,9 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
   }
   function currentBackup() {
     // Use live in-memory progress, including when localStorage is unavailable.
-    const snapshot={...getLegacy(),[trainingKey]:JSON.stringify(state)};
+    let lastPlace=state.lastPlace;
+    try {lastPlace=localStorage.getItem('aula-interfaces.ultimo-sitio.v1') || lastPlace;}catch{}
+    const snapshot={...getLegacy(),[trainingKey]:JSON.stringify({...state,lastPlace})};
     return makeBackup({getItem:key=>snapshot[key]??null});
   }
   function backupPage() {
@@ -154,6 +156,10 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
     if(!terms.length)return '';
     const matches=[...challenges.map(a=>({...a,href:'#/reto/'+a.id})),...codeActivities.map(a=>({...a,href:'#/codigo/'+a.id}))].filter(a=>terms.every(t=>normalize(JSON.stringify(a)).includes(t)));
     return matches.length?`<section class="result-group"><h2>Retos y código razonado · ${matches.length}</h2>${matches.map(a=>`<a class="result-item" href="${a.href}"><small>${a.criterion}</small><strong>${esc(a.title)}</strong></a>`).join('')}</section>`:'';
+  }
+  function backupDue() {
+    const worked=Object.keys(state.answers).length+Object.keys(state.notes).length+Object.keys(state.cases).length;
+    return worked>0 && (!state.lastBackup || Date.now()-Date.parse(state.lastBackup)>3*86400000);
   }
   function setExamDate(value) {state.plan.examDate=value;return save();}
   function render(route,params,id) {
@@ -226,12 +232,13 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       if(event.target.closest('[data-mock-finish]')){mockFinished=true;refresh();}
       if(event.target.closest('[data-diagnostic-retry]')){diagnosticRetry=true;refresh();document.querySelector('#diagnostic-form input')?.focus();}
       if(event.target.closest('[data-backup-export]')) {
+        state.lastBackup=new Date().toISOString();save();
         const blob=new Blob([JSON.stringify(currentBackup(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='aula-interfaces-progreso-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('Copia de progreso preparada.');
       }
       if(event.target.closest('[data-backup-apply]') && incoming) {
         try {
           const merged=combineBackups(currentBackup(),incoming,document.getElementById('backup-mode').value);
-          applyBackup(localStorage,merged);state=readTraining(merged[trainingKey]);incoming=null;reloadLegacy();refresh();notify('Copia importada. El progreso está actualizado.');
+          applyBackup(localStorage,merged);state=readTraining(merged[trainingKey]);if(state.lastPlace)localStorage.setItem('aula-interfaces.ultimo-sitio.v1',state.lastPlace);incoming=null;reloadLegacy();refresh();notify('Copia importada. El progreso está actualizado.');
         }catch(error){notify(error.message);}
       }
     });
@@ -243,5 +250,5 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       if(event.key===trainingKey || event.key===null){state=readTraining(event.newValue);refresh();}
     });
   }
-  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,nextStep,pendingPanel,tabs,noteBox,todayPlan,rubricMap,tickMock,setExamDate,state:()=>state};
+  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,backupDue,nextStep,pendingPanel,tabs,noteBox,todayPlan,rubricMap,tickMock,setExamDate,state:()=>state};
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LlPila"
+             Title="Disposición con pilas">
+    <!-- ejemplo:ll-pila -->
+    <VerticalStackLayout Padding="20" Spacing="8">
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Cuenta:" />
+            <Entry Placeholder="0,00" WidthRequest="120" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Propina:" />
+            <Label Text="0,00" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Total:" />
+            <Label Text="0,00" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Spacing="6">
+            <Button Text="15%" />
+            <Button Text="20%" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+    <!-- fin:ll-pila -->
+</ContentPage>

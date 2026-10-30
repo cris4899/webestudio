@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.FormComprobaciones"
+             Title="Formulario de acceso">
+    <VerticalStackLayout Padding="20" Spacing="8">
+        <Entry x:Name="entradaNombre" Placeholder="Nombre (3 a 20 caracteres)" />
+        <Entry x:Name="entradaApellidos" Placeholder="Apellidos (4 a 40 caracteres)" />
+        <Entry x:Name="entradaEdad" Placeholder="Edad (5 a 70)" Keyboard="Numeric" />
+        <Button Text="Acceder" Clicked="AccederClick" />
+        <Label x:Name="etiquetaResultado" />
+    </VerticalStackLayout>
+</ContentPage>

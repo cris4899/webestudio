@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.ExtPedido"
+             Title="x:Static en acción">
+    <!-- ejemplo:ext-pedido -->
+    <VerticalStackLayout Spacing="{x:Static local:Medidas.Separacion}"
+                         Padding="{x:Static local:Medidas.Relleno}"
+                         BackgroundColor="{x:Static local:Medidas.Fondo}">
+        <Label Text="Valores tomados de la clase Medidas"
+               Margin="{x:Static local:Medidas.Margen}"
+               FontSize="{x:Static local:Medidas.TamanoFuente}" />
+    </VerticalStackLayout>
+    <!-- fin:ext-pedido -->
+</ContentPage>

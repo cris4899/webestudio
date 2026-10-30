@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.CalcEventoCentralizado"
+             Title="Dígitos centralizados">
+    <VerticalStackLayout Padding="20" Spacing="8">
+        <Entry x:Name="visor" IsReadOnly="True" HorizontalTextAlignment="End" />
+        <HorizontalStackLayout Spacing="6">
+            <Button Text="1" Clicked="DigitoClick" />
+            <Button Text="2" Clicked="DigitoClick" />
+            <Button Text="3" Clicked="DigitoClick" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

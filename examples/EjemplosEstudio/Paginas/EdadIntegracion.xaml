@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.EdadIntegracion"
+             Title="Integración final">
+    <VerticalStackLayout x:Name="contenedor" Padding="10" Spacing="10" BackgroundColor="LightBlue">
+        <Label Text="Fecha Nacimiento" />
+        <Button Text="Cambiar aspecto" Clicked="AspectoClick" />
+        <Button Text="Limite 10 (no válido)" Clicked="LimiteMaloClick" />
+        <Button Text="Limite 16" Clicked="LimiteBuenoClick" />
+        <Label x:Name="etiquetaResultado" Text="Límite: 18" />
+    </VerticalStackLayout>
+</ContentPage>

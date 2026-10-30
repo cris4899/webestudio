@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LlAlineacion"
+             Title="Alineación en el padre">
+    <Grid Padding="20" RowDefinitions="120,Auto" RowSpacing="12">
+        <Label x:Name="etiquetaObjetivo" Text="Objetivo" BackgroundColor="LightSkyBlue" HorizontalOptions="Start" VerticalOptions="Center" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="6">
+            <Button Text="Start" Clicked="AlinearClick" />
+            <Button Text="Center" Clicked="AlinearClick" />
+            <Button Text="End" Clicked="AlinearClick" />
+            <Button Text="Fill" Clicked="AlinearClick" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

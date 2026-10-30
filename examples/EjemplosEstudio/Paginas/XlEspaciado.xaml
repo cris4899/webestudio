@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.XlEspaciado"
+             Title="Espaciados">
+    <VerticalStackLayout Padding="10" BackgroundColor="WhiteSmoke">
+        <!-- ejemplo:xl-espaciado -->
+        <VerticalStackLayout BackgroundColor="LightBlue" Padding="30" Spacing="20">
+            <Label Text="Padding 30: espacio dentro de la pila" BackgroundColor="White" />
+            <Label Text="Spacing 20: separa los hijos entre sí" BackgroundColor="White" />
+            <Label Text="Margin 15: espacio fuera de esta etiqueta" BackgroundColor="White" Margin="15" />
+        </VerticalStackLayout>
+        <!-- fin:xl-espaciado -->
+    </VerticalStackLayout>
+</ContentPage>

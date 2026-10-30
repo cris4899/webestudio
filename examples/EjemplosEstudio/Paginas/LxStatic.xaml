@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Estudio"
+             x:Class="Estudio.LxStatic"
+             Title="x:Static con SharedResources">
+    <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="{x:Static local:SharedResources.ColorFondo}">
+        <Label Text="Color de texto tomado de SharedResources" TextColor="{x:Static local:SharedResources.ColorTexto}" />
+        <Editor Placeholder="Editor con colores compartidos"
+                TextColor="{x:Static local:SharedResources.ColorTexto}"
+                BackgroundColor="{x:Static local:SharedResources.ColorEditor}" />
+        <Button Text="Guardar" BackgroundColor="{x:Static local:SharedResources.ColorBoton}" />
+    </VerticalStackLayout>
+</ContentPage>
