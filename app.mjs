@@ -497,7 +497,7 @@ const academy = createAcademy({
     [rubricKey]:JSON.stringify([...rubricChecks]),
     'aula-interfaces.tema':document.documentElement.dataset.theme
   }),
-  reloadLegacy:()=>{
+  reloadLegacy:()=>{ lastPlace=localStorage.getItem(placeKey);
     completed=readProgress(localStorage.getItem(key),lessons);
     study=readStudy(localStorage.getItem(studyKey),lessons);
     lastSteps=readWorkshopPositions(localStorage.getItem(positionKey),solutions);
