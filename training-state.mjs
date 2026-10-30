@@ -140,7 +140,7 @@ export function combineBackups(current,incoming,mode='combine') {
       const merged=emptyTraining();
       for(const field of dictionaries)merged[field]={...left[field],...right[field]};
       merged.lastActivity=Date.parse(left.lastActivity?.at || 0)>Date.parse(right.lastActivity?.at || 0)?left.lastActivity:right.lastActivity;
-      merged.plan=right.plan || left.plan || merged.plan;
+      merged.plan=right.plan?.examDate && right.plan.examDate!==defaultExamDate?right.plan:left.plan || merged.plan;merged.activeMock=left.activeMock || right.activeMock || null;
       merged.mocks=[...new Map([...(left.mocks || []),...(right.mocks || [])].map(m=>[m.at,m])).values()].slice(-50);
       merged.spaced={...left.spaced,...right.spaced};merged.notes={...left.notes,...right.notes};
       merged.lastBackup=[left.lastBackup,right.lastBackup].filter(Boolean).sort().at(-1) || null;
