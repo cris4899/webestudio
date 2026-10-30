@@ -288,3 +288,21 @@ html[data-theme="dark"] .workshop-index a[aria-current="step"]:hover{background:
 .filter-panel{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px}
 .filter-panel label{display:flex;flex-direction:column;gap:6px;flex:1;min-width:200px;font-weight:600}
 .filter-panel select{min-height:44px;padding:8px;border:1px solid var(--line);border-radius:var(--control);background:var(--paper);color:var(--ink);font-size:15px}
+.today{display:block}
+.today-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-bottom:6px}
+.today-head h2{margin:0}
+.today-head label{margin-left:auto;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.today-head input{min-height:36px;border:1px solid var(--line);border-radius:var(--control);background:var(--bg);color:var(--ink);padding:0 8px}
+.today-list{margin:8px 0 0;padding-left:20px}
+.today-list li{padding:3px 0}
+.rubric-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rubric-cell{display:block;padding:10px 12px;border-radius:var(--control);background:var(--bg);text-decoration:none;font-size:13px}
+.rubric-cell strong{display:block;font-size:14px}
+.rubric-cell.good{background:var(--soft)}
+.rubric-cell.bad{background:var(--warm)}
+.mock-timer{position:sticky;top:0;z-index:3;background:var(--paper);border:1px solid var(--line);border-radius:var(--control);padding:10px 14px;font-weight:650;font-variant-numeric:tabular-nums}
+.sheet-package ul{padding-left:18px}
+.sheet-package li{font-size:14px;line-height:1.7}
+.sheet-package code{color:var(--muted);font-size:13px}
+.sheet-card .code-block{margin-bottom:10px}
+@media print{.page-trail,.academy-tabs,.workshop-pagination,.no-print{display:none}.panel{border:0;padding:0;margin-bottom:14px;break-inside:avoid}details>*{display:block}}

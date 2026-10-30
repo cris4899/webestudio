@@ -16,7 +16,11 @@ const activityIds = new Set([...challenges,...codeActivities].map(c=>c.id));
 const object = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const own = (o,k) => Object.hasOwn(o,k);
 const dictionaries = ['statuses','answers','cases','errors','help','reviews'];
-export const emptyTraining = () => ({version:1,statuses:{},answers:{},cases:{},errors:{},help:{},reviews:{},lastActivity:null});
+export const defaultExamDate = '2026-11-04';
+export const emptyTraining = () => ({version:1,statuses:{},answers:{},cases:{},errors:{},help:{},reviews:{},lastActivity:null,plan:{examDate:defaultExamDate},mocks:[],activeMock:null,spaced:{},notes:{},lastBackup:null});
+const validDate = v => typeof v==='string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v));
+const validMock = m => object(m) && Number.isFinite(Date.parse(m.at)) && Number.isInteger(m.minutes) && object(m.results) && Object.entries(m.results).every(([id,v])=>criterionIds.has(id) && ['bien','regular','mal'].includes(v));
+const validActiveMock = m => object(m) && Number.isFinite(Date.parse(m.startedAt)) && Number.isInteger(m.minutes) && Array.isArray(m.challenges) && m.challenges.every(id=>challenges.some(c=>c.id===id)) && Array.isArray(m.cases) && m.cases.every(id=>caseIds.has(id));
 export function validActivity(activity) {
   if (!object(activity) || typeof activity.title !== 'string' || activity.title.length>240 || typeof activity.at!=='string' || !Number.isFinite(Date.parse(activity.at))) return false;
   const href=activity.href;
@@ -45,6 +49,13 @@ function validateTraining(value, strict=false) {
     if(validActivity(value.lastActivity)) out.lastActivity={href:value.lastActivity.href,title:value.lastActivity.title,at:value.lastActivity.at};
     else if(strict) throw new Error('Última actividad no válida.');
   }
+  // Campos posteriores a la versión 1: opcionales para aceptar estados y copias anteriores.
+  if(validDate(value.plan?.examDate)) out.plan={examDate:value.plan.examDate};
+  if(Array.isArray(value.mocks)) out.mocks=value.mocks.filter(validMock).slice(-50);
+  if(validActiveMock(value.activeMock)) out.activeMock=value.activeMock;
+  if(object(value.spaced)) for(const [id,item] of Object.entries(value.spaced)) if(questionMap.has(id) && object(item) && validDate(item.due) && [0,1,2].includes(item.step)) out.spaced[id]={due:item.due,step:item.step};
+  if(object(value.notes)) for(const [id,note] of Object.entries(value.notes)) if(courseLessons.some(l=>l.id===id) && typeof note==='string' && note.length<=10000) out.notes[id]=note;
+  if(typeof value.lastBackup==='string' && Number.isFinite(Date.parse(value.lastBackup))) out.lastBackup=value.lastBackup;
   return out;
 }
 export function readTraining(raw) {
@@ -77,6 +88,18 @@ export function pendingGroups(state) {
     const unpracticed=!evidence.answered && !evidence.passed && !evidence.failed && !challenges.some(a=>a.criterion===c.id && state.reviews[a.id]) && !codeActivities.some(a=>a.criterion===c.id && state.reviews[a.id]);
     return {...c,evidence,priority:evidence.wrong || evidence.failed?0:unpracticed?1:2};
   }).sort((a,b)=>a.priority-b.priority || b.weight-a.weight || a.id.localeCompare(b.id))}));
+}
+const dayNumber = date => Math.round(Date.parse(date+'T00:00:00Z')/86400000);
+export const addDays = (date,days) => new Date((dayNumber(date)+days)*86400000).toISOString().slice(0,10);
+export const daysUntil = (today,target) => dayNumber(target)-dayNumber(today);
+// Reparte lo pendiente desde hoy hasta la víspera del examen, sin dejar días vacíos delante.
+export function studyPlan(items,today,examDate) {
+  const days=Math.max(daysUntil(today,examDate),1), size=Math.ceil(items.length/days)||1;
+  return Array.from({length:days},(_,i)=>({date:addDays(today,i),items:items.slice(i*size,(i+1)*size)})).filter(d=>d.items.length);
+}
+export function pickMock(count) {
+  const ids=rubricGroups.map((g,i)=>{const list=challenges.filter(c=>c.criterion.startsWith(g.id+'-'));return list[(count+i)%list.length];});
+  return {challenges:ids.map(c=>c.id),cases:ids.flatMap(c=>practiceCases.filter(p=>p.packageId===c.packageId).slice(0,2).map(p=>p.id))};
 }
 function stable(value) { return JSON.stringify(value, (_,v)=>object(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v); }
 function parseStored(raw) { if(raw===null)return null; if(typeof raw!=='string')throw new Error('Datos de copia no válidos.'); return JSON.parse(raw); }
@@ -117,6 +140,10 @@ export function combineBackups(current,incoming,mode='combine') {
       const merged=emptyTraining();
       for(const field of dictionaries)merged[field]={...left[field],...right[field]};
       merged.lastActivity=Date.parse(left.lastActivity?.at || 0)>Date.parse(right.lastActivity?.at || 0)?left.lastActivity:right.lastActivity;
+      merged.plan=right.plan || left.plan || merged.plan;
+      merged.mocks=[...new Map([...(left.mocks || []),...(right.mocks || [])].map(m=>[m.at,m])).values()].slice(-50);
+      merged.spaced={...left.spaced,...right.spaced};merged.notes={...left.notes,...right.notes};
+      merged.lastBackup=[left.lastBackup,right.lastBackup].filter(Boolean).sort().at(-1) || null;
       for(const [id,answer] of Object.entries(merged.answers)) {
         if(answer!==questionMap.get(id)?.answer)merged.errors[id]={note:merged.errors[id]?.note || '',reviewed:merged.errors[id]?.reviewed || false};
         else if(merged.errors[id])merged.errors[id].reviewed=true;

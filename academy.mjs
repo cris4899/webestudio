@@ -1,10 +1,10 @@
 import { rubricGroups } from './data/rubric.mjs';
 import { diagnosticQuestions, challenges, codeActivities, practiceCases } from './data/training.mjs';
 import { topics } from './data/topics.mjs';
-import { trainingKey, storageKeys, statusLabels, caseLabels, emptyTraining, readTraining, gradeDiagnostic, pendingGroups, criterionEvidence, makeBackup, validateBackup, combineBackups, applyBackup, notebookQuestions } from './training-state.mjs';
+import { trainingKey, storageKeys, statusLabels, caseLabels, emptyTraining, readTraining, gradeDiagnostic, pendingGroups, criterionEvidence, makeBackup, validateBackup, combineBackups, applyBackup, notebookQuestions, studyPlan, daysUntil, pickMock } from './training-state.mjs';
 
 export function createAcademy({lessons, getPackages, heading, codeBlock, esc, notify, refresh, getLegacy, reloadLegacy}) {
-  let state=emptyTraining(), storageFailed=false, incoming=null, diagnosticRetry=false;
+  let state=emptyTraining(), storageFailed=false, incoming=null, diagnosticRetry=false, mockFinished=false;
   try {state=readTraining(localStorage.getItem(trainingKey));}catch{storageFailed=true;}
   const criteria=rubricGroups.flatMap(g=>g.criteria);
   const criterion=id=>criteria.find(c=>c.id===id);
@@ -25,7 +25,7 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
     return `<aside class="activity-sources"><strong>Para estudiar y contrastar</strong><div class="academy-actions">${link('#/rubrica?criterio='+c.id,c.id+' · '+c.title)}${c.lessons.map(id=>link('#/leccion/'+id,lessons.find(l=>l.id===id).title)).join('')}${p?link('#/solucion/'+p.id,'Archivos de '+p.title):''}</div>${item.files?`<p>Archivos de referencia del paquete:</p><ul>${item.files.map(f=>`<li><code>${esc(f)}</code></li>`).join('')}</ul>`:''}<p>La rúbrica y los enunciados originales son la referencia; los fragmentos y retos son elaboración didáctica.</p></aside>`;
   }
   const pendingErrors=()=>Object.values(state.errors).filter(e=>!e.reviewed).length;
-  const tabs=(active='')=>`<nav class="lesson-tabs academy-tabs" aria-label="Formas de practicar">${[['entrenar','Actividades'],['diagnostico','Diagnóstico'],['autoevaluacion','Preguntas'],['cuaderno','Errores'+(pendingErrors()?' · '+pendingErrors():'')]].map(([id,t])=>`<a href="#/${id}"${id===active?' aria-current="page"':''}>${esc(t)}</a>`).join('')}</nav>`;
+  const tabs=(active='')=>`<nav class="lesson-tabs academy-tabs" aria-label="Formas de practicar">${[['entrenar','Actividades'],['simulacro','Simulacro'],['diagnostico','Diagnóstico'],['autoevaluacion','Preguntas'],['cuaderno','Errores'+(pendingErrors()?' · '+pendingErrors():'')]].map(([id,t])=>`<a href="#/${id}"${id===active?' aria-current="page"':''}>${esc(t)}</a>`).join('')}</nav>`;
   function statusSelect(id) {
     return `<label class="status-control">Mi valoración de ${esc(id)}<select data-criterion-status="${id}">${Object.entries(statusLabels).map(([v,t])=>`<option value="${v}"${(state.statuses[id] || 'pendiente')===v?' selected':''}>${t}</option>`).join('')}</select></label>`;
   }
@@ -33,6 +33,41 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
     const flat=pendingGroups(state).flatMap(g=>g.criteria), bad=flat.filter(c=>c.evidence.wrong || c.evidence.failed);
     const next=bad[0] || flat.find(c=>(state.statuses[c.id] || 'pendiente')!=='solo') || flat[0];
     return {title:next.title,id:next.id,href:'#/reto/'+challenges.find(a=>a.criterion===next.id).id,review:bad.length>0};
+  }
+  const localToday=()=>new Date().toLocaleDateString('sv');
+  function todayPlan(lessonItems) {
+    const groups=pendingGroups(state).flatMap(g=>g.criteria);
+    const reto=c=>({label:`Practicar ${c.id}: ${c.title}`,href:'#/reto/'+challenges.find(a=>a.criterion===c.id).id});
+    const items=[...groups.filter(c=>c.priority===0).map(c=>({...reto(c),label:`Revisar errores en ${c.id}: ${c.title}`})),...lessonItems,...groups.filter(c=>c.priority===1).map(reto)];
+    const today=localToday(), exam=state.plan.examDate, left=daysUntil(today,exam), plan=studyPlan(items,today,exam);
+    return {left,exam,items:plan[0]?.items || [],total:items.length};
+  }
+  function rubricMap() {
+    const label={0:'Con errores',1:'Sin practicar',2:'Practicado'};
+    return `<section class="panel"><h2>Mapa de criterios</h2><div class="rubric-map">${pendingGroups(state).flatMap(g=>g.criteria.map(c=>{const proved=c.priority===2 && c.evidence.answered && !c.evidence.wrong;return `<a class="rubric-cell${c.priority===0?' bad':proved?' good':''}" href="#/reto/${challenges.find(a=>a.criterion===c.id).id}"><strong>${c.id}</strong><span>${proved?'Demostrado':label[c.priority]}</span></a>`;})).join('')}</div></section>`;
+  }
+  function mockPage() {
+    const notes='<p class="source-notice">Ensayo de estudio: no reproduce el examen real ni predice la nota. Puedes consultar tus relaciones, igual que en el examen.</p>';
+    const active=state.activeMock;
+    if(active && !mockFinished) {
+      const items=active.challenges.map(id=>challenges.find(c=>c.id===id)), cases=active.cases.map(id=>practiceCases.find(c=>c.id===id));
+      return heading('SIMULACRO','Simulacro en curso','Trabaja en Visual Studio con las relaciones a mano. Las ayudas de los retos no se muestran aquí.')+tabs('simulacro')+notes+
+        `<p class="mock-timer" id="mock-timer" role="timer" data-ends="${Date.parse(active.startedAt)+active.minutes*60000}"></p>${items.map(a=>`<article class="panel activity-reader"><h2>${esc(a.title)}</h2><p>${a.criterion}</p><ul>${a.requirements.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><h3>Cómo comprobarlo</h3><p>${esc(a.verification)}</p></article>`).join('')}<section class="panel"><h2>Casos que debe superar</h2><ul>${cases.map(c=>`<li>${esc(c.action)}: ${esc(c.expected)}</li>`).join('')}</ul></section><div class="academy-actions"><button class="button" data-mock-finish>Terminar y corregir</button>${link('#/chuleta','Abrir chuletas')}</div>`;
+    }
+    if(active) {
+      const items=active.challenges.map(id=>challenges.find(c=>c.id===id));
+      return heading('SIMULACRO','Corrige tu simulacro','Valora cada reto con sus comprobaciones. La web no ejecuta tu proyecto.')+tabs('simulacro')+notes+
+        `<form id="mock-form">${items.map(a=>`<fieldset class="panel"><legend>${a.criterion} · ${esc(a.title)}</legend><p>${esc(a.verification)}</p><details><summary>Ver solución razonada</summary><p>${esc(a.solution)}</p></details>${[['bien','Lo resolví'],['regular','Con errores'],['mal','No lo resolví']].map(([v,t])=>`<label><input type="radio" name="${a.criterion}" value="${v}" required> ${t}</label>`).join('')}</fieldset>`).join('')}<button class="button" type="submit">Guardar resultado</button></form>`;
+    }
+    const last=state.mocks.at(-1);
+    return heading('SIMULACRO','Simulacro','Tres retos, uno por RA, con tiempo y sin ayudas.')+tabs('simulacro')+notes+
+      `<section class="panel"><label>Duración<select id="mock-minutes">${[60,90,120].map(m=>`<option value="${m}"${m===90?' selected':''}>${m} minutos</option>`).join('')}</select></label><div class="academy-actions"><button class="button" data-mock-start>Empezar simulacro</button></div></section>${last?`<section class="panel"><h2>Último simulacro</h2><p>${esc(new Date(last.at).toLocaleString('es-ES'))} · ${last.minutes} minutos</p><ul>${Object.entries(last.results).map(([id,v])=>`<li>${id}: ${{bien:'Lo resolví',regular:'Con errores',mal:'No lo resolví'}[v]} ${v==='bien'?'':link('#/reto/'+challenges.find(a=>a.criterion===id).id,'Repasar')}</li>`).join('')}</ul></section>`:''}`;
+  }
+  function tickMock() {
+    const el=document.getElementById('mock-timer');if(!el)return;
+    const left=Number(el.dataset.ends)-Date.now();
+    if(left<=0){mockFinished=true;notify('Tiempo agotado. Corrige tu simulacro.');refresh();return;}
+    const total=Math.ceil(left/1000);el.textContent=`Tiempo restante: ${Math.floor(total/60)}:${String(total%60).padStart(2,'0')}`;
   }
   function pendingPanel(groups=pendingGroups(state)) {
     return `<section class="content-section"><h2>Qué queda por demostrar</h2><p>Primero aparecen los criterios con errores o casos fallidos; después, los no practicados. Los pesos ordenan dentro de cada RA: no hay una nota conjunta.</p>${groups.map(g=>`<section class="panel"><h3>${g.id} · ${esc(g.title)}</h3><div class="pending-list">${g.criteria.map(c=>`<article><div><h4>${c.id} · ${esc(c.title)} <small>${c.weight}% de ${g.id}</small></h4><p class="evidence">Diagnóstico: ${c.evidence.correct} aciertos / ${c.evidence.answered} respondidas · ${c.evidence.wrong} errores. Casos: ${c.evidence.passed} correctos, ${c.evidence.failed} fallidos de ${c.evidence.totalCases} relacionados.</p>${c.priority===0?'<span class="evidence-alert">Revisar errores</span>':c.priority===1?'<span>Sin práctica registrada</span>':''}<div class="academy-actions">${link('#/reto/'+challenges.find(a=>a.criterion===c.id).id,'Ir al reto')}${link('#/rubrica?criterio='+c.id,'Ver criterio')}</div></div>${statusSelect(c.id)}</article>`).join('')}</div></section>`).join('')}</section>`;
@@ -98,8 +133,9 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
     const matches=[...challenges.map(a=>({...a,href:'#/reto/'+a.id})),...codeActivities.map(a=>({...a,href:'#/codigo/'+a.id}))].filter(a=>terms.every(t=>normalize(JSON.stringify(a)).includes(t)));
     return matches.length?`<section class="result-group"><h2>Retos y código razonado · ${matches.length}</h2>${matches.map(a=>`<a class="result-item" href="${a.href}"><small>${a.criterion}</small><strong>${esc(a.title)}</strong></a>`).join('')}</section>`:'';
   }
+  function setExamDate(value) {state.plan.examDate=value;return save();}
   function render(route,params,id) {
-    const pages={entrenar:()=>training(params),diagnostico:()=>diagnosticPage(params),reto:()=>challengePage(id),codigo:()=>codePage(id),casos:()=>casesPage(id),cuaderno:notebook,progreso:backupPage};
+    const pages={simulacro:mockPage,entrenar:()=>training(params),diagnostico:()=>diagnosticPage(params),reto:()=>challengePage(id),codigo:()=>codePage(id),casos:()=>casesPage(id),cuaderno:notebook,progreso:backupPage};
     return pages[route]?.() ?? null;
   }
   function touchRoute(route,id,params=new URLSearchParams()) {
@@ -137,6 +173,11 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
         if(selected.some(q=>!Object.hasOwn(answers,q.id))){notify('Responde todas las preguntas del bloque antes de corregir.');return;}
         state=gradeDiagnostic(state,answers);diagnosticRetry=false;activity('#/diagnostico'+(ra==='all'?'':'?ra='+ra),'Diagnóstico '+(ra==='all'?'completo':ra));refresh();document.getElementById('diagnostic-result')?.focus();
       }
+      if(event.target.id==='mock-form') {
+        event.preventDefault();
+        state.mocks.push({at:new Date().toISOString(),minutes:state.activeMock.minutes,results:Object.fromEntries(new FormData(event.target))});
+        state.activeMock=null;mockFinished=false;if(save())notify('Simulacro guardado.');refresh();
+      }
       if(event.target.matches('[data-error-note]')) {
         event.preventDefault();const form=event.target, data=new FormData(form);
         state.errors[form.dataset.errorNote]={note:String(data.get('note')).slice(0,10000),reviewed:data.has('reviewed')};if(activity('#/cuaderno','Revisión de errores'))notify('Revisión guardada.');
@@ -145,6 +186,8 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       }
     });
     document.addEventListener('click',event=>{
+      if(event.target.closest('[data-mock-start]')){state.activeMock={...pickMock(state.mocks.length),startedAt:new Date().toISOString(),minutes:Number(document.getElementById('mock-minutes').value)};mockFinished=false;save();refresh();}
+      if(event.target.closest('[data-mock-finish]')){mockFinished=true;refresh();}
       if(event.target.closest('[data-diagnostic-retry]')){diagnosticRetry=true;refresh();document.querySelector('#diagnostic-form input')?.focus();}
       if(event.target.closest('[data-backup-export]')) {
         const blob=new Blob([JSON.stringify(currentBackup(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='aula-interfaces-progreso-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('Copia de progreso preparada.');
@@ -164,5 +207,5 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       if(event.key===trainingKey || event.key===null){state=readTraining(event.newValue);refresh();}
     });
   }
-  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,nextStep,pendingPanel,tabs,state:()=>state};
+  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,nextStep,pendingPanel,tabs,todayPlan,rubricMap,tickMock,setExamDate,state:()=>state};
 }

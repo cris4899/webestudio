@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { rubricGroups } from '../data/rubric.mjs';
 import { diagnosticQuestions, challenges, codeActivities, practiceCases } from '../data/training.mjs';
 import { lessons } from '../data/course.mjs';
-import { storageKeys, trainingKey, emptyTraining, readTraining, gradeDiagnostic, criterionEvidence, pendingGroups, makeBackup, validateBackup, combineBackups, applyBackup } from '../training-state.mjs';
+import { studyPlan, addDays, daysUntil, pickMock, storageKeys, trainingKey, emptyTraining, readTraining, gradeDiagnostic, criterionEvidence, pendingGroups, makeBackup, validateBackup, combineBackups, applyBackup } from '../training-state.mjs';
 const packages=JSON.parse(await readFile(new URL('../data/solutions.json',import.meta.url),'utf8'));
 const criteria=rubricGroups.flatMap(g=>g.criteria);
 const memory=(initial={})=>{const map=new Map(Object.entries(initial));return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)};};
@@ -89,6 +89,28 @@ test('Copia: rechaza versiones, formas, ids y rutas inválidas antes de escribir
     const b=structuredClone(valid);mutation(b);assert.throws(()=>validateBackup(b,lessons,packages));
   }
   const b=structuredClone(valid),state=emptyTraining();state.lastActivity={href:'https://example.com',title:'x',at:new Date().toISOString()};b.storage[trainingKey]=JSON.stringify(state);assert.throws(()=>validateBackup(b,lessons,packages));
+});
+test('Campos nuevos: estados y copias anteriores se cargan sin perder datos',()=>{
+  const old={version:1,statuses:{'RA1-AB':'solo'},answers:{},cases:{},errors:{},help:{},reviews:{},lastActivity:null};
+  const state=readTraining(JSON.stringify(old));
+  assert.equal(state.statuses['RA1-AB'],'solo');assert.equal(state.plan.examDate,'2026-11-04');assert.deepEqual(state.mocks,[]);
+  const b=backup(emptyTraining());b.storage[trainingKey]=JSON.stringify(old);
+  assert.equal(readTraining(validateBackup(b,lessons,packages).storage[trainingKey]).statuses['RA1-AB'],'solo');
+  const merged=readTraining(combineBackups(backup({...emptyTraining(),mocks:[{at:'2026-10-30T10:00:00.000Z',minutes:60,results:{}}]}),b)[trainingKey]);
+  assert.equal(merged.mocks.length,1);assert.equal(merged.statuses['RA1-AB'],'solo');
+});
+test('Plan: reparte hasta la víspera y reparte todo',()=>{
+  const items=Array.from({length:9},(_,i)=>i),plan=studyPlan(items,'2026-10-30','2026-11-04');
+  assert.equal(plan.length,5);assert.equal(plan[0].items.length,2);assert.deepEqual(plan.flatMap(d=>d.items),items);assert.equal(plan.at(-1).date,'2026-11-03');
+  assert.equal(studyPlan(items,'2026-11-04','2026-11-04')[0].items.length,9);
+  assert.equal(studyPlan(items,'2026-11-10','2026-11-04')[0].items.length,9);
+  assert.equal(studyPlan([],'2026-10-30','2026-11-04').length,0);
+  assert.equal(addDays('2026-10-31',1),'2026-11-01');assert.equal(daysUntil('2026-10-30','2026-11-04'),5);
+});
+test('Simulacro: un reto por RA y rotación',()=>{
+  const a=pickMock(0),b=pickMock(1);
+  assert.equal(a.challenges.length,3);assert.equal(new Set(a.challenges.map(id=>challenges.find(c=>c.id===id).criterion.split('-')[0])).size,3);
+  assert.notDeepEqual(a.challenges,b.challenges);assert.ok(a.cases.length>0);
 });
 test('Copia: fallo de almacenamiento restaura valores anteriores',()=>{
   const initial=Object.fromEntries(storageKeys.map(k=>[k,k==='aula-interfaces.tema'?'dark':null]));
