@@ -1,10 +1,10 @@
 import { rubricGroups } from './data/rubric.mjs';
 import { diagnosticQuestions, challenges, codeActivities, practiceCases } from './data/training.mjs';
 import { topics } from './data/topics.mjs';
-import { trainingKey, storageKeys, statusLabels, caseLabels, emptyTraining, readTraining, gradeDiagnostic, pendingGroups, criterionEvidence, makeBackup, validateBackup, combineBackups, applyBackup, notebookQuestions, studyPlan, daysUntil, pickMock } from './training-state.mjs';
+import { trainingKey, storageKeys, statusLabels, caseLabels, emptyTraining, readTraining, gradeDiagnostic, pendingGroups, criterionEvidence, makeBackup, validateBackup, combineBackups, applyBackup, notebookQuestions, studyPlan, daysUntil, pickMock, scheduleReview, queueErrors, dueReviews } from './training-state.mjs';
 
-export function createAcademy({lessons, getPackages, heading, codeBlock, esc, notify, refresh, getLegacy, reloadLegacy}) {
-  let state=emptyTraining(), storageFailed=false, incoming=null, diagnosticRetry=false, mockFinished=false;
+export function createAcademy({lessons, getPackages, heading, codeBlock, esc, notify, refresh, getLegacy, reloadLegacy, pendingLessons}) {
+  let state=emptyTraining(), storageFailed=false, incoming=null, diagnosticRetry=false, mockFinished=false, session=null;
   try {state=readTraining(localStorage.getItem(trainingKey));}catch{storageFailed=true;}
   const criteria=rubricGroups.flatMap(g=>g.criteria);
   const criterion=id=>criteria.find(c=>c.id===id);
@@ -18,14 +18,16 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
   function activity(href,title) {state.lastActivity={href,title,at:new Date().toISOString()};return save();}
   function syncLegacy(answers) {
     const mapped=Object.fromEntries(Object.entries(answers).map(([id,v])=>['legacy-'+id,v]));
-    state=gradeDiagnostic(state,mapped);save();
+    state=queueErrors(gradeDiagnostic(state,mapped),localToday(),state.plan.examDate);save();
   }
   function sources(item) {
     const c=criterion(item.criterion),p=pkg(item.packageId);
     return `<aside class="activity-sources"><strong>Para estudiar y contrastar</strong><div class="academy-actions">${link('#/rubrica?criterio='+c.id,c.id+' · '+c.title)}${c.lessons.map(id=>link('#/leccion/'+id,lessons.find(l=>l.id===id).title)).join('')}${p?link('#/solucion/'+p.id,'Archivos de '+p.title):''}</div>${item.files?`<p>Archivos de referencia del paquete:</p><ul>${item.files.map(f=>`<li><code>${esc(f)}</code></li>`).join('')}</ul>`:''}<p>La rúbrica y los enunciados originales son la referencia; los fragmentos y retos son elaboración didáctica.</p></aside>`;
   }
+  const localToday=()=>new Date().toLocaleDateString('sv');
+  const dueCount=()=>dueReviews(state,localToday()).length;
   const pendingErrors=()=>Object.values(state.errors).filter(e=>!e.reviewed).length;
-  const tabs=(active='')=>`<nav class="lesson-tabs academy-tabs" aria-label="Formas de practicar">${[['entrenar','Actividades'],['simulacro','Simulacro'],['diagnostico','Diagnóstico'],['autoevaluacion','Preguntas'],['cuaderno','Errores'+(pendingErrors()?' · '+pendingErrors():'')]].map(([id,t])=>`<a href="#/${id}"${id===active?' aria-current="page"':''}>${esc(t)}</a>`).join('')}</nav>`;
+  const tabs=(active='')=>`<nav class="lesson-tabs academy-tabs" aria-label="Formas de practicar">${[['hoy','Hoy'+(dueCount()?' · '+dueCount():'')],['entrenar','Actividades'],['simulacro','Simulacro'],['diagnostico','Diagnóstico'],['autoevaluacion','Preguntas'],['cuaderno','Errores'+(pendingErrors()?' · '+pendingErrors():'')]].map(([id,t])=>`<a href="#/${id}"${id===active?' aria-current="page"':''}>${esc(t)}</a>`).join('')}</nav>`;
   function statusSelect(id) {
     return `<label class="status-control">Mi valoración de ${esc(id)}<select data-criterion-status="${id}">${Object.entries(statusLabels).map(([v,t])=>`<option value="${v}"${(state.statuses[id] || 'pendiente')===v?' selected':''}>${t}</option>`).join('')}</select></label>`;
   }
@@ -34,17 +36,35 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
     const next=bad[0] || flat.find(c=>(state.statuses[c.id] || 'pendiente')!=='solo') || flat[0];
     return {title:next.title,id:next.id,href:'#/reto/'+challenges.find(a=>a.criterion===next.id).id,review:bad.length>0};
   }
-  const localToday=()=>new Date().toLocaleDateString('sv');
-  function todayPlan(lessonItems) {
+  function todayPlan() {
     const groups=pendingGroups(state).flatMap(g=>g.criteria);
     const reto=c=>({label:`Practicar ${c.id}: ${c.title}`,href:'#/reto/'+challenges.find(a=>a.criterion===c.id).id});
-    const items=[...groups.filter(c=>c.priority===0).map(c=>({...reto(c),label:`Revisar errores en ${c.id}: ${c.title}`})),...lessonItems,...groups.filter(c=>c.priority===1).map(reto)];
+    const lessonItems=pendingLessons();
+    const items=[...(dueCount()?[{label:`Repasar ${dueCount()} ${dueCount()===1?'pregunta':'preguntas'} que tocan hoy`,href:'#/hoy'}]:[]),...groups.filter(c=>c.priority===0).map(c=>({...reto(c),label:`Revisar errores en ${c.id}: ${c.title}`})),...lessonItems,...groups.filter(c=>c.priority===1).map(reto)];
     const today=localToday(), exam=state.plan.examDate, left=daysUntil(today,exam), plan=studyPlan(items,today,exam);
     return {left,exam,items:plan[0]?.items || [],total:items.length};
   }
   function rubricMap() {
     const label={0:'Con errores',1:'Sin practicar',2:'Practicado'};
     return `<section class="panel"><h2>Mapa de criterios</h2><div class="rubric-map">${pendingGroups(state).flatMap(g=>g.criteria.map(c=>{const proved=c.priority===2 && c.evidence.answered && !c.evidence.wrong;return `<a class="rubric-cell${c.priority===0?' bad':proved?' good':''}" href="#/reto/${challenges.find(a=>a.criterion===c.id).id}"><strong>${c.id}</strong><span>${proved?'Demostrado':label[c.priority]}</span></a>`;})).join('')}</div></section>`;
+  }
+  function todayReviews() {
+    const due=dueReviews(state,localToday()), next=Object.values(state.spaced).map(s=>s.due).sort()[0];
+    return heading('HOY','Practicar','Las preguntas falladas vuelven para que las recuerdes sin mirar.')+tabs('hoy')+
+      (due.length?due.map(q=>`<form class="quiz" data-spaced="${q.id}"><fieldset><legend>${esc(q.prompt)}</legend>${q.options.map((o,i)=>`<label><input type="radio" name="answer" value="${i}" required><span>${esc(o)}</span></label>`).join('')}</fieldset><button class="button small" type="submit">Comprobar</button><div class="feedback" aria-live="polite"></div></form>`).join(''):`<section class="panel"><h2>Nada que repasar hoy</h2><p>${next?`El próximo repaso es el ${esc(next)}.`:'Cuando falles una pregunta, volverá aquí.'}</p>${link('#/diagnostico','Hacer el diagnóstico')}</section>`);
+  }
+  function sessionPage() {
+    if(!session)return heading('SESIÓN','Sesión de 25 minutos','Repaso pendiente, una lección y un reto, en ese orden.')+`<section class="panel"><button class="button" data-session-start>Empezar sesión</button></section>`;
+    const done=session.steps.filter(s=>s.done).length;
+    if(session.finished)return heading('SESIÓN','Sesión terminada',`${done} de ${session.steps.length} tareas hechas.`)+`<section class="panel"><ul>${session.steps.map(s=>`<li>${s.done?'Hecho':'Pendiente'}: ${esc(s.label)}</li>`).join('')}</ul><button class="button" data-session-start>Otra sesión</button></section>`;
+    return heading('SESIÓN','Sesión de 25 minutos','Marca cada tarea al terminarla.')+`<p class="mock-timer" id="session-timer" role="timer" data-ends="${session.ends}"></p><section class="panel checklist">${session.steps.map((s,i)=>`<label><input type="checkbox" data-session-step="${i}"${s.done?' checked':''}><span><a href="${esc(s.href)}">${esc(s.label)}</a></span></label>`).join('')}</section><button class="button" data-session-finish>Terminar sesión</button>`;
+  }
+  function startSession() {
+    const next=nextStep(), lesson=pendingLessons()[0];
+    session={ends:Date.now()+25*60000,finished:false,steps:[dueCount()?{label:`Repasar ${dueCount()} preguntas`,href:'#/hoy',done:false}:{label:'Revisar los errores del cuaderno',href:'#/cuaderno',done:false},...(lesson?[{...lesson,done:false}]:[]),{label:`Reto de ${next.id}: ${next.title}`,href:next.href,done:false}]};
+  }
+  function noteBox(id) {
+    return `<section class="note-box"><h2>Explícalo con tus palabras</h2><label>Sin mirar el texto, resume lo importante de esta lección.<textarea data-lesson-note="${esc(id)}" rows="4" maxlength="10000">${esc(state.notes[id] || '')}</textarea></label></section>`;
   }
   function mockPage() {
     const notes='<p class="source-notice">Ensayo de estudio: no reproduce el examen real ni predice la nota. Puedes consultar tus relaciones, igual que en el examen.</p>';
@@ -64,6 +84,8 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       `<section class="panel"><label>Duración<select id="mock-minutes">${[60,90,120].map(m=>`<option value="${m}"${m===90?' selected':''}>${m} minutos</option>`).join('')}</select></label><div class="academy-actions"><button class="button" data-mock-start>Empezar simulacro</button></div></section>${last?`<section class="panel"><h2>Último simulacro</h2><p>${esc(new Date(last.at).toLocaleString('es-ES'))} · ${last.minutes} minutos</p><ul>${Object.entries(last.results).map(([id,v])=>`<li>${id}: ${{bien:'Lo resolví',regular:'Con errores',mal:'No lo resolví'}[v]} ${v==='bien'?'':link('#/reto/'+challenges.find(a=>a.criterion===id).id,'Repasar')}</li>`).join('')}</ul></section>`:''}`;
   }
   function tickMock() {
+    const clock=document.getElementById('session-timer');
+    if(clock){const rest=Math.max(Math.ceil((Number(clock.dataset.ends)-Date.now())/1000),0);clock.textContent=rest?`Tiempo restante: ${Math.floor(rest/60)}:${String(rest%60).padStart(2,'0')}`:'Tiempo agotado: termina la sesión.';}
     const el=document.getElementById('mock-timer');if(!el)return;
     const left=Number(el.dataset.ends)-Date.now();
     if(left<=0){mockFinished=true;notify('Tiempo agotado. Corrige tu simulacro.');refresh();return;}
@@ -135,7 +157,7 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
   }
   function setExamDate(value) {state.plan.examDate=value;return save();}
   function render(route,params,id) {
-    const pages={simulacro:mockPage,entrenar:()=>training(params),diagnostico:()=>diagnosticPage(params),reto:()=>challengePage(id),codigo:()=>codePage(id),casos:()=>casesPage(id),cuaderno:notebook,progreso:backupPage};
+    const pages={hoy:todayReviews,sesion:sessionPage,simulacro:mockPage,entrenar:()=>training(params),diagnostico:()=>diagnosticPage(params),reto:()=>challengePage(id),codigo:()=>codePage(id),casos:()=>casesPage(id),cuaderno:notebook,progreso:backupPage};
     return pages[route]?.() ?? null;
   }
   function touchRoute(route,id,params=new URLSearchParams()) {
@@ -151,6 +173,8 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       if(el.id==='training-ra' || el.id==='training-topic') {const q=new URLSearchParams();const ra=document.getElementById('training-ra').value,t=document.getElementById('training-topic').value;if(ra!=='all')q.set('ra',ra);if(t)q.set('tema',t);location.hash='#/entrenar'+(q.size?'?'+q:'');return;}
       if(el.id==='diagnostic-ra') {diagnosticRetry=false;location.hash='#/diagnostico'+(el.value==='all'?'':'?ra='+el.value);return;}
       if(el.matches('[data-criterion-status]')) {state.statuses[el.dataset.criterionStatus]=el.value;const saved=save();if(location.hash.startsWith('#/rubrica')){const id=el.dataset.criterionStatus;refresh();document.querySelector(`[data-criterion-status="${id}"]`)?.focus({preventScroll:true});}if(saved)notify('Valoración personal guardada; los resultados de las pruebas no cambian.');return;}
+      if(el.matches('[data-lesson-note]')) {state.notes[el.dataset.lessonNote]=el.value.slice(0,10000);if(save())notify('Nota guardada.');return;}
+      if(el.matches('[data-session-step]')) {session.steps[Number(el.dataset.sessionStep)].done=el.checked;return;}
       if(el.matches('[data-case]')) {state.cases[el.dataset.case]=el.value;if(save())notify('Resultado del caso guardado.');return;}
       if(el.matches('[data-review]')) {state.reviews[el.dataset.review]=el.checked;if(save())notify('Comprobación registrada.');return;}
       if(el.id==='backup-file') {
@@ -171,7 +195,16 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
         event.preventDefault();const form=event.target, answers=Object.fromEntries([...new FormData(form)].map(([id,v])=>[id,Number(v)]));
         const ra=form.dataset.ra;const selected=diagnosticQuestions.filter(q=>ra==='all'||q.criterion.startsWith(ra+'-'));
         if(selected.some(q=>!Object.hasOwn(answers,q.id))){notify('Responde todas las preguntas del bloque antes de corregir.');return;}
-        state=gradeDiagnostic(state,answers);diagnosticRetry=false;activity('#/diagnostico'+(ra==='all'?'':'?ra='+ra),'Diagnóstico '+(ra==='all'?'completo':ra));refresh();document.getElementById('diagnostic-result')?.focus();
+        state=queueErrors(gradeDiagnostic(state,answers),localToday(),state.plan.examDate);diagnosticRetry=false;activity('#/diagnostico'+(ra==='all'?'':'?ra='+ra),'Diagnóstico '+(ra==='all'?'completo':ra));refresh();document.getElementById('diagnostic-result')?.focus();
+      }
+      if(event.target.matches('[data-spaced]')) {
+        event.preventDefault();const form=event.target,id=form.dataset.spaced,q=notebookQuestions.find(n=>n.id===id),value=new FormData(form).get('answer');
+        if(value===null)return;
+        const correct=Number(value)===q.answer,next=scheduleReview(state.spaced[id],correct,localToday(),state.plan.examDate);
+        if(next)state.spaced[id]=next;else delete state.spaced[id];
+        if(correct && state.errors[id])state.errors[id].reviewed=true;
+        save();form.querySelector('button').remove();form.querySelector('.feedback').classList.toggle('correct',correct);
+        form.querySelector('.feedback').textContent=`${correct?'Correcto.':'Respuesta: '+q.options[q.answer]+'.'} ${q.explanation} ${next?'Volverá el '+next.due+'.':'Sale de la cola de repaso.'}`;
       }
       if(event.target.id==='mock-form') {
         event.preventDefault();
@@ -186,6 +219,8 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       }
     });
     document.addEventListener('click',event=>{
+      if(event.target.closest('[data-session-start]')){startSession();refresh();}
+      if(event.target.closest('[data-session-finish]')){session.finished=true;refresh();}
       if(event.target.closest('[data-mock-start]')){state.activeMock={...pickMock(state.mocks.length),startedAt:new Date().toISOString(),minutes:Number(document.getElementById('mock-minutes').value)};mockFinished=false;save();refresh();}
       if(event.target.closest('[data-mock-finish]')){mockFinished=true;refresh();}
       if(event.target.closest('[data-diagnostic-retry]')){diagnosticRetry=true;refresh();document.querySelector('#diagnostic-form input')?.focus();}
@@ -207,5 +242,5 @@ export function createAcademy({lessons, getPackages, heading, codeBlock, esc, no
       if(event.key===trainingKey || event.key===null){state=readTraining(event.newValue);refresh();}
     });
   }
-  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,nextStep,pendingPanel,tabs,todayPlan,rubricMap,tickMock,setExamDate,state:()=>state};
+  return {render,bind,search,lessonActivities,touchRoute,syncLegacy,nextStep,pendingPanel,tabs,noteBox,todayPlan,rubricMap,tickMock,setExamDate,state:()=>state};
 }

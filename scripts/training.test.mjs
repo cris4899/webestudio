@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { rubricGroups } from '../data/rubric.mjs';
 import { diagnosticQuestions, challenges, codeActivities, practiceCases } from '../data/training.mjs';
 import { lessons } from '../data/course.mjs';
-import { studyPlan, addDays, daysUntil, pickMock, storageKeys, trainingKey, emptyTraining, readTraining, gradeDiagnostic, criterionEvidence, pendingGroups, makeBackup, validateBackup, combineBackups, applyBackup } from '../training-state.mjs';
+import { scheduleReview, queueErrors, dueReviews, studyPlan, addDays, daysUntil, pickMock, storageKeys, trainingKey, emptyTraining, readTraining, gradeDiagnostic, criterionEvidence, pendingGroups, makeBackup, validateBackup, combineBackups, applyBackup } from '../training-state.mjs';
 const packages=JSON.parse(await readFile(new URL('../data/solutions.json',import.meta.url),'utf8'));
 const criteria=rubricGroups.flatMap(g=>g.criteria);
 const memory=(initial={})=>{const map=new Map(Object.entries(initial));return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)};};
@@ -106,6 +106,20 @@ test('Plan: reparte hasta la víspera y reparte todo',()=>{
   assert.equal(studyPlan(items,'2026-11-10','2026-11-04')[0].items.length,9);
   assert.equal(studyPlan([],'2026-10-30','2026-11-04').length,0);
   assert.equal(addDays('2026-10-31',1),'2026-11-01');assert.equal(daysUntil('2026-10-30','2026-11-04'),5);
+});
+test('Repaso espaciado: intervalos, tope antes del examen y salida',()=>{
+  assert.deepEqual(scheduleReview(null,false,'2026-10-30','2026-12-01'),{due:'2026-10-31',step:0});
+  assert.deepEqual(scheduleReview({due:'2026-10-31',step:0},true,'2026-10-31','2026-12-01'),{due:'2026-11-03',step:1});
+  assert.deepEqual(scheduleReview({due:'2026-11-03',step:1},true,'2026-11-03','2026-12-01'),{due:'2026-11-10',step:2});
+  assert.equal(scheduleReview({due:'2026-11-10',step:2},true,'2026-11-10','2026-12-01'),null);
+  assert.deepEqual(scheduleReview({due:'2026-11-03',step:1},false,'2026-11-03','2026-12-01'),{due:'2026-11-04',step:0});
+  assert.equal(scheduleReview({due:'2026-11-01',step:0},true,'2026-11-01','2026-11-04').due,'2026-11-03');
+  assert.equal(scheduleReview(null,false,'2026-11-04','2026-11-04').due,'2026-11-04');
+  const q=diagnosticQuestions[0],state=gradeDiagnostic(emptyTraining(),{[q.id]:(q.answer+1)%q.options.length});
+  queueErrors(state,'2026-10-30','2026-11-04');
+  assert.equal(state.spaced[q.id].due,'2026-10-31');
+  assert.equal(dueReviews(state,'2026-10-30').length,0);assert.equal(dueReviews(state,'2026-10-31')[0].id,q.id);
+  assert.equal(readTraining(JSON.stringify(state)).spaced[q.id].step,0);
 });
 test('Simulacro: un reto por RA y rotación',()=>{
   const a=pickMock(0),b=pickMock(1);

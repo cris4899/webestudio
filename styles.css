@@ -306,3 +306,11 @@ html[data-theme="dark"] .workshop-index a[aria-current="step"]:hover{background:
 .sheet-package code{color:var(--muted);font-size:13px}
 .sheet-card .code-block{margin-bottom:10px}
 @media print{.page-trail,.academy-tabs,.workshop-pagination,.no-print{display:none}.panel{border:0;padding:0;margin-bottom:14px;break-inside:avoid}details>*{display:block}}
+.resume-actions{display:flex;flex-direction:column;gap:8px}
+.warmup{background:var(--soft);border-radius:var(--control);padding:16px 18px;margin-bottom:24px}
+.warmup .quiz{background:var(--paper)}
+.note-box textarea{width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:var(--control);background:var(--bg);color:var(--ink);font:inherit}
+.reveal-code{display:none}
+.hide-code .reveal-code{display:inline-flex;margin-bottom:12px}
+.hide-code .workshop-file:not(.revealed) :is(.code-block,.line-reading,.complete-file){display:none}
+.hide-code .workshop-file.revealed .reveal-code{display:none}

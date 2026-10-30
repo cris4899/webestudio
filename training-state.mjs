@@ -97,6 +97,20 @@ export function studyPlan(items,today,examDate) {
   const days=Math.max(daysUntil(today,examDate),1), size=Math.ceil(items.length/days)||1;
   return Array.from({length:days},(_,i)=>({date:addDays(today,i),items:items.slice(i*size,(i+1)*size)})).filter(d=>d.items.length);
 }
+const reviewGaps = [1,3,7];
+// Fija el siguiente repaso sin pasar de la víspera del examen; tras el último acierto sale de la cola.
+export function scheduleReview(entry,correct,today,examDate) {
+  const step=correct?(entry?entry.step+1:0):0;
+  if(correct && step>=reviewGaps.length)return null;
+  const due=addDays(today,reviewGaps[step]), limit=addDays(examDate,-1);
+  const capped=due>limit?limit:due;
+  return {due:capped<today?today:capped,step};
+}
+export function queueErrors(state,today,examDate) {
+  for(const [id,error] of Object.entries(state.errors))if(!error.reviewed && !state.spaced[id])state.spaced[id]=scheduleReview(null,false,today,examDate);
+  return state;
+}
+export const dueReviews = (state,today) => notebookQuestions.filter(q=>state.spaced[q.id]?.due<=today);
 export function pickMock(count) {
   const ids=rubricGroups.map((g,i)=>{const list=challenges.filter(c=>c.criterion.startsWith(g.id+'-'));return list[(count+i)%list.length];});
   return {challenges:ids.map(c=>c.id),cases:ids.flatMap(c=>practiceCases.filter(p=>p.packageId===c.packageId).slice(0,2).map(p=>p.id))};
