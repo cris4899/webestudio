@@ -28,6 +28,7 @@ const positionKey = 'aula-interfaces.ultimo-paso.v1';
 const placeKey = 'aula-interfaces.ultimo-sitio.v1';
 let lastSteps = {};
 let lastPlace = null;
+let navRoute = null;
 let study = readStudy(null, lessons);
 let noticeTimer;
 function notify(message) { $('#notice').textContent = message; clearTimeout(noticeTimer); noticeTimer = setTimeout(() => { $('#notice').textContent = ''; }, 6500); }
@@ -44,6 +45,7 @@ restoreResults();
 function saveStudy() {
   try { localStorage.setItem(studyKey, JSON.stringify({ checks: [...study.checks], answers: study.answers })); }
   catch { notify('El navegador no permite guardar el progreso. Los cambios durarán solo esta sesión.'); }
+  if (navRoute) renderNav(...navRoute);
 }
 function checklist(l) { return l.checks.map((c, i) => `<label><input type="checkbox" data-check="${l.id}-${i}"${study.checks.has(`${l.id}-${i}`) ? ' checked' : ''}><span>${esc(c)}</span></label>`).join(''); }
 function updateThemeButton() {
@@ -326,6 +328,7 @@ function render({ focus = true } = {}) {
   main.querySelectorAll('.exam-links a:not(.button), .material-card .text-link').forEach(link=>{link.classList.add('button','secondary');link.classList.remove('text-link');});
 
   document.title = `${title} · Aula de Interfaces`;
+  navRoute = [pathname, segment];
   renderNav(pathname, segment);
   $('#sidebar').classList.remove('open'); $('#menu-toggle').setAttribute('aria-expanded', 'false'); $('#menu-toggle').setAttribute('aria-label', 'Abrir navegación');
   if (segment[1] === 'buscar') $('#search').value = params.get('q') || '';
