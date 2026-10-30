@@ -5,7 +5,7 @@ import path from 'node:path';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'dist');
 await mkdir(output, { recursive: true });
-for (const item of ['index.html', 'styles.css', 'app.mjs', 'lib.mjs', 'favicon.svg', 'data', 'assets', 'downloads']) {
+for (const item of ['index.html', 'styles.css', 'app.mjs', 'academy.mjs', 'training-state.mjs', 'lib.mjs', 'favicon.svg', 'data', 'assets', 'downloads']) {
   await cp(path.join(root, item), path.join(output, item), { recursive: true });
 }
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));

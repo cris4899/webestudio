@@ -31,3 +31,21 @@ Ampliación exhaustiva: desglosar los archivos en miembros C# y elementos XAML, 
 Mejoras de estudio: destacar decisiones de lógica y dejar opcional la sintaxis básica; guardar la última posición válida por relación con una clave independiente; añadir comparaciones con los archivos canónicos de los paquetes y conservar los 177 pasos.
 
 Revisión transversal de interfaz: ordenar navegación por intención, agrupar relaciones y módulos, categorizar fichas, añadir ubicación y autoevaluación por lección, ampliar tipografía y revisar las pantallas en escritorio/móvil. Mantener posición y expansión del recorrido y aplicar resaltado accesible verde/violeta según el tema.
+
+## Academia para el examen de las unidades 2, 3 y 4
+
+Primera versión: navegación de cinco apartados, panel personal, diagnóstico por criterio, retos progresivos, casos de comprobación, explicación/corrección de código, cuaderno de errores y copia local del progreso. Mantener contenido anterior, enlaces y claves de almacenamiento; separar evidencia de comprobación y valoración personal. Las actividades se basan en fuentes identificadas y no agregan requisitos oficiales al examen. Un RA no equivale al número de una unidad.
+
+Ideas priorizadas para futuras versiones, fuera de esta entrega:
+
+| Prioridad | Propuesta | Objetivo |
+| --- | --- | --- |
+| Alta | Repaso espaciado | Volver a errores y temas poco practicados. |
+| Alta | Sesiones de 15, 30 o 60 minutos | Adaptar explicación, práctica y revisión al tiempo disponible. |
+| Alta | Comparador de código ampliado | Contrastar decisiones y variantes XAML/C#. |
+| Media | Tarjetas de memoria | Recordar APIs, propiedades y diferencias frecuentes. |
+| Media | Mapa de prerrequisitos | Conectar conceptos y ordenar el estudio. |
+| Media | Hoja de repaso imprimible | Consultar criterios, límites y errores fuera de pantalla. |
+| Media | Simulacro opcional cronometrado | Ensayar sin pistas y corregir al terminar. |
+| Posterior | Contenido seleccionado sin conexión | Evitar descargar todos los originales. |
+| Posterior | Plan hasta el examen | Distribuir pendientes cuando se conozca la fecha. |

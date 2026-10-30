@@ -117,3 +117,52 @@ npm run build
 ```
 
 La herramienta StudyCode utiliza Roslyn incluido en el SDK .NET; no añade paquetes de producción. Comprueba que el espaciado no cambia los tokens C#. Los fragmentos conservan el código canónico y el archivo completo se ofrece plegado para situarlos.
+
+## Repaso con la rúbrica de la práctica 1
+
+El apartado **Rúbrica del examen**, accesible desde el menú y la portada, conecta los 16 criterios de RA1, RA3 y RA4 con las lecciones de las unidades 2, 3 y 4. Cada criterio muestra su porcentaje dentro del RA, explicación, comprobación práctica y errores que evitar. Incluye repaso de API pública, constructores, eventos, documentación y consumo de bibliotecas, además de interfaces, navegación y recursos. Las lecciones enlazan a sus criterios y el buscador encuentra su contenido.
+
+La fuente original se conserva en `assets/documents/RubricaPractica1.pdf`; la adaptación didáctica está en `data/rubric.mjs`. Los pesos suman 100% en cada RA y no se agregan: la rúbrica no fija el peso conjunto ni la calificación del examen. No se inventan descriptores para celdas vacías. Las 16 casillas de comprobación se guardan por separado en `aula-interfaces.rubrica.v1` sin alterar el progreso anterior. No son una nota ni una garantía de dominio. El inventario previo de materiales docentes mantiene sus 16 entradas; la rúbrica se ofrece por separado.
+
+## Academia y preparación práctica
+
+La navegación principal se organiza en **Mi estudio**, **Temario**, **Practicar**, **Rúbrica** y **Materiales**. Los enlaces anteriores a lecciones, talleres, autoevaluación, consulta y descargas se conservan.
+
+- **Diagnóstico:** 32 preguntas nuevas, dos por criterio, en un bloque completo o por RA. La corrección se muestra al terminar y permite reintentar sin respuestas visibles. Se conserva además la autoevaluación anterior de 85 preguntas.
+- **Práctica:** 16 retos con dos pistas progresivas y solución razonada, 16 actividades de código (ocho para explicar y ocho para corregir) y 65 casos manuales para las ocho relaciones. Los casos existentes mantienen sus entradas y resultados.
+- **Pendientes:** valoración personal por criterio —pendiente, leído, resuelto con ayuda o resuelto solo— separada de respuestas y resultados de casos. Los errores del diagnóstico y los casos fallidos tienen prioridad; los porcentajes ordenan dentro de cada RA, sin calcular una nota global.
+- **Cuaderno de errores:** recoge fallos del diagnóstico y de las preguntas anteriores. Permite escribir qué ocurrió, la corrección y cómo comprobarla. Un reintento correcto marca la revisión; también puede registrarse una comprobación manual.
+- **Copia de progreso:** exportación JSON de versión 1, con fecha, todos los datos anteriores, entrenamiento, notas y tema. La importación valida y muestra un resumen antes de aplicar; permite combinar (opción inicial) o reemplazar. Al combinar, los valores del archivo prevalecen en conflictos y las casillas se unen. Guarda el archivo en un lugar adecuado: incluye tus notas personales. La aplicación no lo envía a ningún servidor.
+
+Los datos nuevos usan `aula-interfaces.entrenamiento.v1`. Las claves anteriores no cambian ni se convierten automáticamente en una valoración de dominio. Si se bloquea el almacenamiento, se puede estudiar y exportar el estado de la sesión, pero importar requiere poder guardar en el navegador.
+
+Los ejercicios nuevos son elaboración didáctica, no preguntas oficiales. Los fragmentos son parciales, y los ejemplos con errores están identificados. La web no compila MAUI. En particular, el LoginView original de R6 tiene dos entradas y propiedades de lectura; el botón está en `Solucion.xaml` del anfitrión. El evento público propuesto por el reto RA3-DE es una ampliación que se realiza en una copia, no una capacidad atribuida al ZIP original. Se conservan las convenciones documentadas de usuario, matrícula y fecha del 29 de febrero.
+
+Para verificar la web:
+
+```sh
+npm test
+npm run build
+```
+
+La prueba opcional de navegador requiere Python, Playwright y Chromium disponibles en la máquina, sin añadir paquetes a la aplicación:
+
+```sh
+PORT=4180 npm run dev
+# En otra terminal:
+python3 tests/browser/training.py
+```
+
+Puede cambiarse el destino con `STUDY_BASE_URL`. La prueba genera copias y capturas únicamente en `/tmp` y usa contextos de navegador aislados.
+
+## Fichas ampliadas y ejemplos de controles
+
+Consulta rápida incluye 19 bloques con explicación detallada, tabla de propiedades, 38 ejemplos de código, lectura paso a paso, resultado esperado, errores frecuentes y una comprobación práctica. Los ejemplos abarcan controles, layouts, eventos, modelos, componentes, bibliotecas, navegación, recursos, estilos, plataformas, fechas y matrícula.
+
+Cada bloque declara dónde se integra y qué necesita. Los ejemplos XAML/C# relacionados mantienen nombres coherentes; los fragmentos parciales se identifican y no sustituyen la solución completa. Las lecciones incluyen los bloques relacionados de forma desplegable. Los enlaces directos y los resultados del buscador abren la ficha correspondiente; los ejemplos se pueden copiar.
+
+Las ampliaciones viven en `data/reference-details.mjs`. Se conservan los identificadores de las 19 fichas, las preguntas, las casillas anteriores y los originales. La comprobación de navegador puede ejecutarse contra un servidor actualizado:
+
+```sh
+STUDY_BASE_URL=http://127.0.0.1:4190/ python3 tests/browser/references.py
+```

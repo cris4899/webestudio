@@ -32,7 +32,8 @@ test('Rutas: los enlaces anteriores llegan a su tema y bloque', () => {
   assert.equal(legacyRoute('/leccion/edad?apartado=comprobacion'),'/tema/formularios/edad?bloque=repasar');
   assert.equal(legacyRoute('/leccion/calculadora?apartado=ejercicio'),'/tema/eventos/calculadora?bloque=construir');
   for(const w of workshops)assert.equal(legacyRoute(`/comparar/${w.id}`),lessonRoute(w.lesson,'comparar'));
-  for(const old of ['/practica','/unidad/UD2','/unidad/UD3-4'])assert.equal(legacyRoute(old),'/');
+  for(const old of ['/unidad/UD2','/unidad/UD3-4'])assert.equal(legacyRoute(old),'/');
+  assert.equal(legacyRoute('/practica'),'/entrenar');
   for(const current of ['/','/consulta','/autoevaluacion','/leccion/inventada','/comparar/inventada','/taller/relacion-1'])assert.equal(legacyRoute(current),null);
 });
 
@@ -215,7 +216,7 @@ test('AC7: servidor de vista previa sirve originales y bloquea archivos privados
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const url of ['/', '/app.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/topics.mjs', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
+    for (const url of ['/', '/app.mjs', '/academy.mjs', '/training-state.mjs', '/data/training.mjs', '/data/course.mjs', '/data/guide.mjs', '/data/reference-details.mjs', '/data/workshops.mjs', '/data/interface.mjs', '/data/topics.mjs', '/data/rubric.mjs', '/assets/documents/RubricaPractica1.pdf', '/data/workshop-study.mjs', '/data/workshop-parts.mjs', '/data/study-explanations.mjs', '/data/solutions.json', '/data/materials.json', ...solutions.map(p=>'/'+p.download), ...materials.map(m => '/' + encodeURI(m.path)), ...materials.flatMap(m => m.images || []).map(p => '/' + p)]) {
       const response = await fetch(origin + url, { method: 'HEAD' });
       assert.equal(response.status, 200, url);
     }

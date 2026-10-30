@@ -7,7 +7,8 @@ const oldParts = { guia:'entender', ejercicio:'construir', repaso:'repasar', com
 export function legacyRoute(route) {
   const [pathname, query = ''] = route.split('?');
   const [, section, id] = pathname.split('/');
-  if (section === 'unidad' || section === 'practica') return '/';
+  if (section === 'unidad') return '/';
+  if (section === 'practica') return '/entrenar';
   if (section === 'leccion' && topicOf(id)) {
     const part = new URLSearchParams(query).get('apartado');
     return part && /^\d+$/.test(part) ? lessonRoute(id, 'entender', part) : lessonRoute(id, oldParts[part]);

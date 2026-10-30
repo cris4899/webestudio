@@ -8,7 +8,7 @@ const types = { '.html': 'text/html; charset=utf-8', '.mjs': 'text/javascript; c
 // Solo se sirven los activos de la web y los originales inventariados.
 const materials = JSON.parse(await readFile(path.join(root, 'data/materials.json'), 'utf8'));
 const solutions = JSON.parse(await readFile(path.join(root, 'data/solutions.json'), 'utf8'));
-const allowed = new Set(['index.html', 'styles.css', 'app.mjs', 'lib.mjs', 'favicon.svg', 'data/course.mjs', 'data/guide.mjs', 'data/workshops.mjs', 'data/interface.mjs', 'data/topics.mjs', 'data/workshop-study.mjs', 'data/workshop-parts.mjs', 'data/study-explanations.mjs', 'data/solution-guides.mjs', 'data/materials.json', 'data/solutions.json', ...solutions.map(p=>p.download), ...materials.map(m => m.path), ...materials.flatMap(m => m.images || [])]);
+const allowed = new Set(['index.html', 'styles.css', 'app.mjs', 'academy.mjs', 'training-state.mjs', 'data/training.mjs', 'lib.mjs', 'favicon.svg', 'data/course.mjs', 'data/guide.mjs', 'data/reference-details.mjs', 'data/workshops.mjs', 'data/interface.mjs', 'data/topics.mjs', 'data/rubric.mjs', 'assets/documents/RubricaPractica1.pdf', 'data/workshop-study.mjs', 'data/workshop-parts.mjs', 'data/study-explanations.mjs', 'data/solution-guides.mjs', 'data/materials.json', 'data/solutions.json', ...solutions.map(p=>p.download), ...materials.map(m => m.path), ...materials.flatMap(m => m.images || [])]);
 export const server = http.createServer(async (request, response) => {
   try {
     if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, { Allow: 'GET, HEAD' }); response.end(); return; }
